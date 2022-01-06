@@ -1,0 +1,8 @@
+﻿DataStorePluginInterfaces - 
+Интерфейсы подключаемого модуля хранилища данных
+
+DataStore - Хранилище данных
+
+Extract | Извлекать
+
+assigned | назначенный

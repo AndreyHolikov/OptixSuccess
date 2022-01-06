@@ -1,0 +1,6 @@
+﻿Transient | Переходный
+
+Scoped | Ограниченный
+
+rapid | стремительный
+then swap it with SQL database later | затем замените его базой данных SQL позже
