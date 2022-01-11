@@ -36,6 +36,10 @@ namespace WebApp
             //Dependency  Injection for In-Memory DataStore
             services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
             services.AddScoped<ICustomerRepository, CustomerInMemoryRepository>();
+            //services.AddScoped<IOrderCustomerRepository, OrderCustomerInMemoryRepository>();
+            //services.AddScoped<IProductRepository, ProductInMemoryRepository>();
+            //services.AddScoped<IOrderVendorRepository, OrderVendorInMemoryRepository>();
+            //services.AddScoped<IVendorRepository, VendorInMemoryRepository>();
 
             //Dependency Injection fo Use Cases and Repositories
             #region Categories
@@ -47,6 +51,37 @@ namespace WebApp
 
             #region Customers
             services.AddTransient<IViewCustomersUseCase, ViewCustomersUseCase>();
+            services.AddTransient<IAddCustomerUseCase, AddCustomerUseCase>();
+            services.AddTransient<IEditCustomerUseCase, EditCustomerUseCase>();
+            services.AddTransient<IGetCustomerByIdUseCase, GetCustomerByIdUseCase>();
+            #endregion
+
+            #region OrderCustomer
+            services.AddTransient<IViewOrderCustomersUseCase, ViewOrderCustomersUseCase>();
+            //services.AddTransient<IAddOrderCustomerUseCase, AddOrderCustomerUseCase>();
+            //services.AddTransient<IEditOrderCustomerUseCase, EditOrderCustomerUseCase>();
+            //services.AddTransient<IGetOrderCustomerByIdUseCase, GetOrderCustomerByIdUseCase>();
+            #endregion
+
+            #region Product
+            services.AddTransient<IViewProductsUseCase, ViewProductsUseCase>();
+            //services.AddTransient<IAddProductUseCase, AddProductUseCase>();
+            //services.AddTransient<IEditProductUseCase, EditProductUseCase>();
+            //services.AddTransient<IGetProductByIdUseCase, GetProductByIdUseCase>();
+            #endregion
+
+            #region OrderVendor
+            services.AddTransient<IViewOrderVendorsUseCase, ViewOrderVendorsUseCase>();
+            //services.AddTransient<IAddOrderVendorUseCase, AddOrderVendorUseCase>();
+            //services.AddTransient<IEditOrderVendorUseCase, EditOrderVendorUseCase>();
+            //services.AddTransient<IGetOrderVendorByIdUseCase, GetOrderVendorByIdUseCase>();
+            #endregion
+
+            #region Vendor
+            services.AddTransient<IViewVendorsUseCase, ViewVendorsUseCase>();
+            //services.AddTransient<IAddVendorUseCase, AddVendorUseCase>();
+            //services.AddTransient<IEditVendorUseCase, EditVendorUseCase>();
+            //services.AddTransient<IGetVendorByIdUseCase, GetVendorByIdUseCase>();
             #endregion
         }
 

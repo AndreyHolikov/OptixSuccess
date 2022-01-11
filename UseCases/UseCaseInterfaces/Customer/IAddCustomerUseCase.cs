@@ -4,6 +4,6 @@ namespace UseCases
 {
     public interface IAddCustomerUseCase
     {
-        void Excecute(Customer customer);
+        public void Excecute(Customer customer);
     }
 }

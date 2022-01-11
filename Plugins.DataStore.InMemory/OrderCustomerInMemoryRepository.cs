@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Plugins.DataStore.InMemory
 {
-    public class OrderCustomerInMemoryRepository
+    public class OrderCustomerInMemoryRepository : IOrderCustomerRepository
     {
         private List<OrderCustomer> orderCustomers;
 
@@ -17,9 +17,21 @@ namespace Plugins.DataStore.InMemory
 
             orderCustomers = new List<OrderCustomer>()
             {
-                new OrderCustomer() { OrderCustomerId = 1, Name = "OrderCustomer-301", Description = "OrderCustomer-301.1"},
-                new OrderCustomer() { OrderCustomerId = 2, Name = "OrderCustomer-302", Description = "OrderCustomer-302.1"},
-                new OrderCustomer() { OrderCustomerId = 3, Name = "OrderCustomer-303", Description = "OrderCustomer-303.1"}
+                new OrderCustomer() { 
+                    OrderCustomerId = 1, 
+                    Name = "OrderCustomer-301", 
+                    Description = "OrderCustomer-301.1"
+                },
+                new OrderCustomer() { 
+                    OrderCustomerId = 2, 
+                    Name = "OrderCustomer-302", 
+                    Description = "OrderCustomer-302.1"
+                },
+                new OrderCustomer() { 
+                    OrderCustomerId = 3, 
+                    Name = "OrderCustomer-303", 
+                    Description = "OrderCustomer-303.1"
+                }
             };
         }
 
