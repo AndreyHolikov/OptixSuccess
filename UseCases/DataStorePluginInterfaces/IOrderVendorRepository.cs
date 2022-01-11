@@ -9,7 +9,7 @@ namespace UseCases.DataStorePluginInterfaces
 {
     public interface IOrderVendorRepository
     {
-        public IEnumerable<OrderVendor> GetCategories();
+        public IEnumerable<OrderVendor> GetOrderVendors();
         public void AddOrderVendor(OrderVendor orderVendor);
         public void UpdateOrderVendor(OrderVendor orderVendor);
         public OrderVendor GetOrderVendorById(int orderVendorId);

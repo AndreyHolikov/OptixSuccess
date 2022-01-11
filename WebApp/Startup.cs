@@ -35,15 +35,19 @@ namespace WebApp
 
             //Dependency  Injection for In-Memory DataStore
             services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
-            //services.AddScoped<ICustomerRepository, CustomerInMemoryRepository>();
+            services.AddScoped<ICustomerRepository, CustomerInMemoryRepository>();
 
             //Dependency Injection fo Use Cases and Repositories
+            #region Categories
             services.AddTransient<IViewCategoriesUseCase, ViewCategoriesUseCase>();
             services.AddTransient<IAddCategoryUseCase, AddCategoryUseCase>();
             services.AddTransient<IEditCategoryUseCase, EditCategoryUseCase>();
             services.AddTransient<IGetCategoryByIdUseCase, GetCategoryByIdUseCase>();
+            #endregion
 
-
+            #region Customers
+            services.AddTransient<IViewCustomersUseCase, ViewCustomersUseCase>();
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

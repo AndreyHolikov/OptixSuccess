@@ -9,7 +9,7 @@ namespace UseCases.DataStorePluginInterfaces
 {
     public interface IProductRepository
     {
-        public IEnumerable<Product> GetCategories();
+        public IEnumerable<Product> GetProducts();
         public void AddProduct(Product product);
         public void UpdateProduct(Product product);
         public Product GetProductById(int productId);

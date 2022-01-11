@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UseCases.DataStorePluginInterfaces;
 
 namespace Plugins.DataStore.InMemory
 {
-    public class CustomerInMemoryRepository
+    public class CustomerInMemoryRepository : ICustomerRepository
     {
         private List<Customer> customers;
 
