@@ -8,4 +8,18 @@
     <ProjectReference Include="..\CoreBusiness\CoreBusiness.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCaseCrud\Customer\" />
+    <Folder Include="UseCaseCrud\" />
+    <Folder Include="UseCaseCrud\Vendor\" />
+    <Folder Include="UseCaseCrud\Product\" />
+    <Folder Include="UseCaseCrud\OrderVendor\" />
+    <Folder Include="UseCaseCrud\OrderCustomer\" />
+    <Folder Include="UseCaseInterfaces\Category\" />
+    <Folder Include="UseCaseInterfaces\OrderCustomer\" />
+    <Folder Include="UseCaseInterfaces\OrderVendor\" />
+    <Folder Include="UseCaseInterfaces\Product\" />
+    <Folder Include="UseCaseInterfaces\Vendor\" />
+  </ItemGroup>
+
 </Project>
