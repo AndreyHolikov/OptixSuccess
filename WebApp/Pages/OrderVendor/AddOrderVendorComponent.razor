@@ -1,0 +1,49 @@
+﻿@page "/addordervendor"
+@using UseCases
+
+@inject NavigationManager NavigationManager
+@inject IAddOrderVendorUseCase AddOrderVendorUseCase 
+
+<h3>Add OrderVendor</h3>
+
+@if (orderVendor != null)
+{
+    <EditForm Model="orderVendor"  OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <InputText id="name" @bind-Value="orderVendor.Name" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <InputText id="description" @bind-Value="orderVendor.Description" class="form-control"></InputText>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCansel">Cansel</button>
+    </EditForm>
+}
+
+@code {
+    private OrderVendor orderVendor;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        orderVendor = new OrderVendor();
+    }
+    private void OnValidSubmit()
+    {
+        AddOrderVendorUseCase.Excecute(orderVendor);
+        NavigationManager.NavigateTo("/ordervendors");
+    }
+
+    private void OnCansel()
+    {
+        NavigationManager.NavigateTo("/ordervendors");
+    }
+}

@@ -1,0 +1,49 @@
+﻿@page "/addordercustomer"
+@using UseCases
+
+@inject NavigationManager NavigationManager
+@inject IAddOrderCustomerUseCase AddOrderCustomerUseCase 
+
+<h3>Add OrderCustomer</h3>
+
+@if (orderCustomer != null)
+{
+    <EditForm Model="orderCustomer"  OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <InputText id="name" @bind-Value="orderCustomer.Name" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <InputText id="description" @bind-Value="orderCustomer.Description" class="form-control"></InputText>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCansel">Cansel</button>
+    </EditForm>
+}
+
+@code {
+    private OrderCustomer orderCustomer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        orderCustomer = new OrderCustomer();
+    }
+    private void OnValidSubmit()
+    {
+        AddOrderCustomerUseCase.Excecute(orderCustomer);
+        NavigationManager.NavigateTo("/ordercustomers");
+    }
+
+    private void OnCansel()
+    {
+        NavigationManager.NavigateTo("/ordercustomers");
+    }
+}

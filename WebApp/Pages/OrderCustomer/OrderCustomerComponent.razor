@@ -1,0 +1,66 @@
+﻿@page "/ordercustomers"
+
+@inject NavigationManager NavigationManager
+@inject UseCases.IViewOrderCustomersUseCase ViewOrderCustomersUseCase
+@inject UseCases.IDeleteOrderCustomerUseCase DeleteOrderCustomerUseCase
+
+<h3>Manage OrderCustomer</h3>
+
+@if(orderCustomers != null)
+{
+        <table class="table" id="myTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var orderCustomer in orderCustomers)
+                {
+                    <tr>
+                        <td>@orderCustomer.Name</td>
+                        <td>@orderCustomer.Description</td>
+                        <td>
+                            <button tupe="button" @onclick="@(() => EditOrderCustomer(orderCustomer))" class="btn btn-light">Edit</button>
+                            <button tupe="button" @onclick="@(() => DeleteOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-light">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br/>
+        <button type="button" @onclick="OnClickAddOrderCustomer" class="btn btn-primary">Add OrderCustomers</button>
+}
+
+@code {
+    private List<OrderCustomer> orderCustomers;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        orderCustomers = ViewOrderCustomersUseCase.Execute()?.ToList();
+    }
+
+    protected void OnClickAddOrderCustomer()
+    {
+        NavigationManager.NavigateTo("/addordercustomer");
+    }
+
+    protected void EditOrderCustomer(OrderCustomer orderCustomer)
+    {
+        NavigationManager.NavigateTo($"/editordercustomer/{orderCustomer.OrderCustomerId}");
+    }
+
+    protected void DeleteOrderCustomer(int OrderCustomerId)
+    {
+        DeleteOrderCustomerUseCase?.Delete(OrderCustomerId);
+        LoadOrderCustomers();
+    }
+
+    private void LoadOrderCustomers()
+    {
+        orderCustomers = ViewOrderCustomersUseCase.Execute()?.ToList();
+    }
+}

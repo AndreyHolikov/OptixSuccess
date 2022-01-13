@@ -1,0 +1,73 @@
+﻿@page "/products"
+
+@inject NavigationManager NavigationManager
+@inject IViewProductsUseCase ViewProductsUseCase
+@inject IDeleteProductUseCase DeleteProductUseCase
+@inject IGetCategoryByIdUseCase GetCategoryByIdUseCase
+
+<h3>Manage Products</h3>
+
+@if(products != null)
+{
+        <table class="table" id="myTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var product in products)
+                {
+                    <tr>
+                        <td>@product.Name</td>
+                        <td>@product.Description</td>
+                        <td>@GetCategoryByIdUseCase.Execute(product.CategoryId)?.Name</td>
+                        <td>@(Math.Round(product.Price, 2))</td>
+                        <td>@product.Quantity</td>
+                        <td>
+                            <button tupe="button" @onclick="@(() => EditProduct(product))" class="btn btn-light">Edit</button>
+                            <button tupe="button" @onclick="@(() => DeleteProduct(product.ProductId))" class="btn btn-light">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br/>
+        <button type="button" @onclick="OnClickAddProduct" class="btn btn-primary">Add Product</button>
+}
+
+@code {
+    private List<Product> products;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        products = ViewProductsUseCase.Execute()?.ToList();
+    }
+
+    protected void OnClickAddProduct()
+    {
+        NavigationManager.NavigateTo("/addproduct");
+    }
+
+    protected void EditProduct(Product product)
+    {
+        NavigationManager.NavigateTo($"/editproduct/{product.ProductId}");
+    }
+
+    protected void DeleteProduct(int ProductId)
+    {
+        DeleteProductUseCase?.Delete(ProductId);
+        LoadProducts();
+    }
+
+    private void LoadProducts()
+    {
+        products = ViewProductsUseCase.Execute()?.ToList();
+    }
+}

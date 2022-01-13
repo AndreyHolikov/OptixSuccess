@@ -1,0 +1,66 @@
+﻿@page "/vendors"
+
+@inject NavigationManager NavigationManager
+@inject UseCases.IViewVendorsUseCase ViewVendorsUseCase
+@inject UseCases.IDeleteVendorUseCase DeleteVendorUseCase
+
+<h3>Manage Vendors</h3>
+
+@if(vendors != null)
+{
+        <table class="table" id="myTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var vendor in vendors)
+                {
+                    <tr>
+                        <td>@vendor.Name</td>
+                        <td>@vendor.Description</td>
+                        <td>
+                            <button tupe="button" @onclick="@(() => EditVendor(vendor))" class="btn btn-light">Edit</button>
+                            <button tupe="button" @onclick="@(() => DeleteVendor(vendor.VendorId))" class="btn btn-light">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br/>
+        <button type="button" @onclick="OnClickAddVendor" class="btn btn-primary">Add Vendor</button>
+}
+
+@code {
+    private List<Vendor> vendors;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        vendors = ViewVendorsUseCase.Execute()?.ToList();
+    }
+
+    protected void OnClickAddVendor()
+    {
+        NavigationManager.NavigateTo("/addvendor");
+    }
+
+    protected void EditVendor(Vendor vendor)
+    {
+        NavigationManager.NavigateTo($"/editvendor/{vendor.VendorId}");
+    }
+
+    protected void DeleteVendor(int VendorId)
+    {
+        DeleteVendorUseCase?.Delete(VendorId);
+        LoadVendors();
+    }
+
+    private void LoadVendors()
+    {
+        vendors = ViewVendorsUseCase.Execute()?.ToList();
+    }
+}

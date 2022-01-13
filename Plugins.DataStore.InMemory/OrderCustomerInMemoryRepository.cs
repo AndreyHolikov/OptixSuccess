@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UseCases.DataStorePluginInterfaces;
 
 namespace Plugins.DataStore.InMemory
 {
@@ -68,7 +69,7 @@ namespace Plugins.DataStore.InMemory
             //return orderCustomers?.FirstOrDefault(x => x.OrderCustomerId == orderCustomerId);
         }
 
-        public IEnumerable<OrderCustomer> GetCategories()
+        public IEnumerable<OrderCustomer> GetOrderCustomers()
         {
             return orderCustomers;
         }

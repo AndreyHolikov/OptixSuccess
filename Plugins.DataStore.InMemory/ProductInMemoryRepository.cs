@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UseCases.DataStorePluginInterfaces;
 
 namespace Plugins.DataStore.InMemory
 {
-    public class ProductInMemoryRepository
+    public class ProductInMemoryRepository : IProductRepository
     {
         private List<Product> products;
 
@@ -17,9 +18,9 @@ namespace Plugins.DataStore.InMemory
 
             products = new List<Product>()
             {
-                new Product() { ProductId = 1, Name = "Product-501", Description = "Customer-501.1"},
-                new Product() { ProductId = 2, Name = "Product-502", Description = "Customer-502.1"},
-                new Product() { ProductId = 3, Name = "Product-503", Description = "Customer-503.1"}
+                new Product() { ProductId = 1, Name = "Product-501", Description = "Customer-501.1", CategoryId = 1 },
+                new Product() { ProductId = 2, Name = "Product-502", Description = "Customer-502.1", CategoryId = 1 },
+                new Product() { ProductId = 3, Name = "Product-503", Description = "Customer-503.1", CategoryId = 2 }
             };
         }
 
@@ -56,7 +57,7 @@ namespace Plugins.DataStore.InMemory
             //return products?.FirstOrDefault(x => x.ProductId == productId);
         }
 
-        public IEnumerable<Product> GetCategories()
+        public IEnumerable<Product> GetProducts()
         {
             return products;
         }

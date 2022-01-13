@@ -1,0 +1,49 @@
+﻿@page "/addvendor"
+@using UseCases
+
+@inject NavigationManager NavigationManager
+@inject IAddVendorUseCase AddVendorUseCase 
+
+<h3>Add Vendor</h3>
+
+@if (vendor != null)
+{
+    <EditForm Model="vendor"  OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <InputText id="name" @bind-Value="vendor.Name" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <InputText id="description" @bind-Value="vendor.Description" class="form-control"></InputText>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCansel">Cansel</button>
+    </EditForm>
+}
+
+@code {
+    private Vendor vendor;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        vendor = new Vendor();
+    }
+    private void OnValidSubmit()
+    {
+        AddVendorUseCase.Excecute(vendor);
+        NavigationManager.NavigateTo("/vendors");
+    }
+
+    private void OnCansel()
+    {
+        NavigationManager.NavigateTo("/vendors");
+    }
+}

@@ -1,0 +1,66 @@
+﻿@page "/orderVendors"
+
+@inject NavigationManager NavigationManager
+@inject UseCases.IViewOrderVendorsUseCase ViewOrderVendorsUseCase
+@inject UseCases.IDeleteOrderVendorUseCase DeleteOrderVendorUseCase
+
+<h3>Manage OrderVendors</h3>
+
+@if(orderVendors != null)
+{
+        <table class="table" id="myTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var orderVendor in orderVendors)
+                {
+                    <tr>
+                        <td>@orderVendor.Name</td>
+                        <td>@orderVendor.Description</td>
+                        <td>
+                            <button tupe="button" @onclick="@(() => EditOrderVendor(orderVendor))" class="btn btn-light">Edit</button>
+                            <button tupe="button" @onclick="@(() => DeleteOrderVendor(orderVendor.OrderVendorId))" class="btn btn-light">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br/>
+        <button type="button" @onclick="OnClickAddOrderVendor" class="btn btn-primary">Add OrderVendor</button>
+}
+
+@code {
+    private List<OrderVendor> orderVendors;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        orderVendors = ViewOrderVendorsUseCase.Execute()?.ToList();
+    }
+
+    protected void OnClickAddOrderVendor()
+    {
+        NavigationManager.NavigateTo("/addorderVendor");
+    }
+
+    protected void EditOrderVendor(OrderVendor orderVendor)
+    {
+        NavigationManager.NavigateTo($"/editorderVendor/{orderVendor.OrderVendorId}");
+    }
+
+    protected void DeleteOrderVendor(int OrderVendorId)
+    {
+        DeleteOrderVendorUseCase?.Delete(OrderVendorId);
+        LoadOrderVendors();
+    }
+
+    private void LoadOrderVendors()
+    {
+        orderVendors = ViewOrderVendorsUseCase.Execute()?.ToList();
+    }
+}

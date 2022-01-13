@@ -1,0 +1,63 @@
+﻿@page "/editorderVendor/{orderVendorId}"
+@using UseCases
+
+@inject NavigationManager NavigationManager
+@inject IEditOrderVendorUseCase EditOrderVendorUseCase
+@inject IGetOrderVendorByIdUseCase GetOrderVendorByIdUseCase 
+
+<h3>Edit OrderVendor</h3>
+
+@if(orderVendor != null)
+{
+    <EditForm Model="orderVendor"  OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <InputText id="name" @bind-Value="orderVendor.Name" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <InputText id="description" @bind-Value="orderVendor.Description" class="form-control"></InputText>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCansel">Cansel</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string OrderVendorId { get; set; }
+
+    private OrderVendor orderVendor;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        orderVendor = new OrderVendor();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (int.TryParse(this.OrderVendorId, out int iOrderVendorId)) 
+        {
+            this.orderVendor = GetOrderVendorByIdUseCase.Excecute(iOrderVendorId);
+        }
+
+    }
+
+    private void OnValidSubmit()
+    {
+        EditOrderVendorUseCase.Execute(orderVendor);
+        NavigationManager.NavigateTo("/ordervendors");
+    }
+
+    private void OnCansel()
+    {
+        NavigationManager.NavigateTo("/ordervendors");
+    }
+}

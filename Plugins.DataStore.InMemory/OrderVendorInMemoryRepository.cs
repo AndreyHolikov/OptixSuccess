@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UseCases.DataStorePluginInterfaces;
 
 namespace Plugins.DataStore.InMemory
 {
-    public class OrderVendorInMemoryRepository
+    public class OrderVendorInMemoryRepository : IOrderVendorRepository
     {
         private List<OrderVendor> orderVendors;
 
@@ -56,7 +57,7 @@ namespace Plugins.DataStore.InMemory
             //return orderVendors?.FirstOrDefault(x => x.OrderVendorId == orderVendorId);
         }
 
-        public IEnumerable<OrderVendor> GetCategories()
+        public IEnumerable<OrderVendor> GetOrderVendors()
         {
             return orderVendors;
         }
