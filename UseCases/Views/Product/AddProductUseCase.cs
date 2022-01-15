@@ -17,7 +17,7 @@ namespace UseCases
             this.productRepository = productRepository;
         }
 
-        public void Excecute(Product product)
+        public void Execute(Product product)
         {
             productRepository.AddProduct(product);
         }

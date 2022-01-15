@@ -45,7 +45,7 @@
         base.OnParametersSet();
         if (int.TryParse(this.OrderVendorId, out int iOrderVendorId)) 
         {
-            this.orderVendor = GetOrderVendorByIdUseCase.Excecute(iOrderVendorId);
+            this.orderVendor = GetOrderVendorByIdUseCase.Execute(iOrderVendorId);
         }
 
     }

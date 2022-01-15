@@ -4,6 +4,6 @@ namespace UseCases
 {
     public interface IAddProductUseCase
     {
-        public void Excecute(Product product);
+        public void Execute(Product product);
     }
 }

@@ -21,17 +21,20 @@ namespace Plugins.DataStore.InMemory
                 new OrderCustomer() { 
                     OrderCustomerId = 1, 
                     Name = "OrderCustomer-301", 
-                    Description = "OrderCustomer-301.1"
-                },
+                    Description = "OrderCustomer-301.1",
+                    Edited = DateTime.Now
+        },
                 new OrderCustomer() { 
                     OrderCustomerId = 2, 
                     Name = "OrderCustomer-302", 
-                    Description = "OrderCustomer-302.1"
+                    Description = "OrderCustomer-302.1",
+                    Edited = DateTime.Now
                 },
                 new OrderCustomer() { 
                     OrderCustomerId = 3, 
                     Name = "OrderCustomer-303", 
-                    Description = "OrderCustomer-303.1"
+                    Description = "OrderCustomer-303.1",
+                    Edited = DateTime.Now
                 }
             };
         }
@@ -44,12 +47,12 @@ namespace Plugins.DataStore.InMemory
             {
                 var maxId = orderCustomers.Max(x => x.OrderCustomerId);
                 orderCustomer.OrderCustomerId = maxId + 1;
-
             }
             else
             {
                 orderCustomer.OrderCustomerId = 1;
             }
+            orderCustomer.Edited = DateTime.Now;
             orderCustomers.Add(orderCustomer);
         }
 
@@ -59,6 +62,7 @@ namespace Plugins.DataStore.InMemory
             if (orderCustomerToUpdate != null)
             {
                 orderCustomerToUpdate.Name = orderCustomer.Name;
+                orderCustomer.Edited = DateTime.Now;
             }
         }
 

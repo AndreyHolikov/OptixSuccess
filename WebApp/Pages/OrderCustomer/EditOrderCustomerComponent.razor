@@ -45,7 +45,7 @@
         base.OnParametersSet();
         if (int.TryParse(this.OrderCustomerId, out int iOrderCustomerId)) 
         {
-            this.orderCustomer = GetOrderCustomerByIdUseCase.Excecute(iOrderCustomerId);
+            this.orderCustomer = GetOrderCustomerByIdUseCase.Execute(iOrderCustomerId);
         }
 
     }

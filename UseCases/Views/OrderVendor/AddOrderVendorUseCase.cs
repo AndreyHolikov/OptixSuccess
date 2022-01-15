@@ -17,7 +17,7 @@ namespace UseCases
             this.orderVendorRepository = orderVendorRepository;
         }
 
-        public void Excecute(OrderVendor orderVendor)
+        public void Execute(OrderVendor orderVendor)
         {
             orderVendorRepository.AddOrderVendor(orderVendor);
         }
