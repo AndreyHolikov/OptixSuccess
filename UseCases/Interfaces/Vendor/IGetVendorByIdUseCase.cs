@@ -4,6 +4,6 @@ namespace UseCases
 {
     public interface IGetVendorByIdUseCase
     {
-        Vendor Excecute(int vendorId);
+        Vendor Execute(int vendorId);
     }
 }

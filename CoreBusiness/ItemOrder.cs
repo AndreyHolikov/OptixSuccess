@@ -7,18 +7,19 @@ using System.Threading.Tasks;
 
 namespace CoreBusiness
 {
-    public class Product
+    public class ItemOrder
     {
-        public int ProductId { get; set; }
-        [Required]
-        public string Name { get; set; }
+        public int ItemOrderId { get; set; }
         public string Description { get; set; }
         public int Quantity { get; set; }
         public double Price { get; set; }
+        public DateTime Edited { get; set; }
 
-        public int CategoryId { get; set; }
-        public string BC { get; set; }
-        public string Sph { get; set; }
-        public string Cell { get; set; }
+        [Required]
+        public int ProductId { get; set; }
+        [Required]
+        public int OrderCustomerId { get; set; }
+        [Required]
+        public int OrderVendorId { get; set; }
     }
 }

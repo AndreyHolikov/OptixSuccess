@@ -4,6 +4,6 @@ namespace UseCases
 {
     public interface IAddCategoryUseCase
     {
-        void Excecute(Category category);
+        void Execute(Category category);
     }
 }

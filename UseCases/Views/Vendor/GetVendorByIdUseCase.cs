@@ -16,7 +16,7 @@ namespace UseCases
         {
             this.vendorRepository = vendorRepository;
         }
-        public Vendor Excecute(int vendorId)
+        public Vendor Execute(int vendorId)
         {
             return vendorRepository.GetVendorById(vendorId);
         }

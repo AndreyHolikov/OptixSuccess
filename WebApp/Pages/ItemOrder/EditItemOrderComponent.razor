@@ -1,26 +1,26 @@
-﻿@page "/editvendor/{vendorId}"
+﻿@page "/edititemorder/{categoryId}"
 @using UseCases
 
 @inject NavigationManager NavigationManager
-@inject IEditVendorUseCase EditVendorUseCase
-@inject IGetVendorByIdUseCase GetVendorByIdUseCase 
+@inject IEditCategoryUseCase EditCategoryUseCase
+@inject IGetCategoryByIdUseCase GetCategoryByIdUseCase 
 
-<h3>Edit Vendor</h3>
+<h3>Edit Category</h3>
 
-@if(vendor != null)
+@if(category != null)
 {
-    <EditForm Model="vendor"  OnValidSubmit="OnValidSubmit">
+    <EditForm Model="category"  OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>
 
         <div class="form-group">
             <label for="name">Name</label>
-            <InputText id="name" @bind-Value="vendor.Name" class="form-control"></InputText>
+            <InputText id="name" @bind-Value="category.Name" class="form-control"></InputText>
         </div>
 
         <div class="form-group">
             <label for="description">Description</label>
-            <InputText id="description" @bind-Value="vendor.Description" class="form-control"></InputText>
+            <InputText id="description" @bind-Value="category.Description" class="form-control"></InputText>
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>
@@ -30,34 +30,34 @@
 
 @code {
     [Parameter]
-    public string VendorId { get; set; }
+    public string CategoryId { get; set; }
 
-    private Vendor vendor;
+    private Category category;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        vendor = new Vendor();
+        category = new Category();
     }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (int.TryParse(this.VendorId, out int iVendorId)) 
+        if (int.TryParse(this.CategoryId, out int iCategoryId)) 
         {
-            this.vendor = GetVendorByIdUseCase.Execute(iVendorId);
+            this.category = GetCategoryByIdUseCase.Execute(iCategoryId);
         }
 
     }
 
     private void OnValidSubmit()
     {
-        EditVendorUseCase.Execute(vendor);
-        NavigationManager.NavigateTo("/vendors");
+        EditCategoryUseCase.Execute(category);
+        NavigationManager.NavigateTo("/categories");
     }
 
     private void OnCansel()
     {
-        NavigationManager.NavigateTo("/vendors");
+        NavigationManager.NavigateTo("/categories");
     }
 }

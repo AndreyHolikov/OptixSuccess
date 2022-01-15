@@ -4,6 +4,6 @@ namespace UseCases
 {
     public interface IAddVendorUseCase
     {
-        public void Excecute(Vendor vendor);
+        public void Execute(Vendor vendor);
     }
 }

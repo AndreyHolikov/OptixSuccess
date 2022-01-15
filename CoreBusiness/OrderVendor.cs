@@ -13,5 +13,9 @@ namespace CoreBusiness
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
+        [Required]
+        public DateTime Edited { get; set; }
+
+        public int VendorId { get; set; }
     }
 }
