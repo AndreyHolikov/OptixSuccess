@@ -9,14 +9,15 @@
 
 @if(products != null)
 {
-        <table class="table" id="myTable">
+    <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle" id="myTable">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
                     <th></th>
                 </tr>
             </thead>
@@ -37,6 +38,7 @@
                 }
             </tbody>
         </table>
+        </div>
         <br/>
         <button type="button" @onclick="OnClickAddProduct" class="btn btn-primary">Add Product</button>
 }

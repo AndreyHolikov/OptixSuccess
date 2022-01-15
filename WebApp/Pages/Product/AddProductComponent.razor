@@ -61,6 +61,7 @@
         product = new Product();
         categories = ViewCategoriesUseCase.Execute();
     }
+
     private void OnValidSubmit()
     {
         AddProductUseCase.Excecute(product);
