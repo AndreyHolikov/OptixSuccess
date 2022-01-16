@@ -1,26 +1,25 @@
-﻿@page "/edititemorder/{categoryId}"
+﻿@page "/edititemorder/{itemId}"
 @using UseCases
 
 @inject NavigationManager NavigationManager
-@inject IEditCategoryUseCase EditCategoryUseCase
-@inject IGetCategoryByIdUseCase GetCategoryByIdUseCase 
+@inject IEditItemOrderUseCase EditItemOrderUseCase
+@inject IGetItemOrderByIdUseCase GetItemOrderByIdUseCase 
 
-<h3>Edit Category</h3>
+@inject IGetProductByIdUseCase GetProductByIdUseCase 
+@inject IGetCustomerByIdUseCase GetCustomerByIdUseCase 
+@inject IGetVendorByIdUseCase GetVendorByIdUseCase 
 
-@if(category != null)
+<h3>Edit ItemOrder</h3>
+
+@if(itemOrder != null)
 {
-    <EditForm Model="category"  OnValidSubmit="OnValidSubmit">
+    <EditForm Model="itemOrder"  OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>
 
         <div class="form-group">
-            <label for="name">Name</label>
-            <InputText id="name" @bind-Value="category.Name" class="form-control"></InputText>
-        </div>
-
-        <div class="form-group">
             <label for="description">Description</label>
-            <InputText id="description" @bind-Value="category.Description" class="form-control"></InputText>
+            <InputText id="description" @bind-Value="itemOrder.Description" class="form-control"></InputText>
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>
@@ -30,34 +29,34 @@
 
 @code {
     [Parameter]
-    public string CategoryId { get; set; }
+    public string ItemOrderId { get; set; }
 
-    private Category category;
+    private ItemOrder itemOrder;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        category = new Category();
+        itemOrder = new ItemOrder();
     }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (int.TryParse(this.CategoryId, out int iCategoryId)) 
+        if (int.TryParse(this.ItemOrderId, out int iItemOrderId)) 
         {
-            this.category = GetCategoryByIdUseCase.Execute(iCategoryId);
+            this.itemOrder = GetItemOrderByIdUseCase.Execute(iItemOrderId);
         }
 
     }
 
     private void OnValidSubmit()
     {
-        EditCategoryUseCase.Execute(category);
-        NavigationManager.NavigateTo("/categories");
+        EditItemOrderUseCase.Execute(itemOrder);
+        NavigationManager.NavigateTo("/itemorders");
     }
 
     private void OnCansel()
     {
-        NavigationManager.NavigateTo("/categories");
+        NavigationManager.NavigateTo("/itemorders");
     }
 }

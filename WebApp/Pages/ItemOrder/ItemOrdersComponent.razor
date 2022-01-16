@@ -1,66 +1,93 @@
 ﻿@page "/itemorders"
 
 @inject NavigationManager NavigationManager
-@inject UseCases.IViewCategoriesUseCase ViewCategoriesUseCase
-@inject UseCases.IDeleteCategoryUseCase DeleteCategoryUseCase 
+@inject IViewItemOrdersUseCase ViewItemOrdersUseCase
+@inject IDeleteItemOrderUseCase DeleteItemOrderUseCase 
 
-<h3>Manage Categories</h3>
+@inject IGetOrderCustomerByIdUseCase GetOrderCustomerByIdUseCase
+@inject IGetOrderVendorByIdUseCase GetOrderVendorByIdUseCase
+@inject IGetProductByIdUseCase GetProductByIdUseCase
 
-@if(categories != null)
+<h3>Manage ItemOrders</h3>
+
+@if(itemOrders != null)
 {
         <table class="table" id="myTable">
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Product</th>
                     <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Edited</th>
+                    <th>OrderCustomer</th>
+                    <th>OrderVendor</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach(var category in categories)
+                @foreach(var itemOrder in itemOrders)
                 {
                     <tr>
-                        <td>@category.Name</td>
-                        <td>@category.Description</td>
+                        <th>
+                            <a href="/product/@itemOrder.ProductId">
+                                @GetProductByIdUseCase.Execute(itemOrder.ProductId)?.Name
+                            </a>
+                        </th>
+                        <td>@itemOrder.Description</td>
+                        <th>@itemOrder.Quantity</th>
+                        <th>@itemOrder.Price</th>
+                        <th>@itemOrder.Edited</th>
+  
+                        <th>
+                            <a href="/ordercustomer/@itemOrder.OrderCustomerId">
+                                @GetOrderCustomerByIdUseCase.Execute(itemOrder.OrderCustomerId)?.Name
+                            </a>
+                        </th>
+                        <th>
+                            <a href="/ordervendor/@itemOrder.OrderVendorId">
+                                @GetOrderVendorByIdUseCase.Execute(itemOrder.OrderVendorId)?.Name
+                            </a>
+                        </th>
                         <td>
-                            <button tupe="button" @onclick="@(() => EditCategory(category))" class="btn btn-light">Edit</button>
-                            <button tupe="button" @onclick="@(() => DeleteCategory(category.СategoryId))" class="btn btn-light">Delete</button>
+                            <button tupe="button" @onclick="@(() => EditItemOrder(itemOrder))" class="btn btn-link">Edit</button>
+                            <button tupe="button" @onclick="@(() => DeleteItemOrder(itemOrder.ItemOrderId))" class="btn btn-link">Delete</button>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
         <br/>
-        <button type="button" @onclick="OnClickAddCategory" class="btn btn-primary">Add Category</button>
+        <button type="button" @onclick="OnClickAddItemOrder" class="btn btn-primary">Add ItemOrder</button>
 }
 
 @code {
-    private List<Category> categories;
+    private List<ItemOrder> itemOrders;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        categories = ViewCategoriesUseCase.Execute()?.ToList();
+        itemOrders = ViewItemOrdersUseCase.Execute()?.ToList();
     }
 
-    protected void OnClickAddCategory()
+    protected void OnClickAddItemOrder()
     {
-        NavigationManager.NavigateTo("/addcategory");
+        NavigationManager.NavigateTo("/additemorder");
     }
 
-    protected void EditCategory(Category category)
+    protected void EditItemOrder(ItemOrder itemOrder)
     {
-        NavigationManager.NavigateTo($"/editcategory/{category.СategoryId}");
+        NavigationManager.NavigateTo($"/edititemorder/{itemOrder.ItemOrderId}");
     }
 
-    protected void DeleteCategory(int CategoryId)
+    protected void DeleteItemOrder(int ItemOrderId)
     {
-        DeleteCategoryUseCase?.Delete(CategoryId);
-        LoadCategories();
+        DeleteItemOrderUseCase?.Delete(ItemOrderId);
+        LoadItemOrders();
     }
 
-    private void LoadCategories()
+    private void LoadItemOrders()
     {
-        categories = ViewCategoriesUseCase.Execute()?.ToList();
+        itemOrders = ViewItemOrdersUseCase.Execute()?.ToList();
     }
 }

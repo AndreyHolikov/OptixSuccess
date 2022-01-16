@@ -10,16 +10,16 @@ namespace UseCases
 {
     public class EditItemOrderUseCase : IEditItemOrderUseCase
     {
-        private readonly IItemOrderRepository iItemOrderRepository;
+        private readonly IItemOrderRepository itemOrderRepository;
 
-        public EditItemOrderUseCase(IItemOrderRepository iItemOrderRepository)
+        public EditItemOrderUseCase(IItemOrderRepository itemOrderRepository)
         {
-            this.iItemOrderRepository = iItemOrderRepository;
+            this.itemOrderRepository = itemOrderRepository;
         }
 
         public void Execute(ItemOrder iItemOrder)
         {
-            iItemOrderRepository.UpdateItemOrder(iItemOrder);
+            itemOrderRepository.UpdateItemOrder(iItemOrder);
         }
     }
 }

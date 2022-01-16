@@ -1,8 +1,9 @@
 ﻿@page "/orderVendors"
 
 @inject NavigationManager NavigationManager
-@inject UseCases.IViewOrderVendorsUseCase ViewOrderVendorsUseCase
-@inject UseCases.IDeleteOrderVendorUseCase DeleteOrderVendorUseCase
+@inject IViewOrderVendorsUseCase ViewOrderVendorsUseCase
+@inject IDeleteOrderVendorUseCase DeleteOrderVendorUseCase
+@inject IGetVendorByIdUseCase GetVendorByIdUseCase
 
 <h3>Manage OrderVendors</h3>
 
@@ -13,6 +14,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
+                    <th>Vendor</th>
                     <th></th>
                 </tr>
             </thead>
@@ -22,6 +24,7 @@
                     <tr>
                         <td>@orderVendor.Name</td>
                         <td>@orderVendor.Description</td>
+                        <td>@GetVendorByIdUseCase.Execute(orderVendor.VendorId)?.Name</td>
                         <td>
                             <button tupe="button" @onclick="@(() => EditOrderVendor(orderVendor))" class="btn btn-light">Edit</button>
                             <button tupe="button" @onclick="@(() => DeleteOrderVendor(orderVendor.OrderVendorId))" class="btn btn-light">Delete</button>

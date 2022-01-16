@@ -1,62 +1,102 @@
-﻿@page "/additemOrder"
+﻿@page "/additemorder"
 @using UseCases
 
 @inject NavigationManager NavigationManager
 @inject IAddItemOrderUseCase AddItemOrderUseCase 
-@inject IGetProductByIdUseCase GetProductByIdUseCase 
-@inject IGetCustomerByIdUseCase GetCustomerByIdUseCase 
-@inject IGetVendorByIdUseCase GetVendorByIdUseCase 
+
+@inject IViewProductsUseCase ViewProductsUseCase
+@inject IViewOrderCustomersUseCase ViewOrderCustomersUseCase
+@inject IViewOrderVendorsUseCase ViewOrderVendorsUseCase
 
 <h3>Add ItemOrder</h3>
 
 @if (itemOrder != null)
 {
+    <div class="col-6">
     <EditForm Model="itemOrder"  OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>
-
-        <div class="form-group">
-            <label for="name">Name</label>
-            <InputText id="name" @bind-Value="GetProductByIdUseCase.Execute(itemOrder.ProductId).Name" class="form-control"></InputText>
-        </div>
-
-        <div class="form-group">
-            <label for="name">Name</label>
-            <InputText id="name" @bind-Value="GetCustomerByIdUseCase.Execute(itemOrder.ProductId).Name" class="form-control"></InputText>
-        </div>
-
-        <div class="form-group">
-            <label for="name">Name</label>
-            <InputText id="name" @bind-Value="GetVendorByIdUseCase.Execute(itemOrder.ProductId).Name" class="form-control"></InputText>
-        </div>
 
         <div class="form-group">
             <label for="description">Description</label>
             <InputText id="description" @bind-Value="itemOrder.Description" class="form-control"></InputText>
         </div>
 
+        <div class="form-group">
+            <label for="product">Product </label>
+            <select id="product" @bind="itemOrder.ProductId" class="form-control">
+                <option selected></option>
+                @foreach(var product in products)
+                {
+                    <option value="@product.ProductId">@product.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ordercustomer">OrderCustomer </label>
+            <select id="ordercustomer" @bind="itemOrder.OrderCustomerId" class="form-control">
+                <option selected></option>
+                @foreach(var orderCustomer in orderCustomers)
+                {
+                    <option value="@orderCustomer.OrderCustomerId">@orderCustomer.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ordervendor">OrderVendor </label>
+            <select id="ordervendor" @bind="itemOrder.OrderVendorId" class="form-control">
+                <option selected></option>
+                @foreach(var orderVendor in orderVendors)
+                {
+                    <option value="@orderVendor.OrderVendorId">@orderVendor.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <InputNumber id="quantity" @bind-Value="itemOrder.Quantity" class="form-control"></InputNumber>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Price</label>
+            <InputNumber id="price" @bind-Value="itemOrder.Price" class="form-control"></InputNumber>
+        </div>
+
         <button type="submit" class="btn btn-primary">Save</button>
         <button type="button" class="btn btn-primary" @onclick="OnCansel">Cansel</button>
     </EditForm>
+    </div>
 }
 
 @code {
     private ItemOrder itemOrder;
+
+    private IEnumerable<Product> products;
+    private IEnumerable<OrderCustomer> orderCustomers;
+    private IEnumerable<OrderVendor> orderVendors;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
         itemOrder = new ItemOrder();
+
+        products = ViewProductsUseCase.Execute();
+        orderCustomers = ViewOrderCustomersUseCase.Execute();
+        orderVendors = ViewOrderVendorsUseCase.Execute();
+
     }
     private void OnValidSubmit()
     {
         AddItemOrderUseCase.Execute(itemOrder);
-        NavigationManager.NavigateTo("/categories");
+        NavigationManager.NavigateTo("/itemorders");
     }
 
     private void OnCansel()
     {
-        NavigationManager.NavigateTo("/categories");
+        NavigationManager.NavigateTo("/itemorders");
     }
 }

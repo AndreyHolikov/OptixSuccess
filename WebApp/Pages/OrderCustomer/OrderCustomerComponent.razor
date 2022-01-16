@@ -1,8 +1,9 @@
 ﻿@page "/ordercustomers"
 
 @inject NavigationManager NavigationManager
-@inject UseCases.IViewOrderCustomersUseCase ViewOrderCustomersUseCase
-@inject UseCases.IDeleteOrderCustomerUseCase DeleteOrderCustomerUseCase
+@inject IViewOrderCustomersUseCase ViewOrderCustomersUseCase
+@inject IDeleteOrderCustomerUseCase DeleteOrderCustomerUseCase
+@inject IGetCustomerByIdUseCase GetCustomerByIdUseCase 
 
 <h3>Manage OrderCustomer</h3>
 
@@ -13,6 +14,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
+                    <th>CustomerId</th>
                     <th></th>
                 </tr>
             </thead>
@@ -22,6 +24,7 @@
                     <tr>
                         <td>@orderCustomer.Name</td>
                         <td>@orderCustomer.Description</td>
+                        <td>@GetCustomerByIdUseCase.Execute(orderCustomer.CustomerId)?.Name</td>
                         <td>
                             <button tupe="button" @onclick="@(() => EditOrderCustomer(orderCustomer))" class="btn btn-light">Edit</button>
                             <button tupe="button" @onclick="@(() => DeleteOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-light">Delete</button>

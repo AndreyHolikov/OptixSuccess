@@ -35,9 +35,11 @@ namespace WebApp
 
             //Dependency  Injection for In-Memory DataStore
             services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
+            services.AddScoped<IProductRepository, ProductInMemoryRepository>();
+
             services.AddScoped<ICustomerRepository, CustomerInMemoryRepository>();
             services.AddScoped<IOrderCustomerRepository, OrderCustomerInMemoryRepository>();
-            services.AddScoped<IProductRepository, ProductInMemoryRepository>();
+            services.AddScoped<IItemOrderRepository, ItemOrderInMemoryRepository>();
             services.AddScoped<IOrderVendorRepository, OrderVendorInMemoryRepository>();
             services.AddScoped<IVendorRepository, VendorInMemoryRepository>();
 
@@ -48,6 +50,14 @@ namespace WebApp
             services.AddTransient<IEditCategoryUseCase, EditCategoryUseCase>();
             services.AddTransient<IGetCategoryByIdUseCase, GetCategoryByIdUseCase>();
             services.AddTransient<IDeleteCategoryUseCase, DeleteCategoryUseCase>();
+            #endregion
+
+            #region Product
+            services.AddTransient<IViewProductsUseCase, ViewProductsUseCase>();
+            services.AddTransient<IAddProductUseCase, AddProductUseCase>();
+            services.AddTransient<IEditProductUseCase, EditProductUseCase>();
+            services.AddTransient<IGetProductByIdUseCase, GetProductByIdUseCase>();
+            services.AddTransient<IDeleteProductUseCase, DeleteProductUseCase>();
             #endregion
 
             #region Customers
@@ -66,12 +76,12 @@ namespace WebApp
             services.AddTransient<IDeleteOrderCustomerUseCase, DeleteOrderCustomerUseCase>();
             #endregion
 
-            #region Product
-            services.AddTransient<IViewProductsUseCase, ViewProductsUseCase>();
-            services.AddTransient<IAddProductUseCase, AddProductUseCase>();
-            services.AddTransient<IEditProductUseCase, EditProductUseCase>();
-            services.AddTransient<IGetProductByIdUseCase, GetProductByIdUseCase>();
-            services.AddTransient<IDeleteProductUseCase, DeleteProductUseCase>();
+            #region ItemOrder
+            services.AddTransient<IViewItemOrdersUseCase, ViewItemOrdersUseCase>();
+            services.AddTransient<IAddItemOrderUseCase, AddItemOrderUseCase>();
+            services.AddTransient<IEditItemOrderUseCase, EditItemOrderUseCase>();
+            services.AddTransient<IGetItemOrderByIdUseCase, GetItemOrderByIdUseCase>();
+            services.AddTransient<IDeleteItemOrderUseCase, DeleteItemOrderUseCase>();
             #endregion
 
             #region OrderVendor
