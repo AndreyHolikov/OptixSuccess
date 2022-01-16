@@ -5,9 +5,9 @@
 @inject IEditItemOrderUseCase EditItemOrderUseCase
 @inject IGetItemOrderByIdUseCase GetItemOrderByIdUseCase 
 
-@inject IGetProductByIdUseCase GetProductByIdUseCase 
-@inject IGetCustomerByIdUseCase GetCustomerByIdUseCase 
-@inject IGetVendorByIdUseCase GetVendorByIdUseCase 
+@inject IViewProductsUseCase ViewProductsUseCase
+@inject IViewOrderCustomersUseCase ViewOrderCustomersUseCase
+@inject IViewOrderVendorsUseCase ViewOrderVendorsUseCase
 
 <h3>Edit ItemOrder</h3>
 
@@ -22,6 +22,41 @@
             <InputText id="description" @bind-Value="itemOrder.Description" class="form-control"></InputText>
         </div>
 
+        <div class="form-group">
+            <label for="product">Product </label>
+            <select id="product" @bind="itemOrder.ProductId" class="form-control">
+                <option selected></option>
+                @foreach(var product in products)
+                {
+                    <option value="@product.ProductId">@product.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ordercustomer">OrderCustomer </label>
+            <select id="ordercustomer" @bind="itemOrder.OrderCustomerId" class="form-control">
+                <option selected></option>
+                @foreach(var orderCustomer in orderCustomers)
+                {
+                    <option value="@orderCustomer.OrderCustomerId">@orderCustomer.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ordervendor">OrderVendor </label>
+            <select id="ordervendor" @bind="itemOrder.OrderVendorId" class="form-control">
+                <option selected></option>
+                @foreach(var orderVendor in orderVendors)
+                {
+                    <option value="@orderVendor.OrderVendorId">@orderVendor.Name</option>
+                }
+            </select>
+        </div>
+
+
+
         <button type="submit" class="btn btn-primary">Save</button>
         <button type="button" class="btn btn-primary" @onclick="OnCansel">Cansel</button>
     </EditForm>
@@ -33,10 +68,18 @@
 
     private ItemOrder itemOrder;
 
+    private IEnumerable<Product> products;
+    private IEnumerable<OrderCustomer> orderCustomers;
+    private IEnumerable<OrderVendor> orderVendors;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
         itemOrder = new ItemOrder();
+
+        products = ViewProductsUseCase.Execute();
+        orderCustomers = ViewOrderCustomersUseCase.Execute();
+        orderVendors = ViewOrderVendorsUseCase.Execute();
     }
 
     protected override void OnParametersSet()
