@@ -1,7 +1,182 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+@inject NavigationManager NavigationManager
+@inject UseCases.IViewCustomersUseCase ViewCustomersUseCase
+@inject UseCases.IDeleteCustomerUseCase DeleteCustomerUseCase
 
-Welcome to your new app.
+@inject UseCases.IViewOrderCustomersUseCase ViewOrderCustomersUseCase
+@inject UseCases.IViewItemOrdersUseCase ViewItemOrdersUseCase
+
+<h1>Optix Opt 2022</h1>
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+<div class="row">
+    <div class="col col-auto">
+        <div>
+            <h4>
+                <NavLink class="nav-link" href="customers" style="float:left;">
+                    Покупатели 
+                </NavLink>     
+            </h4>
+            <br/>
+            @if (customers != null)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>                
+                                    <NavLink class="nav-link" href="addcustomer">
+                                        <i class="fas fa-plus-square"></i>
+                                    </NavLink>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var customer in customers)
+                            {
+                                <tr  @onclick="@(() => SelectCustomer(customer.СustomerId))" style="cursor:pointer">
+                                    <td>@customer.СustomerId</td>
+                                    <td>@customer.Name</td>
+                                    <td>
+                                        <button tupe="button" @onclick="@(() => SelectCustomer(customer.СustomerId))" class="btn btn-link">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button tupe="button" @onclick="@(() => EditCustomer(customer))" class="btn btn-link">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button tupe="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-link">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                </table>
+            </div>
+            }
+        </div>
+    </div>
+    <div class="col col-auto">
+        <div>
+            <h4>
+                <NavLink class="nav-link" href="customers" style="float:left;">
+                    Заказы от покупателей 
+                </NavLink>            
+            </h4>
+            <br/>
+            @if (orderCustomers != null)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm align-middle" id="myTable">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>
+                                    <NavLink class="nav-link" href="addordercustomer">
+                                        <i class="fas fa-plus-square"></i>
+                                    </NavLink>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var orderCustomer in orderCustomers)
+                            {
+                                <tr>
+                                    <td>@orderCustomer.OrderCustomerId</td>
+                                    <td>@orderCustomer.Name</td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                </table>
+            </div>
+            }
+        </div>
+    </div>
+    <div class="col col-auto">
+        <h2>Товары в заказах</h2>
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="col-4">
+        <h2>Поставщики</h2>
+    </div>
+    <div class="col-4">
+        <h2>Заказы для поставщиков</h2>
+    </div>
+    <div class="col-4">
+        <h2>Товары в заказах</h2>
+    </div>
+</div>
+
+@code {
+
+    private List<CoreBusiness.Customer> customers;
+    private List<CoreBusiness.OrderCustomer> orderCustomers;
+    private List<CoreBusiness.ItemOrder> itemOrderCustomers;
+
+    private List<CoreBusiness.Vendor> vendors;
+    private List<CoreBusiness.OrderVendor> orderVendors;
+    private List<CoreBusiness.ItemOrder> itemOrderVendors;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadCustomers();
+        LoadOrderCustomers();
+        LoadItemOrderCustomers();
+    }
+
+    #region Customer
+    protected void OnClickAddCustomer()
+    {
+        NavigationManager.NavigateTo("/addcustomer");
+    }
+
+    protected void EditCustomer(CoreBusiness.Customer customer)
+        => NavigationManager.NavigateTo($"/editcustomer/{customer.СustomerId}");
+
+
+    protected void DeleteCustomer(int CustomerId)
+    {
+        DeleteCustomerUseCase?.Delete(CustomerId);
+        LoadCustomers();
+    }
+
+    private void LoadCustomers()
+    {
+        customers = ViewCustomersUseCase.Execute()?.ToList();
+    }
+
+    protected void SelectCustomer(int customerId)
+    {
+        orderCustomers = ViewOrderCustomersUseCase.Execute()?.Where(x=> x.CustomerId == customerId).ToList();
+    }
+    #endregion 
+
+    #region OrderCustomer
+    
+    private void LoadOrderCustomers()
+    {
+        orderCustomers = ViewOrderCustomersUseCase.Execute()?.ToList();
+    }
+
+    #endregion
+
+    #region ItemOrderCustomer
+    
+    private void LoadItemOrderCustomers()
+    {
+        itemOrderCustomers = ViewItemOrdersUseCase.Execute()?.ToList();
+    }
+
+    #endregion
+}

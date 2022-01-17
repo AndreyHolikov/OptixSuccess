@@ -14,6 +14,7 @@ using Plugins.DataStore.InMemory;
 using UseCases.DataStorePluginInterfaces;
 using UseCases;
 
+
 namespace WebApp
 {
     public class Startup
@@ -105,6 +106,9 @@ namespace WebApp
             #region ExcelFiles
             services.AddTransient<IGetExcelFileByIdUseCase, GetExcelFileByIdUseCase>();
             #endregion
+
+            //services.AddIgniteUIBlazor();
+            //services.AddBlazorTable();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

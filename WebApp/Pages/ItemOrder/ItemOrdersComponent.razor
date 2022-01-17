@@ -8,7 +8,7 @@
 @inject IGetOrderVendorByIdUseCase GetOrderVendorByIdUseCase
 @inject IGetProductByIdUseCase GetProductByIdUseCase
 
-<h3>Manage ItemOrders</h3>
+<h3>Товары в заказах</h3>
 
 @if(itemOrders != null)
 {
@@ -54,15 +54,15 @@
                             </a>
                         </th>
                         <td>
-                            <button tupe="button" @onclick="@(() => EditItemOrder(itemOrder))" class="btn btn-link">Edit</button>
-                            <button tupe="button" @onclick="@(() => DeleteItemOrder(itemOrder.ItemOrderId))" class="btn btn-link">Delete</button>
+                            <button tupe="button" @onclick="@(() => EditItemOrder(itemOrder))" class="btn btn-link">Редактировать</button>
+                            <button tupe="button" @onclick="@(() => DeleteItemOrder(itemOrder.ItemOrderId))" class="btn btn-link">Удалить</button>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
         <br/>
-        <button type="button" @onclick="OnClickAddItemOrder" class="btn btn-primary">Add ItemOrder</button>
+        <button type="button" @onclick="OnClickAddItemOrder" class="btn btn-primary">Добавить товар в заказ</button>
 }
 
 @code {
