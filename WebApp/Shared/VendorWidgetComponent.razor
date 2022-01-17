@@ -1,0 +1,160 @@
+﻿@inject NavigationManager NavigationManager
+@inject UseCases.IViewVendorsUseCase ViewVendorsUseCase
+@inject UseCases.IDeleteVendorUseCase DeleteVendorUseCase
+
+@inject UseCases.IViewOrderVendorsUseCase ViewOrderVendorsUseCase
+@inject UseCases.IViewItemOrdersUseCase ViewItemOrdersUseCase
+
+<div class="row">
+    <div class="col col-auto">
+        <div>
+            <h4>
+                <NavLink class="nav-link" href="vendors" style="float:left;">
+                    Поставщики 
+                </NavLink>     
+            </h4>
+            <br/>
+            @if (vendors != null)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>                
+                                    <NavLink class="nav-link" href="addvendor">
+                                        <i class="fas fa-plus-square"></i>
+                                    </NavLink>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var vendor in vendors)
+                            {
+                                <tr  @onclick="@(() => SelectVendor(vendor.VendorId))" style="cursor:pointer">
+                                    <td>@vendor.VendorId</td>
+                                    <td>@vendor.Name</td>
+                                    <td>
+                                        <button tupe="button" @onclick="@(() => SelectVendor(vendor.VendorId))" class="btn btn-link">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button tupe="button" @onclick="@(() => EditVendor(vendor))" class="btn btn-link">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button tupe="button" @onclick="@(() => DeleteVendor(vendor.VendorId))" class="btn btn-link">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                </table>
+            </div>
+            }
+        </div>
+    </div>
+    <div class="col col-auto">
+        <div>
+            <h4>
+                <NavLink class="nav-link" href="vendors" style="float:left;">
+                    Заказы от поставщиков 
+                </NavLink>            
+            </h4>
+            <br/>
+            @if (orderVendors != null)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm align-middle" id="myTable">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>
+                                    <NavLink class="nav-link" href="addordervendor">
+                                        <i class="fas fa-plus-square"></i>
+                                    </NavLink>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var orderVendor in orderVendors)
+                            {
+                                <tr>
+                                    <td>@orderVendor.OrderVendorId</td>
+                                    <td>@orderVendor.Name</td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                </table>
+            </div>
+            }
+        </div>
+    </div>
+    <div class="col col-auto">
+        <h2>Товары в заказах</h2>
+    </div>
+</div>
+
+@code {
+
+    private List<CoreBusiness.Vendor> vendors;
+    private List<CoreBusiness.OrderVendor> orderVendors;
+    private List<CoreBusiness.ItemOrder> itemOrderVendors;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadVendors();
+        LoadOrderVendors();
+        LoadItemOrderVendors();
+    }
+
+       #region Vendor
+    protected void OnClickAddVendor()
+    {
+        NavigationManager.NavigateTo("/addvendor");
+    }
+
+    protected void EditVendor(CoreBusiness.Vendor vendor)
+        => NavigationManager.NavigateTo($"/editvendor/{vendor.VendorId}");
+
+
+    protected void DeleteVendor(int VendorId)
+    {
+        DeleteVendorUseCase?.Delete(VendorId);
+        LoadVendors();
+    }
+
+    private void LoadVendors()
+    {
+        vendors = ViewVendorsUseCase.Execute()?.ToList();
+    }
+
+    protected void SelectVendor(int vendorId)
+    {
+        orderVendors = ViewOrderVendorsUseCase.Execute()?.Where(x=> x.VendorId == vendorId).ToList();
+    }
+    #endregion 
+
+    #region OrderVendor
+    
+    private void LoadOrderVendors()
+    {
+        orderVendors = ViewOrderVendorsUseCase.Execute()?.ToList();
+    }
+
+    #endregion
+
+    #region ItemOrderVendor
+    
+    private void LoadItemOrderVendors()
+    {
+        itemOrderVendors = ViewItemOrdersUseCase.Execute()?.ToList();
+    }
+
+    #endregion
+}

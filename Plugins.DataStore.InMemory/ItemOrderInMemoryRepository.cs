@@ -46,7 +46,7 @@ namespace Plugins.DataStore.InMemory
                     Edited = DateTime.Now
                 },
                 new ItemOrder() { 
-                    ItemOrderId = 3, 
+                    ItemOrderId = 4, 
                     ProductId = 1, 
                     OrderCustomerId = 3, 
                     OrderVendorId = 3, 

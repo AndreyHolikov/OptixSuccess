@@ -1,0 +1,229 @@
+﻿@inject NavigationManager NavigationManager
+@inject UseCases.IViewCustomersUseCase ViewCustomersUseCase
+@inject UseCases.IDeleteCustomerUseCase DeleteCustomerUseCase
+
+@inject UseCases.IViewOrderCustomersUseCase ViewOrderCustomersUseCase
+@inject UseCases.IDeleteOrderCustomerUseCase DeleteOrderCustomerUseCase
+
+@inject UseCases.IViewItemOrdersUseCase ViewItemOrdersUseCase
+@inject UseCases.IDeleteItemOrderUseCase DeleteItemOrderUseCase
+
+<div class="row">
+    <div class="col col-auto">
+        <div>
+            <h4>
+                <NavLink class="nav-link" href="customers" style="float:left;">
+                    Покупатели 
+                </NavLink>     
+            </h4>
+            <br/>
+            @if (customers != null)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>                
+                                    <NavLink class="nav-link" href="addcustomer">
+                                        <i class="fas fa-plus-square"></i>
+                                    </NavLink>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var customer in customers)
+                            {
+                                <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" style="cursor:pointer">
+                                    <td>@customer.СustomerId</td>
+                                    <td>@customer.Name</td>
+                                    <td>
+                                        <button tupe="button" @onclick="@(() => ClickCustomer(customer.СustomerId))" class="btn btn-link">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button tupe="button" @onclick="@(() => EditCustomer(customer))" class="btn btn-link">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button tupe="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-link">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                </table>
+            </div>
+            }
+        </div>
+    </div>
+    <div class="col col-auto">
+        <div>
+            <h4>
+                <NavLink class="nav-link" href="ordercustomers" style="float:left;">
+                    Заказы от покупателей 
+                </NavLink>            
+            </h4>
+            <br/>
+            @if (orderCustomers != null)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>
+                                    <NavLink class="nav-link" href="addordercustomer">
+                                        <i class="fas fa-plus-square"></i>
+                                    </NavLink>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var orderCustomer in orderCustomers)
+                            {
+                                <tr @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" style="cursor:pointer">
+                                    <td>@orderCustomer.OrderCustomerId</td>
+                                    <td>@orderCustomer.Name</td>
+                                    <td>
+                                        <button tupe="button" @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-link">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button tupe="button" @onclick="@(() => EditOrderCustomer(orderCustomer))" class="btn btn-link">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button tupe="button" @onclick="@(() => DeleteOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-link">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                </table>
+            </div>
+            }
+        </div>
+    </div>
+    <div class="col col-auto">
+        <div>
+            <h4>
+                <NavLink class="nav-link" href="itemorders" style="float:left;">
+                    Товары в заказах
+                </NavLink>            
+            </h4>
+            <br/>
+            @if (itemOrders != null)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>
+                                    <NavLink class="nav-link" href="additemorder">
+                                        <i class="fas fa-plus-square"></i>
+                                    </NavLink>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var itemOrder in itemOrders)
+                            {
+                                <tr>
+                                    <td>@itemOrder.ItemOrderId</td>
+                                    <td>@itemOrder.Quantity</td>
+                                    <td>@itemOrder.Price</td>
+                                    <td>
+                                        <button tupe="button" @onclick="@(() => EditItemOrder(itemOrder))" class="btn btn-link">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button tupe="button" @onclick="@(() => DeleteItemOrder(itemOrder.ItemOrderId))" class="btn btn-link">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                </table>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+
+    #region private fields
+    private List<CoreBusiness.Customer> customers;
+    private List<CoreBusiness.OrderCustomer> orderCustomers;
+    private List<CoreBusiness.ItemOrder> itemOrders;
+    #endregion
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadCustomers();
+        LoadOrderCustomers();
+        LoadItemOrders();
+    }
+
+    #region Customer
+    private void LoadCustomers()
+        => customers = ViewCustomersUseCase.Execute()?.ToList();
+
+    protected void OnClickAddCustomer()
+        => NavigationManager.NavigateTo("/addcustomer");
+
+    protected void EditCustomer(CoreBusiness.Customer customer)
+        => NavigationManager.NavigateTo($"/editcustomer/{customer.СustomerId}");
+
+    protected void DeleteCustomer(int CustomerId)
+    {
+        DeleteCustomerUseCase?.Delete(CustomerId);
+        LoadCustomers();
+    }
+
+    protected void ClickCustomer(int customerId)
+        => orderCustomers = ViewOrderCustomersUseCase.Execute()?.Where(x=> x.CustomerId == customerId).ToList();
+    #endregion 
+
+    #region OrderCustomer
+    private void LoadOrderCustomers()
+        => orderCustomers = ViewOrderCustomersUseCase.Execute()?.ToList();
+
+    protected void OnClickAddOrderCustomer()
+        => NavigationManager.NavigateTo("/addordercustomer");
+
+    protected void EditOrderCustomer(CoreBusiness.OrderCustomer orderCustomer)
+        => NavigationManager.NavigateTo($"/editordercustomer/{orderCustomer.OrderCustomerId}");
+
+    protected void DeleteOrderCustomer(int OrderCustomerId)
+    {
+        DeleteOrderCustomerUseCase?.Delete(OrderCustomerId);
+        LoadOrderCustomers();
+    }
+
+    protected void ClickOrderCustomer(int orderCustomerId)
+        => itemOrders = ViewItemOrdersUseCase.Execute()?.Where(x => x.OrderCustomerId == orderCustomerId).ToList();
+    #endregion 
+
+    #region ItemOrder
+    private void LoadItemOrders()
+        => itemOrders = ViewItemOrdersUseCase.Execute()?.ToList();
+
+    protected void OnClickAddItemOrder()
+        => NavigationManager.NavigateTo("/additemorder");
+
+    protected void EditItemOrder(CoreBusiness.ItemOrder orderCustomer)
+        => NavigationManager.NavigateTo($"/edititemorder/{orderCustomer.OrderCustomerId}");
+
+    protected void DeleteItemOrder(int ItemOrderId)
+    {
+        DeleteItemOrderUseCase?.Delete(ItemOrderId);
+        LoadItemOrders();
+    }
+    #endregion 
+}
