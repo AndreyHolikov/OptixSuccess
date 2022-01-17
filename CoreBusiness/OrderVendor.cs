@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace CoreBusiness
         public string Description { get; set; }
         [Required]
         public DateTime Edited { get; set; }
-
         public int VendorId { get; set; }
+        public int ExcelFileId { get; set; }
     }
 }

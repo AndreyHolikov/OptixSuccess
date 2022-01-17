@@ -15,7 +15,7 @@ namespace CoreBusiness
         public string Description { get; set; }
         [Required]
         public DateTime Edited { get; set; }
-
         public int CustomerId { get; set; }
+        public int ExcelFileId { get; set; }
     }
 }

@@ -8,11 +8,11 @@ using UseCases.DataStorePluginInterfaces;
 
 namespace UseCases // Use Cases - Случаи применения
 {
-    public class ViewItemOrdersUseCase : IViewItemOrdersUseCase
+    public class ViewExcelFilesUseCase : IViewItemOrdersUseCase
     {
         private readonly IItemOrderRepository itemOrderRepository;
 
-        public ViewItemOrdersUseCase(IItemOrderRepository itemOrderRepository) // View - Вид
+        public ViewExcelFilesUseCase(IItemOrderRepository itemOrderRepository) // View - Вид
         {
             this.itemOrderRepository = itemOrderRepository;
         }

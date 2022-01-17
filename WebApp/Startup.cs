@@ -43,6 +43,8 @@ namespace WebApp
             services.AddScoped<IOrderVendorRepository, OrderVendorInMemoryRepository>();
             services.AddScoped<IVendorRepository, VendorInMemoryRepository>();
 
+            services.AddScoped<IExcelFileRepository, ExcelFileInMemoryRepository>();
+
             //Dependency Injection fo Use Cases and Repositories
             #region Categories
             services.AddTransient<IViewCategoriesUseCase, ViewCategoriesUseCase>();
@@ -77,7 +79,7 @@ namespace WebApp
             #endregion
 
             #region ItemOrder
-            services.AddTransient<IViewItemOrdersUseCase, ViewItemOrdersUseCase>();
+            services.AddTransient<IViewItemOrdersUseCase, ViewExcelFilesUseCase>();
             services.AddTransient<IAddItemOrderUseCase, AddItemOrderUseCase>();
             services.AddTransient<IEditItemOrderUseCase, EditItemOrderUseCase>();
             services.AddTransient<IGetItemOrderByIdUseCase, GetItemOrderByIdUseCase>();
@@ -98,6 +100,10 @@ namespace WebApp
             services.AddTransient<IEditVendorUseCase, EditVendorUseCase>();
             services.AddTransient<IGetVendorByIdUseCase, GetVendorByIdUseCase>();
             services.AddTransient<IDeleteVendorUseCase, DeleteVendorUseCase>();
+            #endregion
+
+            #region ExcelFiles
+            services.AddTransient<IGetExcelFileByIdUseCase, GetExcelFileByIdUseCase>();
             #endregion
         }
 

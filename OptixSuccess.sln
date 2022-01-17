@@ -5,13 +5,13 @@ VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OptixSuccess.Register", "OptixSuccess.Register\OptixSuccess.Register.csproj", "{3B0ABEDD-9DDA-4367-8BA9-4BF6F5A7D038}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{427CE00D-609A-4058-A6BC-7E4AA273B900}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp", "WebApp\WebApp.csproj", "{427CE00D-609A-4058-A6BC-7E4AA273B900}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreBusiness", "CoreBusiness\CoreBusiness.csproj", "{273F341C-85B4-451F-B11E-ECE411F664D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreBusiness", "CoreBusiness\CoreBusiness.csproj", "{273F341C-85B4-451F-B11E-ECE411F664D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugins.DataStore.InMemory", "Plugins.DataStore.InMemory\Plugins.DataStore.InMemory.csproj", "{F210161A-211D-4B74-92D9-01624E57BB63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugins.DataStore.InMemory", "Plugins.DataStore.InMemory\Plugins.DataStore.InMemory.csproj", "{F210161A-211D-4B74-92D9-01624E57BB63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCases", "UseCases\UseCases.csproj", "{389824AB-D5B5-4E4A-AA8F-27B268310728}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UseCases", "UseCases\UseCases.csproj", "{389824AB-D5B5-4E4A-AA8F-27B268310728}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

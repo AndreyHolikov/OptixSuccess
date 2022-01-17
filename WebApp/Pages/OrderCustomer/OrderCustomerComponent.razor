@@ -3,7 +3,8 @@
 @inject NavigationManager NavigationManager
 @inject IViewOrderCustomersUseCase ViewOrderCustomersUseCase
 @inject IDeleteOrderCustomerUseCase DeleteOrderCustomerUseCase
-@inject IGetCustomerByIdUseCase GetCustomerByIdUseCase 
+@inject IGetExcelFileByIdUseCase GetCustomerByIdUseCase 
+@inject IGetExcelFileByIdUseCase GetExcelFileByIdUseCase 
 
 <h3>Manage OrderCustomer</h3>
 
@@ -15,6 +16,7 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>CustomerId</th>
+                    <th>File</th>
                     <th></th>
                 </tr>
             </thead>
@@ -25,6 +27,11 @@
                         <td>@orderCustomer.Name</td>
                         <td>@orderCustomer.Description</td>
                         <td>@GetCustomerByIdUseCase.Execute(orderCustomer.CustomerId)?.Name</td>
+                        <td>
+                            <a href="@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId).FullPath">
+                                @GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId).Name
+                            </a>
+                        </td>
                         <td>
                             <button tupe="button" @onclick="@(() => EditOrderCustomer(orderCustomer))" class="btn btn-light">Edit</button>
                             <button tupe="button" @onclick="@(() => DeleteOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-light">Delete</button>

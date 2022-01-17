@@ -4,6 +4,7 @@
 @inject IViewOrderVendorsUseCase ViewOrderVendorsUseCase
 @inject IDeleteOrderVendorUseCase DeleteOrderVendorUseCase
 @inject IGetVendorByIdUseCase GetVendorByIdUseCase
+@inject IGetExcelFileByIdUseCase GetExcelFileByIdUseCase 
 
 <h3>Manage OrderVendors</h3>
 
@@ -15,6 +16,7 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>Vendor</th>
+                    <th>File</th>
                     <th></th>
                 </tr>
             </thead>
@@ -25,6 +27,11 @@
                         <td>@orderVendor.Name</td>
                         <td>@orderVendor.Description</td>
                         <td>@GetVendorByIdUseCase.Execute(orderVendor.VendorId)?.Name</td>
+                        <td>
+                            <a href="@GetExcelFileByIdUseCase.Execute(orderVendor.ExcelFileId).FullPath">
+                                @GetExcelFileByIdUseCase.Execute(orderVendor.ExcelFileId).Name
+                            </a>
+                        </td>
                         <td>
                             <button tupe="button" @onclick="@(() => EditOrderVendor(orderVendor))" class="btn btn-light">Edit</button>
                             <button tupe="button" @onclick="@(() => DeleteOrderVendor(orderVendor.OrderVendorId))" class="btn btn-light">Delete</button>

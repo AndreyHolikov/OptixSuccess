@@ -23,21 +23,24 @@ namespace Plugins.DataStore.InMemory
                     Name = "OrderCustomer-301", 
                     Description = "OrderCustomer-301.1",
                     Edited = DateTime.Now,
-                    CustomerId = 1
+                    CustomerId = 1,
+                    ExcelFileId = 1
         },
                 new OrderCustomer() { 
                     OrderCustomerId = 2, 
                     Name = "OrderCustomer-302", 
                     Description = "OrderCustomer-302.1",
                     Edited = DateTime.Now,
-                    CustomerId = 2   
+                    CustomerId = 2,
+                    ExcelFileId = 2
                 },
                 new OrderCustomer() { 
                     OrderCustomerId = 3, 
                     Name = "OrderCustomer-303", 
                     Description = "OrderCustomer-303.1",
                     Edited = DateTime.Now,
-                     CustomerId = 3 
+                    CustomerId = 3,
+                    ExcelFileId = 3
                 }
             };
         }
