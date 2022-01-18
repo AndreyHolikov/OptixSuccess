@@ -41,7 +41,7 @@
                             @{int i = 0;}
                             @foreach (var customer in customers)
                             {
-                                <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" style="cursor:pointer">
+                                <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" class="align-middle" style="cursor:pointer">
                                     <td>@customer.СustomerId</td>
                                     <td>@customer.Name</td>
                                     <td>
