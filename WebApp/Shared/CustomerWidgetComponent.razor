@@ -15,7 +15,7 @@
         <div>
             <h4>
                 <NavLink class="nav-link" href="customers" style="float:left;">
-                    Покупатели 
+                    Покупатели (@customers.Count())
                 </NavLink>     
             </h4>
             <br/>
@@ -26,7 +26,7 @@
                         <thead>
                             <tr>
                                 <th>Id</th>
-                                <th>Name</th>
+                                <th>Login</th>
                                 <th>                
                                     <NavLink class="nav-link" href="addcustomer" style="float:left;">
                                         <i class="fas fa-plus-square"></i>
@@ -69,7 +69,7 @@
         <div>
             <h4>
                 <NavLink class="nav-link" href="ordercustomers" style="float:left;">
-                    Заказы от покупателей 
+                    Заказы от покупателей  (@orderCustomers.Count())
                 </NavLink>         
             </h4>
             <br/>
@@ -123,7 +123,7 @@
         <div>
             <h4>
                 <NavLink class="nav-link" href="itemorders" style="float:left;">
-                    Товары в заказах
+                    Товары в заказах   (@itemOrders.Count())
                 </NavLink>   
             </h4>
             <br/>
