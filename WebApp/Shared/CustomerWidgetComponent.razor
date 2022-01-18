@@ -1,12 +1,14 @@
 ﻿@inject NavigationManager NavigationManager
-@inject UseCases.IViewCustomersUseCase ViewCustomersUseCase
-@inject UseCases.IDeleteCustomerUseCase DeleteCustomerUseCase
+@inject IViewCustomersUseCase ViewCustomersUseCase
+@inject IDeleteCustomerUseCase DeleteCustomerUseCase
 
-@inject UseCases.IViewOrderCustomersUseCase ViewOrderCustomersUseCase
-@inject UseCases.IDeleteOrderCustomerUseCase DeleteOrderCustomerUseCase
+@inject IViewOrderCustomersUseCase ViewOrderCustomersUseCase
+@inject IDeleteOrderCustomerUseCase DeleteOrderCustomerUseCase
 
-@inject UseCases.IViewItemOrdersUseCase ViewItemOrdersUseCase
-@inject UseCases.IDeleteItemOrderUseCase DeleteItemOrderUseCase
+@inject IViewItemOrdersUseCase ViewItemOrdersUseCase
+@inject IDeleteItemOrderUseCase DeleteItemOrderUseCase
+
+@inject IGetProductByIdUseCase GetProductByIdUseCase
 
 <div class="row">
     <div class="col col-auto">
@@ -26,13 +28,17 @@
                                 <th>Id</th>
                                 <th>Name</th>
                                 <th>                
-                                    <NavLink class="nav-link" href="addcustomer">
+                                    <NavLink class="nav-link" href="addcustomer" style="float:left;">
                                         <i class="fas fa-plus-square"></i>
                                     </NavLink>
+                                    <button tupe="button"  @onclick="(() => LoadCustomers())" class="btn btn-link">
+                                        <i class="fas fa-sync-alt" ></i>
+                                    </button>                                    
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
+                            @{int i = 0;}
                             @foreach (var customer in customers)
                             {
                                 <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" style="cursor:pointer">
@@ -50,6 +56,8 @@
                                         </button>
                                     </td>
                                 </tr>
+                                i++;
+                                if (i >= 3) break;
                             }
                         </tbody>
                 </table>
@@ -62,7 +70,7 @@
             <h4>
                 <NavLink class="nav-link" href="ordercustomers" style="float:left;">
                     Заказы от покупателей 
-                </NavLink>            
+                </NavLink>         
             </h4>
             <br/>
             @if (orderCustomers != null)
@@ -74,13 +82,17 @@
                                 <th>Id</th>
                                 <th>Name</th>
                                 <th>
-                                    <NavLink class="nav-link" href="addordercustomer">
+                                    <NavLink class="nav-link" href="addordercustomer" style="float:left;">
                                         <i class="fas fa-plus-square"></i>
                                     </NavLink>
+                                    <button tupe="button"  @onclick="(() => LoadOrderCustomers())" class="btn btn-link">
+                                        <i class="fas fa-sync-alt" ></i>
+                                    </button> 
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
+                            @{int i = 0;}
                             @foreach (var orderCustomer in orderCustomers)
                             {
                                 <tr @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" style="cursor:pointer">
@@ -98,6 +110,8 @@
                                         </button>
                                     </td>
                                 </tr>
+                                i++;
+                                if (i >= 3) break;
                             }
                         </tbody>
                 </table>
@@ -110,7 +124,7 @@
             <h4>
                 <NavLink class="nav-link" href="itemorders" style="float:left;">
                     Товары в заказах
-                </NavLink>            
+                </NavLink>   
             </h4>
             <br/>
             @if (itemOrders != null)
@@ -120,20 +134,26 @@
                         <thead>
                             <tr>
                                 <th>Id</th>
+                                <th>Product</th>
                                 <th>Quantity</th>
                                 <th>Price</th>
                                 <th>
-                                    <NavLink class="nav-link" href="additemorder">
+                                    <NavLink class="nav-link" href="additemorder" style="float:left;">
                                         <i class="fas fa-plus-square"></i>
                                     </NavLink>
+                                    <button tupe="button"  @onclick="(() => LoadItemOrders())" class="btn btn-link">
+                                        <i class="fas fa-sync-alt" ></i>
+                                    </button> 
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
+                            @{int i =0;}
                             @foreach (var itemOrder in itemOrders)
                             {
                                 <tr>
                                     <td>@itemOrder.ItemOrderId</td>
+                                    <td>@GetProductByIdUseCase.Execute(itemOrder.ProductId).Name</td>
                                     <td>@itemOrder.Quantity</td>
                                     <td>@itemOrder.Price</td>
                                     <td>
@@ -145,6 +165,8 @@
                                         </button>
                                     </td>
                                 </tr>
+                                i++;
+                                if (i >= 3) break;
                             }
                         </tbody>
                 </table>
@@ -171,7 +193,7 @@
     }
 
     #region Customer
-    private void LoadCustomers()
+    protected void LoadCustomers()
         => customers = ViewCustomersUseCase.Execute()?.ToList();
 
     protected void OnClickAddCustomer()
