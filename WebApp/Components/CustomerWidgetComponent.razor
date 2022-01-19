@@ -11,6 +11,8 @@
 @inject IDeleteItemOrderUseCase DeleteItemOrderUseCase
 @inject IGetItemOrderByIdUseCase GetItemOrderByIdUseCase
 @inject IEditItemOrderUseCase EditItemOrderUseCase
+@inject IGetItemOrdersByOrderCustomerIdUseCase GetItemOrdersByOrderCustomerIdUseCase
+@inject IGetItemOrdersByOrderVendorIdUseCase GetItemOrdersByOrderVendorIdUseCase
 
 @inject IGetProductByIdUseCase GetProductByIdUseCase
 
@@ -98,11 +100,11 @@
                             @foreach (var orderCustomer in orderCustomers)
                             {
                                 <tr @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" style="cursor:pointer">
-                                    <td>@*GetCustomerByIdUseCase.Execute(orderCustomer.OrderCustomerId)*@</td>
-                                    <td>*Customer.Fullname</td>
+                                    <td>@orderCustomer.OrderCustomerId</td>
+                                    <td>@GetCustomerByIdUseCase.Execute(orderCustomer.OrderCustomerId).Fullname</td>
                                     <td>@orderCustomer.Edited</td>
-                                    <td>*ItemOrder.CountItem</td>
-                                    <td>*ItemOrder.CountProduct</td>
+                                    <td>@GetItemOrdersByOrderCustomerIdUseCase.Execute(orderCustomer.OrderCustomerId).Count()</td>
+                                    <td>@GetItemOrdersByOrderCustomerIdUseCase.Execute(orderCustomer.OrderCustomerId).Sum(n => n.Quantity)</td>
                                     <td>
                                         <button tupe="button" @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-link">
                                             <i class="fas fa-eye"></i>
