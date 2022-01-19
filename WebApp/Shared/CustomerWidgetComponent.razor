@@ -1,4 +1,5 @@
-﻿@inject NavigationManager NavigationManager
+﻿@using WebApp.Components
+@inject NavigationManager NavigationManager
 @inject IViewCustomersUseCase ViewCustomersUseCase
 @inject IDeleteCustomerUseCase DeleteCustomerUseCase
 
@@ -25,15 +26,11 @@
                     <table class="table table-hover table-sm align-middle">
                         <thead>
                             <tr>
-                                <th>Id</th>
-                                <th>Login</th>
+                                <th>№</th>
+                                <th>Компания</th>
                                 <th>                
-                                    <NavLink class="nav-link" href="addcustomer" style="float:left;">
-                                        <i class="fas fa-plus-square"></i>
-                                    </NavLink>
-                                    <button tupe="button"  @onclick="(() => LoadCustomers())" class="btn btn-link">
-                                        <i class="fas fa-sync-alt" ></i>
-                                    </button>                                    
+                                    <ButtonAddComponent TypeName="Customer"></ButtonAddComponent>
+                                    <ButtonLoadComponent OnClickCallback="LoadCustomers"></ButtonLoadComponent>                                 
                                 </th>
                             </tr>
                         </thead>
@@ -43,14 +40,12 @@
                             {
                                 <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" class="align-middle" style="cursor:pointer">
                                     <td>@customer.СustomerId</td>
-                                    <td>@customer.Name</td>
+                                    <td>@customer.Company</td>
                                     <td>
                                         <button tupe="button" @onclick="@(() => ClickCustomer(customer.СustomerId))" class="btn btn-link">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button tupe="button" @onclick="@(() => EditCustomer(customer))" class="btn btn-link">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
+                                        <ButtonEditComponent TypeName="customer" Id="@customer.СustomerId.ToString()"></ButtonEditComponent>
                                         <button tupe="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-link">
                                             <i class="far fa-trash-alt"></i>
                                         </button>
@@ -82,12 +77,8 @@
                                 <th>Id</th>
                                 <th>Name</th>
                                 <th>
-                                    <NavLink class="nav-link" href="addordercustomer" style="float:left;">
-                                        <i class="fas fa-plus-square"></i>
-                                    </NavLink>
-                                    <button tupe="button"  @onclick="(() => LoadOrderCustomers())" class="btn btn-link">
-                                        <i class="fas fa-sync-alt" ></i>
-                                    </button> 
+                                    <ButtonAddComponent TypeName="OrderCustomer"></ButtonAddComponent>
+                                    <ButtonLoadComponent OnClickCallback="LoadOrderCustomers"></ButtonLoadComponent>
                                 </th>
                             </tr>
                         </thead>
@@ -102,9 +93,7 @@
                                         <button tupe="button" @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-link">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button tupe="button" @onclick="@(() => EditOrderCustomer(orderCustomer))" class="btn btn-link">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
+                                        <ButtonEditComponent TypeName="orderCustomer" Id="@orderCustomer.OrderCustomerId.ToString()"></ButtonEditComponent>
                                         <button tupe="button" @onclick="@(() => DeleteOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-link">
                                             <i class="far fa-trash-alt"></i>
                                         </button>
@@ -138,9 +127,7 @@
                                 <th>Quantity</th>
                                 <th>Price</th>
                                 <th>
-                                    <NavLink class="nav-link" href="additemorder" style="float:left;">
-                                        <i class="fas fa-plus-square"></i>
-                                    </NavLink>
+                                    <ButtonAddComponent TypeName="ItemOrder"></ButtonAddComponent>
                                     <button tupe="button"  @onclick="(() => LoadItemOrders())" class="btn btn-link">
                                         <i class="fas fa-sync-alt" ></i>
                                     </button> 
@@ -157,9 +144,7 @@
                                     <td>@itemOrder.Quantity</td>
                                     <td>@itemOrder.Price</td>
                                     <td>
-                                        <button tupe="button" @onclick="@(() => EditItemOrder(itemOrder))" class="btn btn-link">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
+                                        <ButtonEditComponent TypeName="customer" Id="@itemOrder.ItemOrderId.ToString()"></ButtonEditComponent>
                                         <button tupe="button" @onclick="@(() => DeleteItemOrder(itemOrder.ItemOrderId))" class="btn btn-link">
                                             <i class="far fa-trash-alt"></i>
                                         </button>
@@ -193,14 +178,13 @@
     }
 
     #region Customer
-    protected void LoadCustomers()
+    void NewLoadCustomers()
+    {
+
+    }
+
+    private void LoadCustomers()
         => customers = ViewCustomersUseCase.Execute()?.ToList();
-
-    protected void OnClickAddCustomer()
-        => NavigationManager.NavigateTo("/addcustomer");
-
-    protected void EditCustomer(CoreBusiness.Customer customer)
-        => NavigationManager.NavigateTo($"/editcustomer/{customer.СustomerId}");
 
     protected void DeleteCustomer(int CustomerId)
     {
@@ -216,12 +200,6 @@
     private void LoadOrderCustomers()
         => orderCustomers = ViewOrderCustomersUseCase.Execute()?.ToList();
 
-    protected void OnClickAddOrderCustomer()
-        => NavigationManager.NavigateTo("/addordercustomer");
-
-    protected void EditOrderCustomer(CoreBusiness.OrderCustomer orderCustomer)
-        => NavigationManager.NavigateTo($"/editordercustomer/{orderCustomer.OrderCustomerId}");
-
     protected void DeleteOrderCustomer(int OrderCustomerId)
     {
         DeleteOrderCustomerUseCase?.Delete(OrderCustomerId);
@@ -235,12 +213,6 @@
     #region ItemOrder
     private void LoadItemOrders()
         => itemOrders = ViewItemOrdersUseCase.Execute()?.ToList();
-
-    protected void OnClickAddItemOrder()
-        => NavigationManager.NavigateTo("/additemorder");
-
-    protected void EditItemOrder(CoreBusiness.ItemOrder orderCustomer)
-        => NavigationManager.NavigateTo($"/edititemorder/{orderCustomer.OrderCustomerId}");
 
     protected void DeleteItemOrder(int ItemOrderId)
     {

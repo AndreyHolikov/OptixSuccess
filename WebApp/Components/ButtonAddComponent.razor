@@ -1,0 +1,16 @@
+﻿@inject NavigationManager NavigationManager
+
+<button tupe="button" @onclick="@(() => OnClickAdd())" class="btn btn-link" style="float:left;">
+    <i class="fas fa-plus-square"></i> @Text
+</button>
+
+@code {
+
+    [Parameter] public string Text { get; set; }
+    [Parameter] public string TypeName { get; set; }
+
+    protected void OnClickAdd()
+    {
+        NavigationManager.NavigateTo($"/add{TypeName}");
+    }
+}

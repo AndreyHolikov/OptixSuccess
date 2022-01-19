@@ -77,6 +77,7 @@ namespace WebApp
             services.AddTransient<IEditOrderCustomerUseCase, EditOrderCustomerUseCase>();
             services.AddTransient<IGetOrderCustomerByIdUseCase, GetOrderCustomerByIdUseCase>();
             services.AddTransient<IDeleteOrderCustomerUseCase, DeleteOrderCustomerUseCase>();
+            services.AddTransient<IGetOrderCustomerByCustomerIdUseCase, GetOrderCustomerByCustomerIdUseCase>();
             #endregion
 
             #region ItemOrder

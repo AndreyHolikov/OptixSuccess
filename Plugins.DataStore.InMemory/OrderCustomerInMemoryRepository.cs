@@ -92,5 +92,10 @@ namespace Plugins.DataStore.InMemory
                 orderCustomers.Remove(cat);
             }
         }
+
+        public IEnumerable<OrderCustomer> GetOrderCustomerByCustomerId(int customerId)
+        {
+            return orderCustomers.Where<OrderCustomer>(x => x.CustomerId == customerId);
+        }
     }
 }

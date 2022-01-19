@@ -1,8 +1,11 @@
 ﻿@page "/customers"
 
 @inject NavigationManager NavigationManager
-@inject UseCases.IViewCustomersUseCase ViewCustomersUseCase
-@inject UseCases.IDeleteCustomerUseCase DeleteCustomerUseCase
+@inject IViewCustomersUseCase ViewCustomersUseCase
+@inject IDeleteCustomerUseCase DeleteCustomerUseCase
+@inject IGetOrderCustomerByCustomerIdUseCase GetOrderCustomerByCustomerIdUseCase
+
+@using WebApp.Components
 
 <h3>Клиенты</h3>
 
@@ -11,8 +14,14 @@
         <table class="table" id="myTable">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Description</th>
+                    <th>№</th>
+                    <td>Login</td>
+                    <th>ФИО</th>
+                    <th>Компания</th>
+                    <th>Email</th>
+                    <th>Телефон</th>
+                    <th>Описание</th>
+                    <th>Кол-во заказов</th>
                     <th></th>
                 </tr>
             </thead>
@@ -20,18 +29,25 @@
                 @foreach(var customer in customers)
                 {
                     <tr>
+                        <td>@customer.СustomerId</td>
                         <td>@customer.Name</td>
+                        <td>@customer.Fullname</td>
+                        <td>@customer.Company</td>
+                        <td>@customer.Email</td>
+                        <td>@customer.Phone</td>
                         <td>@customer.Description</td>
+                        <td>@GetOrderCustomerByCustomerIdUseCase.Execute(customer.СustomerId).Count()</td>
                         <td>
-                            <button tupe="button" @onclick="@(() => EditCustomer(customer))" class="btn btn-light">Edit</button>
-                            <button tupe="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-light">Delete</button>
+                            <ButtonEditComponent TypeName="customer" Id="@customer.СustomerId.ToString()" Text="Редактировать"></ButtonEditComponent>
+                            
+                            <button tupe="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-light"><i class="far fa-trash-alt"></i> Удалить</button>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
         <br/>
-        <button type="button" @onclick="OnClickAddCustomer" class="btn btn-primary">Add Customer</button>
+        <button type="button" @onclick="OnClickAddCustomer" class="btn btn-primary">Добавить клиента</button>
 }
 
 @code {
@@ -48,10 +64,7 @@
         NavigationManager.NavigateTo("/addcustomer");
     }
 
-    protected void EditCustomer(Customer customer)
-    {
-        NavigationManager.NavigateTo($"/editcustomer/{customer.СustomerId}");
-    }
+
 
     protected void DeleteCustomer(int CustomerId)
     {
