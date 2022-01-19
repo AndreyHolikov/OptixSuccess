@@ -13,24 +13,18 @@
         <ValidationSummary></ValidationSummary>
 
         <div class="form-group">
-            <label for="name">Name</label>
-            <InputText id="name" @bind-Value="orderCustomer.Name" class="form-control"></InputText>
-        </div>
-
-        <div class="form-group">
-            <label for="description">Description</label>
+            <label for="description">Описание</label>
             <InputTextArea id="description" @bind-Value="orderCustomer.Description" class="form-control"></InputTextArea>
         </div>
 
         <div class="form-group">
-            <label for="description">Description</label>
+            <label for="description">Excel файл</label>
+            <br/>
             <InputFile OnChange="@LoadFiles" multiple />
         </div>
 
-
-
-        <button type="submit" class="btn btn-primary">Save</button>
-        <button type="button" class="btn btn-primary" @onclick="OnCansel">Cansel</button>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCansel">Оменить</button>
     </EditForm>
 }
 

@@ -4,8 +4,9 @@
 @inject NavigationManager NavigationManager
 @inject IEditOrderCustomerUseCase EditOrderCustomerUseCase
 @inject IGetOrderCustomerByIdUseCase GetOrderCustomerByIdUseCase 
+@inject IGetExcelFileByIdUseCase GetExcelFileByIdUseCase
 
-<h3>Edit OrderCustomer</h3>
+<h3>Редактирование заказа</h3>
 
 @if(orderCustomer != null)
 {
@@ -14,17 +15,21 @@
         <ValidationSummary></ValidationSummary>
 
         <div class="form-group">
-            <label for="name">Name</label>
-            <InputText id="name" @bind-Value="orderCustomer.Name" class="form-control"></InputText>
+            <label for="description">Id: @orderCustomer.OrderCustomerId</label>
         </div>
 
         <div class="form-group">
-            <label for="description">Description</label>
+            <label for="description">Описание</label>
             <InputTextArea id="description" @bind-Value="orderCustomer.Description" class="form-control"></InputTextArea>
         </div>
 
-        <button type="submit" class="btn btn-primary">Save</button>
-        <button type="button" class="btn btn-primary" @onclick="OnCansel">Cansel</button>
+        <div class="form-group">
+            <label for="ExcelFile">Excel файл</label>
+            <a href="@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId).FullPath">@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId).Name</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCansel">Отменить</button>
     </EditForm>
 }
 

@@ -5,18 +5,22 @@
 @inject IDeleteOrderCustomerUseCase DeleteOrderCustomerUseCase
 @inject IGetCustomerByIdUseCase GetCustomerByIdUseCase 
 @inject IGetExcelFileByIdUseCase GetExcelFileByIdUseCase 
+@inject IViewItemOrdersUseCase ViewItemOrdersUseCase
 
-<h3>Manage OrderCustomer</h3>
+<h3>Заказы от клиентов</h3>
 
 @if(orderCustomers != null)
 {
         <table class="table table-sm align-middle">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>CustomerId</th>
-                    <th>File</th>
+                    <th>№</th>
+                    <th>Клиент</th>
+                    <th>Дата редактирования</th>
+                    <th>Количество позиций</th>
+                    <th>Количество товаров</th>
+                    <th>Файл</th>
+                    <th>Описание</th> 
                     <th></th>
                 </tr>
             </thead>
@@ -24,24 +28,32 @@
                 @foreach(var orderCustomer in orderCustomers)
                 {
                     <tr>
-                        <td>@orderCustomer.Name</td>
-                        <td>@orderCustomer.Description</td>
-                        <td>@GetCustomerByIdUseCase.Execute(orderCustomer.CustomerId)?.Name</td>
+                        <td>@orderCustomer.OrderCustomerId</td>
+                        <td>@GetCustomerByIdUseCase.Execute(orderCustomer.OrderCustomerId).Company</td>
+                        <td>@orderCustomer.Edited</td>
+                        <td>
+                            @ViewItemOrdersUseCase.Execute().Where(x => x.OrderCustomerId == orderCustomer.OrderCustomerId).Count()
+                        </td>
+                        <td>
+                            @ViewItemOrdersUseCase.Execute().Where(x => x.OrderCustomerId == orderCustomer.OrderCustomerId).Sum(x => x.Quantity)
+                        </td>
                         <td>
                             <a href="@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId).FullPath">
                                 @GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId).Name
                             </a>
                         </td>
+                        <td>@orderCustomer.Description</td>
+
                         <td>
-                            <button tupe="button" @onclick="@(() => EditOrderCustomer(orderCustomer))" class="btn btn-light">Edit</button>
-                            <button tupe="button" @onclick="@(() => DeleteOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-light">Delete</button>
+                            <button tupe="button" @onclick="@(() => EditOrderCustomer(orderCustomer))" class="btn btn-light">Редактировать</button>
+                            <button tupe="button" @onclick="@(() => DeleteOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-light">Удалить</button>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
         <br/>
-        <button type="button" @onclick="OnClickAddOrderCustomer" class="btn btn-primary">Add OrderCustomers</button>
+        <button type="button" @onclick="OnClickAddOrderCustomer" class="btn btn-primary">Добавить заказ</button>
 }
 
 @code {
