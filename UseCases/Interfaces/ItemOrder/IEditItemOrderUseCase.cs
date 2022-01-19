@@ -4,6 +4,6 @@ namespace UseCases
 {
     public interface IEditItemOrderUseCase
     {
-        void Execute(ItemOrder itemOrder);
+        public void Execute(ItemOrder itemOrder);
     }
 }

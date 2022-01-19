@@ -17,9 +17,9 @@ namespace UseCases
             this.itemOrderRepository = itemOrderRepository;
         }
 
-        public void Execute(ItemOrder iItemOrder)
+        public void Execute(ItemOrder ItemOrder)
         {
-            itemOrderRepository.UpdateItemOrder(iItemOrder);
+            itemOrderRepository.UpdateItemOrder(ItemOrder);
         }
     }
 }
