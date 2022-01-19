@@ -1,22 +1,26 @@
 ﻿@inject NavigationManager NavigationManager
+
 @inject IViewCustomersUseCase ViewCustomersUseCase
 @inject IDeleteCustomerUseCase DeleteCustomerUseCase
+@inject IGetCustomerByIdUseCase GetCustomerByIdUseCase
 
 @inject IViewOrderCustomersUseCase ViewOrderCustomersUseCase
 @inject IDeleteOrderCustomerUseCase DeleteOrderCustomerUseCase
 
 @inject IViewItemOrdersUseCase ViewItemOrdersUseCase
 @inject IDeleteItemOrderUseCase DeleteItemOrderUseCase
+@inject IGetItemOrderByIdUseCase GetItemOrderByIdUseCase
+@inject IEditItemOrderUseCase EditItemOrderUseCase
+@inject IGetItemOrdersByOrderCustomerIdUseCase GetItemOrdersByOrderCustomerIdUseCase
+@inject IGetItemOrdersByOrderVendorIdUseCase GetItemOrdersByOrderVendorIdUseCase
 
 @inject IGetProductByIdUseCase GetProductByIdUseCase
 
-
-<div class="optix-widget optix-font">
-<div class="row optix-row-1">
-    <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
+<div class="row">
+    <div class="col col-auto">
         <div>
             <h4 class="mx-auto">
-                <NavLink class="nav-link optix-widget-title" href="customers">
+                <NavLink class="nav-link optix-widget-title" href="customers" style="float:left;">
                     Покупатели (@customers.Count())
                 </NavLink>     
             </h4>
@@ -27,15 +31,11 @@
                     <table class="table table-hover table-sm align-middle">
                         <thead>
                             <tr>
-                                <th>Id</th>
-                                <th>Login</th>
+                                <th>№</th>
+                                <th>Компания</th>
                                 <th>                
-                                    <NavLink class="nav-link" href="addcustomer" style="float:left;">
-                                        <i class="fas fa-plus-square"></i>
-                                    </NavLink>
-                                    <button tupe="button"  @onclick="(() => LoadCustomers())" class="btn btn-link">
-                                        <i class="fas fa-sync-alt" ></i>
-                                    </button>                                    
+                                    <ButtonAddComponent TypeName="Customer"></ButtonAddComponent>
+                                    <ButtonLoadComponent OnClickCallback="LoadCustomers"></ButtonLoadComponent>                                 
                                 </th>
                             </tr>
                         </thead>
@@ -43,17 +43,15 @@
                             @{int i = 0;}
                             @foreach (var customer in customers)
                             {
-                                <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))"  style="cursor:pointer">
+                                <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" class="align-middle" style="cursor:pointer">
                                     <td class="align-middle">@customer.СustomerId</td>
-                                    <td class="align-middle">@customer.Name</td>
+                                    <td class="align-middle">@customer.Company</td>
                                     <td>
-                                        <button tupe="button" @onclick="@(() => ClickCustomer(customer.СustomerId))" class="btn btn-link">
+                                        <button type="button" @onclick="@(() => ClickCustomer(customer.СustomerId))" class="btn btn-link">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button tupe="button" @onclick="@(() => EditCustomer(customer))" class="btn btn-link">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button tupe="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-link">
+                                        <ButtonEditComponent TypeName="customer" Id="@customer.СustomerId.ToString()"></ButtonEditComponent>
+                                        <button type="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-link">
                                             <i class="far fa-trash-alt"></i>
                                         </button>
                                     </td>
@@ -81,15 +79,14 @@
                     <table class="table table-hover table-sm align-middle">
                         <thead>
                             <tr>
-                                <th>Id</th>
-                                <th>Name</th>
+                                <th class="align-middle">№</th>
+                                <th class="align-middle">Клиент</th>
+                                <th class="align-middle">Дата<br/>редактирования</th>
+                                <th class="align-middle">Количество<br/>позиций</th>
+                                <th class="align-middle">Количество<br/>товаров</th>
                                 <th>
-                                    <NavLink class="nav-link" href="addordercustomer" style="float:left;">
-                                        <i class="fas fa-plus-square"></i>
-                                    </NavLink>
-                                    <button tupe="button"  @onclick="(() => LoadOrderCustomers())" class="btn btn-link">
-                                        <i class="fas fa-sync-alt" ></i>
-                                    </button> 
+                                    <ButtonAddComponent TypeName="OrderCustomer"></ButtonAddComponent>
+                                    <ButtonLoadComponent OnClickCallback="LoadOrderCustomers"></ButtonLoadComponent>
                                 </th>
                             </tr>
                         </thead>
@@ -98,16 +95,17 @@
                             @foreach (var orderCustomer in orderCustomers)
                             {
                                 <tr @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" style="cursor:pointer">
-                                    <td class="align-middle">@orderCustomer.OrderCustomerId</td>
-                                    <td class="align-middle">@orderCustomer.Name</td>
+                                    <td>@orderCustomer.OrderCustomerId</td>
+                                    <td>@GetCustomerByIdUseCase.Execute(orderCustomer.OrderCustomerId).Fullname</td>
+                                    <td>@orderCustomer.Edited</td>
+                                    <td>@GetItemOrdersByOrderCustomerIdUseCase.Execute(orderCustomer.OrderCustomerId).Count()</td>
+                                    <td>@GetItemOrdersByOrderCustomerIdUseCase.Execute(orderCustomer.OrderCustomerId).Sum(n => n.Quantity)</td>
                                     <td>
                                         <button tupe="button" @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-link">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button tupe="button" @onclick="@(() => EditOrderCustomer(orderCustomer))" class="btn btn-link">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button tupe="button" @onclick="@(() => DeleteOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-link">
+                                        <ButtonEditComponent TypeName="orderCustomer" Id="@orderCustomer.OrderCustomerId.ToString()"></ButtonEditComponent>
+                                        <button type="button" @onclick="@(() => DeleteOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-link">
                                             <i class="far fa-trash-alt"></i>
                                         </button>
                                     </td>
@@ -124,14 +122,10 @@
     <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
         <div class="widget-header">
             <h4 class="mx-auto">
-                <NavLink class="nav-link optix-widget-title" href="itemorders">
-                    Товары в заказах   (@itemOrders.Count())
-                </NavLink>   
+                <NavLink class="nav-link optix-widget-title" href="itemorders" style="float:left;">Товары в заказах (@itemOrders.Count()) </NavLink>   
             </h4>
         </div>
-        <hr/>
         <div class="widget-content">
-            <hr/>
             @if (itemOrders != null)
             {
                 <div class="table-responsive">
@@ -143,9 +137,7 @@
                                 <th>Quantity</th>
                                 <th>Price</th>
                                 <th>
-                                    <NavLink class="nav-link" href="additemorder" style="float:left;">
-                                        <i class="fas fa-plus-square"></i>
-                                    </NavLink>
+                                    <ButtonAddComponent TypeName="ItemOrder"></ButtonAddComponent>
                                     <button tupe="button"  @onclick="(() => LoadItemOrders())" class="btn btn-link">
                                         <i class="fas fa-sync-alt" ></i>
                                     </button> 
@@ -156,16 +148,14 @@
                             @{int i =0;}
                             @foreach (var itemOrder in itemOrders)
                             {
-                                <tr @onclick="@(() => ClickItemOrder(itemOrder.ItemOrderId))"  style="cursor:pointer">
-                                    <td class="align-middle">@itemOrder.ItemOrderId</td>
-                                    <td class="align-middle">@GetProductByIdUseCase.Execute(itemOrder.ProductId).Name</td>
-                                    <td class="align-middle">@itemOrder.Quantity</td>
-                                    <td class="align-middle">@itemOrder.Price</td>
+                                <tr  @onclick="@(() => ClickItemOrder(itemOrder.ItemOrderId))"  style="cursor:pointer">
+                                    <td>@itemOrder.ItemOrderId</td>
+                                    <td>@GetProductByIdUseCase.Execute(itemOrder.ProductId).Name</td>
+                                    <td>@itemOrder.Quantity</td>
+                                    <td>@itemOrder.Price</td>
                                     <td>
-                                        <button tupe="button" @onclick="@(() => EditItemOrder(itemOrder))" class="btn btn-link">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button tupe="button" @onclick="@(() => DeleteItemOrder(itemOrder.ItemOrderId))" class="btn btn-link">
+                                        <ButtonEditComponent TypeName="customer" Id="@itemOrder.ItemOrderId.ToString()"></ButtonEditComponent>
+                                        <button type="button" @onclick="@(() => DeleteItemOrder(itemOrder.ItemOrderId))" class="btn btn-link">
                                             <i class="far fa-trash-alt"></i>
                                         </button>
                                     </td>
@@ -176,9 +166,10 @@
                         </tbody>
                 </table>
             </div>
+            <hr/>
             }
         </div>
-        <hr/>
+
         <div class="widget-footer">
             <EditForm Model="@miniItemOrder">
                 <DataAnnotationsValidator />
@@ -190,11 +181,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="orderVendorId">Заказ поставщика</label>
+                    <label for="orderVendorId">№ Заказа поставщика</label>
                     <InputNumber id="orderVendorId" @bind-Value="miniItemOrder.OrderVendorId" class="form-control"></InputNumber>
                 </div>
 
-                <button type="submit" class="btn btn-info">Отправить в заказ</button>
+                <button type="button" class="btn btn-info" @onclick="OnClickSendItemOrderInOrderVendor">Отправить в заказ</button>
             </EditForm>
         </div>
     </div>
@@ -203,18 +194,20 @@
 
 @code {
 
+    record MiniItemOrder
+    {
+        #region public field
+        public List<int> selectedItemOrderIds { get; set; } = new List<int>();  
+        public int OrderVendorId { get; set; }
+        #endregion
+
+        public MiniItemOrder(int orderVendorId = 1 ) => OrderVendorId = orderVendorId;
+    }
+
     #region private fields
     private List<CoreBusiness.Customer> customers;
     private List<CoreBusiness.OrderCustomer> orderCustomers;
     private List<CoreBusiness.ItemOrder> itemOrders;
-
-    record MiniItemOrder
-    {
-        public List<int> selectedItemOrders { get; set; } = new List<int>() { 1, 2 };  
-        public int OrderVendorId { get; set; }
-        public MiniItemOrder(int orderVendorId = 1 ) => OrderVendorId = orderVendorId;
-    }
-
     private MiniItemOrder miniItemOrder = new MiniItemOrder();
     #endregion
 
@@ -231,14 +224,9 @@
     }
 
     #region Customer
-    protected void LoadCustomers()
+
+    private void LoadCustomers()
         => customers = ViewCustomersUseCase.Execute()?.ToList();
-
-    protected void OnClickAddCustomer()
-        => NavigationManager.NavigateTo("/addcustomer");
-
-    protected void EditCustomer(CoreBusiness.Customer customer)
-        => NavigationManager.NavigateTo($"/editcustomer/{customer.СustomerId}");
 
     protected void DeleteCustomer(int CustomerId)
     {
@@ -254,12 +242,6 @@
     private void LoadOrderCustomers()
         => orderCustomers = ViewOrderCustomersUseCase.Execute()?.ToList();
 
-    protected void OnClickAddOrderCustomer()
-        => NavigationManager.NavigateTo("/addordercustomer");
-
-    protected void EditOrderCustomer(CoreBusiness.OrderCustomer orderCustomer)
-        => NavigationManager.NavigateTo($"/editordercustomer/{orderCustomer.OrderCustomerId}");
-
     protected void DeleteOrderCustomer(int OrderCustomerId)
     {
         DeleteOrderCustomerUseCase?.Delete(OrderCustomerId);
@@ -274,24 +256,35 @@
     private void LoadItemOrders()
         => itemOrders = ViewItemOrdersUseCase.Execute()?.ToList();
 
-    protected void OnClickAddItemOrder()
-        => NavigationManager.NavigateTo("/additemorder");
-
-    protected void EditItemOrder(CoreBusiness.ItemOrder orderCustomer)
-        => NavigationManager.NavigateTo($"/edititemorder/{orderCustomer.OrderCustomerId}");
-
     protected void DeleteItemOrder(int ItemOrderId)
     {
         DeleteItemOrderUseCase?.Delete(ItemOrderId);
         LoadItemOrders();
     }
 
+    private string GetSelectedItemOrdersAsString()
+        => string.Join(",", miniItemOrder.selectedItemOrderIds);
+
     protected void ClickItemOrder(int itemOrderId)
     {
-        if (miniItemOrder.selectedItemOrders.IndexOf(itemOrderId) == -1) // .Exists(x => x. == itemOrderId))
-            miniItemOrder.selectedItemOrders.Add(itemOrderId);
+        if (miniItemOrder.selectedItemOrderIds.IndexOf(itemOrderId) == -1) // .Exists(x => x. == itemOrderId))
+            miniItemOrder.selectedItemOrderIds.Add(itemOrderId);
         else
-            miniItemOrder.selectedItemOrders.Remove(itemOrderId);
+            miniItemOrder.selectedItemOrderIds.Remove(itemOrderId);
     }
+
+    protected void OnClickSendItemOrderInOrderVendor()
+    {
+        if (GetOrderVendorByIdUseCase.Execute(miniItemOrder.OrderVendorId) != null)
+        {
+            foreach (int id in miniItemOrder.selectedItemOrderIds)
+            {
+                ItemOrder itemOrder = GetItemOrderByIdUseCase.Execute(id);
+                itemOrder.OrderVendorId = miniItemOrder.OrderVendorId;
+                EditItemOrderUseCase.Execute(itemOrder);
+            }
+        }
+    }
+
     #endregion 
 }

@@ -20,24 +20,21 @@ namespace Plugins.DataStore.InMemory
             {
                 new OrderCustomer() { 
                     OrderCustomerId = 1, 
-                    Name = "OrderCustomer-301", 
-                    Description = "OrderCustomer-301.1",
+                    Description = "Описание заказа 1",
                     Edited = DateTime.Now,
                     CustomerId = 1,
                     ExcelFileId = 1
         },
                 new OrderCustomer() { 
                     OrderCustomerId = 2, 
-                    Name = "OrderCustomer-302", 
-                    Description = "OrderCustomer-302.1",
+                    Description = "Описание заказа 2",
                     Edited = DateTime.Now,
                     CustomerId = 2,
                     ExcelFileId = 2
                 },
                 new OrderCustomer() { 
                     OrderCustomerId = 3, 
-                    Name = "OrderCustomer-303", 
-                    Description = "OrderCustomer-303.1",
+                    Description = "Описание заказа 3",
                     Edited = DateTime.Now,
                     CustomerId = 3,
                     ExcelFileId = 3
@@ -91,6 +88,11 @@ namespace Plugins.DataStore.InMemory
             {
                 orderCustomers.Remove(cat);
             }
+        }
+
+        public IEnumerable<OrderCustomer> GetOrderCustomerByCustomerId(int customerId)
+        {
+            return orderCustomers.Where<OrderCustomer>(x => x.CustomerId == customerId);
         }
     }
 }

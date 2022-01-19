@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using WebApp.Components
 
 @inject NavigationManager NavigationManager
 
@@ -13,10 +14,15 @@
     .widget-column-border{
         border-radius:10px;
     }
-    h4.mx-auto{
+    h4.mx-auto {
         width: 100%;
         text-align: center;
         font-weight: 500;
+    }
+
+    .optix-page-title{
+        font-weight: 500;
+        margin-left: 20px;
     }
     .optix-row-1{
         /*background-color:#eee;*/
@@ -28,15 +34,17 @@
         float:left; 
         width: 100%;
     }
+    .widget-header{
+    }
 </style>
 
-<div class="optix-font" style="width:100%; text-align:center;">
+<div class="optix-font optix-page-title">
     <h1>Optix Management System</h1>
 </div>
 
-<CustomerWidgetComponent />
+<CustomerWidgetComponent></CustomerWidgetComponent>
 <hr/>
-<VendorWidgetComponent />
+<VendorWidgetComponent></VendorWidgetComponent>
 
 @code {
     

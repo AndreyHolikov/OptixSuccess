@@ -8,18 +8,17 @@ using UseCases.DataStorePluginInterfaces;
 
 namespace UseCases
 {
-    public class EditItemOrderUseCase : IEditItemOrderUseCase
+    public class GetItemOrdersByOrderVendorIdUseCase : IGetItemOrdersByOrderVendorIdUseCase
     {
         private readonly IItemOrderRepository itemOrderRepository;
 
-        public EditItemOrderUseCase(IItemOrderRepository itemOrderRepository)
+        public GetItemOrdersByOrderVendorIdUseCase(IItemOrderRepository itemOrderRepository)
         {
             this.itemOrderRepository = itemOrderRepository;
         }
-
-        public void Execute(ItemOrder ItemOrder)
+        public IEnumerable<ItemOrder> Execute(int orderVendorId)
         {
-            itemOrderRepository.UpdateItemOrder(ItemOrder);
+            return itemOrderRepository.GetItemOrdersByOrderVendorId(orderVendorId);
         }
     }
 }

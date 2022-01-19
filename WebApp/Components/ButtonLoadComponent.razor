@@ -1,0 +1,10 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+
+<button tupe="button" @onclick="OnClickCallback" class="btn btn-link">
+    <i class="fas fa-sync-alt" ></i>
+</button> 
+
+@code {
+
+    [Parameter] public EventCallback OnClickCallback { get; set; }
+}

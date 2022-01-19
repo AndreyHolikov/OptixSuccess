@@ -18,9 +18,9 @@ namespace Plugins.DataStore.InMemory
 
             customers = new List<Customer>()
             {
-                new Customer() { СustomerId = 1, Name = "Customer-201", Description = "Customer-201.1"},
-                new Customer() { СustomerId = 2, Name = "Customer-202", Description = "Customer-202.1"},
-                new Customer() { СustomerId = 3, Name = "Customer-203", Description = "Customer-203.1"}
+                new Customer() { СustomerId = 1, Name = "Иванов И.И.",  Fullname = "Иванов И.И.",  Company = "Оптика № 1",  Email = "k1@gmail.com", Phone = "+375 29 123-12-12", Description = "Описание компании 1"},
+                new Customer() { СustomerId = 2, Name = "Петров П.П.",  Fullname = "Петров П.П.",  Company = "Оптика Нова", Email = "k2@gmail.com", Phone = "+375 29 123-12-13", Description = "Описание компании 2"},
+                new Customer() { СustomerId = 3, Name = "Смирнов С.С.", Fullname = "Смирнов С.С.", Company = "ИП Смирнов",  Email = "k3@gmail.com", Phone = "+375 29 123-12-14", Description = "Описание компании 3"}
             };
         }
 

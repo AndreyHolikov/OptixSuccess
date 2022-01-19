@@ -55,13 +55,15 @@
         </div>
     </div>
     <div class="col col-auto">
-        <div>
+        <div class="widget-header">
             <h4>
                 <NavLink class="nav-link" href="vendors" style="float:left;">
                     Заказы от поставщиков 
                 </NavLink>            
             </h4>
-            <br/>
+       </div>
+       <hr/>
+       <div class="widget-content">
             @if (orderVendors != null)
             {
                 <div class="table-responsive">
@@ -93,6 +95,25 @@
             </div>
             }
         </div>
+        <hr/>
+        <div class="widget-footer">
+            <EditForm Model="@miniItemOrder">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+    
+                <div class="form-group">
+                    <label>Выбраные товары: @GetSelectedItemOrdersAsString()</label>
+                </div>
+
+                <div class="form-group">
+                    <label for="orderVendorId">Заказ поставщика</label>
+                    <InputNumber id="orderVendorId" @bind-Value="miniItemOrder.OrderVendorId" class="form-control"></InputNumber>
+                </div>
+
+                <button type="submit" class="btn btn-info">Отправить в заказ</button>
+            </EditForm>
+        </div>
     </div>
     <div class="col col-auto">
         <h2>Товары в заказах</h2>
@@ -100,11 +121,21 @@
 </div>
 
 @code {
-
+    #region private fields
     private List<CoreBusiness.Vendor> vendors;
     private List<CoreBusiness.OrderVendor> orderVendors;
     private List<CoreBusiness.ItemOrder> itemOrderVendors;
 
+    private MiniItemOrder miniItemOrder = new MiniItemOrder();
+    #endregion
+    
+    record MiniItemOrder
+    {
+        public List<int> selectedItemOrders { get; set; } = new List<int>() { 1, 2 };  
+        public int OrderVendorId { get; set; }
+        public MiniItemOrder(int orderVendorId = 1 ) => OrderVendorId = orderVendorId;
+    }   
+    
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -112,6 +143,10 @@
         LoadOrderVendors();
         LoadItemOrderVendors();
     }
+
+
+
+
 
        #region Vendor
     protected void OnClickAddVendor()
@@ -155,6 +190,17 @@
     {
         itemOrderVendors = ViewItemOrdersUseCase.Execute()?.ToList();
     }
+
+    protected void ClickItemOrder(int itemOrderId)
+    {
+        if (miniItemOrder.selectedItemOrders.IndexOf(itemOrderId) == -1) // .Exists(x => x. == itemOrderId))
+            miniItemOrder.selectedItemOrders.Add(itemOrderId);
+        else
+            miniItemOrder.selectedItemOrders.Remove(itemOrderId);
+    }
+
+    private string GetSelectedItemOrdersAsString()
+        => string.Join(",", miniItemOrder.selectedItemOrders);
 
     #endregion
 }

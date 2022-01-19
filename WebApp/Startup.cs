@@ -77,10 +77,14 @@ namespace WebApp
             services.AddTransient<IEditOrderCustomerUseCase, EditOrderCustomerUseCase>();
             services.AddTransient<IGetOrderCustomerByIdUseCase, GetOrderCustomerByIdUseCase>();
             services.AddTransient<IDeleteOrderCustomerUseCase, DeleteOrderCustomerUseCase>();
+            services.AddTransient<IGetOrderCustomerByCustomerIdUseCase, GetOrderCustomerByCustomerIdUseCase>();
             #endregion
 
             #region ItemOrder
             services.AddTransient<IViewItemOrdersUseCase, ViewExcelFilesUseCase>();
+            services.AddTransient<IGetItemOrdersByOrderCustomerIdUseCase, GetItemOrdersByOrderCustomerIdUseCase>();
+            services.AddTransient<IGetItemOrdersByOrderVendorIdUseCase, GetItemOrdersByOrderVendorIdUseCase>();
+
             services.AddTransient<IAddItemOrderUseCase, AddItemOrderUseCase>();
             services.AddTransient<IEditItemOrderUseCase, EditItemOrderUseCase>();
             services.AddTransient<IGetItemOrderByIdUseCase, GetItemOrderByIdUseCase>();

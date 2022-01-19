@@ -100,6 +100,16 @@ namespace Plugins.DataStore.InMemory
         {
             return itemOrders;
         }
+        
+        public IEnumerable<ItemOrder> GetItemOrdersByOrderCustomerId(int orderCustomerId)
+        {
+            return itemOrders.Where( x => x.OrderCustomerId == orderCustomerId);
+        }
+
+        public IEnumerable<ItemOrder> GetItemOrdersByOrderVendorId(int orderVendorId)
+        {
+            return itemOrders.Where(x => x.OrderVendorId == orderVendorId);
+        }
 
         public void DeleteItemOrder(int itemOrderId)
         {
