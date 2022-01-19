@@ -10,11 +10,13 @@
 
 @inject IGetProductByIdUseCase GetProductByIdUseCase
 
-<div class="row">
-    <div class="col col-auto">
+
+<div class="optix-widget optix-font">
+<div class="row optix-row-1">
+    <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
         <div>
-            <h4>
-                <NavLink class="nav-link" href="customers" style="float:left;">
+            <h4 class="mx-auto">
+                <NavLink class="nav-link optix-widget-title" href="customers">
                     Покупатели (@customers.Count())
                 </NavLink>     
             </h4>
@@ -41,9 +43,9 @@
                             @{int i = 0;}
                             @foreach (var customer in customers)
                             {
-                                <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" class="align-middle" style="cursor:pointer">
-                                    <td>@customer.СustomerId</td>
-                                    <td>@customer.Name</td>
+                                <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))"  style="cursor:pointer">
+                                    <td class="align-middle">@customer.СustomerId</td>
+                                    <td class="align-middle">@customer.Name</td>
                                     <td>
                                         <button tupe="button" @onclick="@(() => ClickCustomer(customer.СustomerId))" class="btn btn-link">
                                             <i class="fas fa-eye"></i>
@@ -65,10 +67,10 @@
             }
         </div>
     </div>
-    <div class="col col-auto">
+    <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
         <div>
-            <h4>
-                <NavLink class="nav-link" href="ordercustomers" style="float:left;">
+            <h4 class="mx-auto">
+                <NavLink class="nav-link optix-widget-title" href="ordercustomers" style="float:left;">
                     Заказы от покупателей  (@orderCustomers.Count())
                 </NavLink>         
             </h4>
@@ -96,8 +98,8 @@
                             @foreach (var orderCustomer in orderCustomers)
                             {
                                 <tr @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" style="cursor:pointer">
-                                    <td>@orderCustomer.OrderCustomerId</td>
-                                    <td>@orderCustomer.Name</td>
+                                    <td class="align-middle">@orderCustomer.OrderCustomerId</td>
+                                    <td class="align-middle">@orderCustomer.Name</td>
                                     <td>
                                         <button tupe="button" @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-link">
                                             <i class="fas fa-eye"></i>
@@ -119,14 +121,17 @@
             }
         </div>
     </div>
-    <div class="col col-auto">
-        <div>
-            <h4>
-                <NavLink class="nav-link" href="itemorders" style="float:left;">
+    <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
+        <div class="widget-header">
+            <h4 class="mx-auto">
+                <NavLink class="nav-link optix-widget-title" href="itemorders">
                     Товары в заказах   (@itemOrders.Count())
                 </NavLink>   
             </h4>
-            <br/>
+        </div>
+        <hr/>
+        <div class="widget-content">
+            <hr/>
             @if (itemOrders != null)
             {
                 <div class="table-responsive">
@@ -151,11 +156,11 @@
                             @{int i =0;}
                             @foreach (var itemOrder in itemOrders)
                             {
-                                <tr>
-                                    <td>@itemOrder.ItemOrderId</td>
-                                    <td>@GetProductByIdUseCase.Execute(itemOrder.ProductId).Name</td>
-                                    <td>@itemOrder.Quantity</td>
-                                    <td>@itemOrder.Price</td>
+                                <tr @onclick="@(() => ClickItemOrder(itemOrder.ItemOrderId))"  style="cursor:pointer">
+                                    <td class="align-middle">@itemOrder.ItemOrderId</td>
+                                    <td class="align-middle">@GetProductByIdUseCase.Execute(itemOrder.ProductId).Name</td>
+                                    <td class="align-middle">@itemOrder.Quantity</td>
+                                    <td class="align-middle">@itemOrder.Price</td>
                                     <td>
                                         <button tupe="button" @onclick="@(() => EditItemOrder(itemOrder))" class="btn btn-link">
                                             <i class="fas fa-edit"></i>
@@ -173,7 +178,27 @@
             </div>
             }
         </div>
+        <hr/>
+        <div class="widget-footer">
+            <EditForm Model="@miniItemOrder">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+    
+                <div class="form-group">
+                    <label>Выбраные товары: @GetSelectedItemOrdersAsString()</label>
+                </div>
+
+                <div class="form-group">
+                    <label for="orderVendorId">Заказ поставщика</label>
+                    <InputNumber id="orderVendorId" @bind-Value="miniItemOrder.OrderVendorId" class="form-control"></InputNumber>
+                </div>
+
+                <button type="submit" class="btn btn-info">Отправить в заказ</button>
+            </EditForm>
+        </div>
     </div>
+</div>
 </div>
 
 @code {
@@ -182,14 +207,27 @@
     private List<CoreBusiness.Customer> customers;
     private List<CoreBusiness.OrderCustomer> orderCustomers;
     private List<CoreBusiness.ItemOrder> itemOrders;
+
+    record MiniItemOrder
+    {
+        public List<int> selectedItemOrders { get; set; } = new List<int>() { 1, 2 };  
+        public int OrderVendorId { get; set; }
+        public MiniItemOrder(int orderVendorId = 1 ) => OrderVendorId = orderVendorId;
+    }
+
+    private MiniItemOrder miniItemOrder = new MiniItemOrder();
     #endregion
+
+    private string GetSelectedItemOrdersAsString()
+        => string.Join(",", miniItemOrder.selectedItemOrders);
+
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         LoadCustomers();
         LoadOrderCustomers();
-        LoadItemOrders();
+        LoadItemOrders(); 
     }
 
     #region Customer
@@ -246,6 +284,14 @@
     {
         DeleteItemOrderUseCase?.Delete(ItemOrderId);
         LoadItemOrders();
+    }
+
+    protected void ClickItemOrder(int itemOrderId)
+    {
+        if (miniItemOrder.selectedItemOrders.IndexOf(itemOrderId) == -1) // .Exists(x => x. == itemOrderId))
+            miniItemOrder.selectedItemOrders.Add(itemOrderId);
+        else
+            miniItemOrder.selectedItemOrders.Remove(itemOrderId);
     }
     #endregion 
 }
