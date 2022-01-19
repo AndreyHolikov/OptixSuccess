@@ -98,7 +98,7 @@
                             @foreach (var orderCustomer in orderCustomers)
                             {
                                 <tr @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" style="cursor:pointer">
-                                    <td>@orderCustomer.OrderCustomerId</td>
+                                    <td>@*GetCustomerByIdUseCase.Execute(orderCustomer.OrderCustomerId)*@</td>
                                     <td>*Customer.Fullname</td>
                                     <td>@orderCustomer.Edited</td>
                                     <td>*ItemOrder.CountItem</td>
