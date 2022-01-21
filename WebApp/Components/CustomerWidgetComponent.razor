@@ -6,6 +6,7 @@
 
 @inject IViewOrderCustomersUseCase ViewOrderCustomersUseCase
 @inject IDeleteOrderCustomerUseCase DeleteOrderCustomerUseCase
+@inject IGetOrderCustomerByIdUseCase GetOrderCustomerByIdUseCase
 
 @inject IViewItemOrdersUseCase ViewItemOrdersUseCase
 @inject IDeleteItemOrderUseCase DeleteItemOrderUseCase
@@ -33,14 +34,15 @@
             @if (customers != null)
             {
                 <div class="table-responsive">
-                    <table class="table table-hover table-sm align-middle">
+                    <table class="table table-hover table-sm align-middle cursor-pointer text-align-center table-responsive">
                         <thead>
-                            <tr>
-                                <th>№</th>
-                                <th>Компания</th>
+                            <tr class="text-align-center">
+                                <th class="align-middle">№</th>
+                                <th class="align-middle">Компания</th>
                                 <th>                
                                     <ButtonAddComponent TypeName="Customer"></ButtonAddComponent>
-                                    <ButtonLoadComponent OnClickCallback="LoadCustomers"></ButtonLoadComponent>                                 
+                                    <ButtonLoadComponent OnClickCallback="LoadCustomers"></ButtonLoadComponent>
+                                    <button tupe="button" class="btn btn-link"></button>
                                 </th>
                             </tr>
                         </thead>
@@ -48,7 +50,7 @@
                             @{int i = 0;}
                             @foreach (var customer in customers)
                             {
-                                <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" class="align-middle" style="cursor:pointer">
+                                <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" class="cursor-pointer text-align-center">
                                     <td class="align-middle">@customer.СustomerId</td>
                                     <td class="align-middle">@customer.Company</td>
                                     <td>
@@ -62,7 +64,7 @@
                                     </td>
                                 </tr>
                                 i++;
-                                if (i >= 3) break;
+                                if (i >= CountItemOnPage) break;
                             }
                         </tbody>
                 </table>
@@ -81,17 +83,28 @@
             @if (orderCustomers != null)
             {
                 <div class="table-responsive">
-                    <table class="table table-hover table-sm align-middle">
+                    <table class="table table-hover table-sm align-middle table-responsive">
                         <thead>
-                            <tr>
+                            <tr class="text-align-center">
                                 <th class="align-middle">№</th>
-                                <th class="align-middle">Клиент</th>
-                                <th class="align-middle">Дата<br/>редактирования</th>
-                                <th class="align-middle">Количество<br/>позиций</th>
-                                <th class="align-middle">Количество<br/>товаров</th>
+                                <th class="align-middle">
+                                    Покупатель
+                                    <br/>
+                                    Дата
+                                    <i class="fas fa-info-circle" data-toggle="tooltip" title="Клиент. Дата и время редактирования"></i>
+                                </th>
+                                <th class="align-middle">
+                                    Позиций 
+                                    <i class="fas fa-info-circle" data-toggle="tooltip" title="Количество позиций"></i>
+                                </th>
+                                <th class="align-middle" title="Количество товаров">
+                                    Товаров
+                                    <i class="fas fa-info-circle" data-toggle="tooltip" title="Количество товаров"></i>
+                                </th>
                                 <th>
                                     <ButtonAddComponent TypeName="OrderCustomer"></ButtonAddComponent>
                                     <ButtonLoadComponent OnClickCallback="LoadOrderCustomers"></ButtonLoadComponent>
+                                    <button tupe="button" class="btn btn-link"></button>
                                 </th>
                             </tr>
                         </thead>
@@ -99,10 +112,15 @@
                             @{int i = 0;}
                             @foreach (var orderCustomer in orderCustomers)
                             {
-                                <tr @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" style="cursor:pointer">
+                                <tr @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" class="cursor-pointer text-align-center">
                                     <td>@orderCustomer.OrderCustomerId</td>
-                                    <td>@GetCustomerByIdUseCase.Execute(orderCustomer.OrderCustomerId).Fullname</td>
-                                    <td>@orderCustomer.Edited</td>
+                                    <td>
+                                        @GetCustomerByIdUseCase.Execute(orderCustomer.OrderCustomerId).Company
+                                        <br/>
+                                        @orderCustomer.Edited.ToString("dd.MM.yyyy")
+                                        <br/>
+                                        @orderCustomer.Edited.ToString("HH:mm:ss")
+                                    </td>
                                     <td>@GetItemOrdersByOrderCustomerIdUseCase.Execute(orderCustomer.OrderCustomerId).Count()</td>
                                     <td>@GetItemOrdersByOrderCustomerIdUseCase.Execute(orderCustomer.OrderCustomerId).Sum(n => n.Quantity)</td>
                                     <td>
@@ -116,7 +134,7 @@
                                     </td>
                                 </tr>
                                 i++;
-                                if (i >= 3) break;
+                                if (i >= CountItemOnPage) break;
                             }
                         </tbody>
                 </table>
@@ -134,18 +152,20 @@
             @if (itemOrders != null)
             {
                 <div class="table-responsive">
-                    <table class="table table-hover table-sm align-middle">
+                    <table class="table table-hover table-sm align-middle table-responsive">
                         <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
+                            <tr class="text-align-center">
+                                <th class="align-middle">Id</th>
+                                <th class="align-middle">Товар</th>
+                                <th class="align-middle">Кол-во</th>
+                                <th class="align-middle">Цена</th>
+                                <th class="align-middle">Заказ<br/>покупателя</th>
                                 <th>
                                     <ButtonAddComponent TypeName="ItemOrder"></ButtonAddComponent>
                                     <button tupe="button"  @onclick="(() => LoadItemOrders())" class="btn btn-link">
                                         <i class="fas fa-sync-alt" ></i>
                                     </button> 
+                                    <button tupe="button" class="btn btn-link"></button>
                                 </th>
                             </tr>
                         </thead>
@@ -153,11 +173,12 @@
                             @{int i =0;}
                             @foreach (var itemOrder in itemOrders)
                             {
-                                <tr  @onclick="@(() => ClickItemOrder(itemOrder.ItemOrderId))"  style="cursor:pointer">
+                                <tr  @onclick="@(() => ClickItemOrder(itemOrder.ItemOrderId))"  class="cursor-pointer text-align-center">
                                     <td>@itemOrder.ItemOrderId</td>
                                     <td>@GetProductByIdUseCase.Execute(itemOrder.ProductId).Name</td>
                                     <td>@itemOrder.Quantity</td>
                                     <td>@itemOrder.Price</td>
+                                    <td>@GetOrderCustomerByIdUseCase.Execute(itemOrder.OrderCustomerId).OrderCustomerId</td>
                                     <td>
                                         <ButtonEditComponent TypeName="customer" Id="@itemOrder.ItemOrderId.ToString()"></ButtonEditComponent>
                                         <button type="button" @onclick="@(() => DeleteItemOrder(itemOrder.ItemOrderId))" class="btn btn-link">
@@ -166,7 +187,7 @@
                                     </td>
                                 </tr>
                                 i++;
-                                if (i >= 3) break;
+                                if (i >= CountItemOnPage) break;
                             }
                         </tbody>
                 </table>
@@ -177,12 +198,15 @@
 
         <div class="widget-footer">
             <EditForm Model="@miniItemOrder">
+
+                <h5>Добавить товары в заказ поставщика</h5>
+
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-
     
                 <div class="form-group">
-                    <label>Выбраные товары: @GetSelectedItemOrdersAsString()</label>
+                    <label>Выбраные товары: </label>
+                    <ViewListAsUlComponent collection="@GetSelectedItemOrdersAsCollection()"></ViewListAsUlComponent>
                 </div>
 
                 <div class="form-group">
@@ -199,7 +223,9 @@
 
 @code {
 
-    record MiniItemOrder
+    [Parameter] public int CountItemOnPage { get; set; } = 3;
+
+    record MiniItemOrder 
     {
         #region public field
         public List<int> selectedItemOrderIds { get; set; } = new List<int>();  
@@ -214,6 +240,7 @@
     private List<CoreBusiness.OrderCustomer> orderCustomers;
     private List<CoreBusiness.ItemOrder> itemOrders;
     private MiniItemOrder miniItemOrder = new MiniItemOrder();
+
     #endregion
 
     protected override void OnInitialized()
@@ -263,8 +290,19 @@
         LoadItemOrders();
     }
 
-    private string GetSelectedItemOrdersAsString()
-        => string.Join(",", miniItemOrder.selectedItemOrderIds);
+    //private string GetSelectedItemOrdersAsString()
+    //    => string.Join(",", miniItemOrder.selectedItemOrderIds);
+
+    private IEnumerable<string> GetSelectedItemOrdersAsCollection()
+    {
+        List<string> collection = new List<string>();
+        foreach (var itemOrderId in miniItemOrder.selectedItemOrderIds)
+        {
+            collection.Add($"{itemOrderId}: {GetProductByIdUseCase.Execute(GetItemOrderByIdUseCase.Execute(itemOrderId).ProductId).Name}");
+        }
+        return collection;
+        //string.Join(",", miniItemOrder.selectedItemOrderIds); 
+    }
 
     protected void ClickItemOrder(int itemOrderId)
     {
@@ -284,8 +322,8 @@
                 itemOrder.OrderVendorId = miniItemOrder.OrderVendorId;
                 EditItemOrderUseCase.Execute(itemOrder);
             }
+            miniItemOrder.selectedItemOrderIds.Clear();
         }
     }
-
     #endregion 
 }

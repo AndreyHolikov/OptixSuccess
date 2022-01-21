@@ -18,9 +18,9 @@ namespace Plugins.DataStore.InMemory
 
             vendors = new List<Vendor>()
             {
-                new Vendor() { VendorId = 1, Name = "Vendor-501", Description = "Customer-501.1"},
-                new Vendor() { VendorId = 2, Name = "Vendor-502", Description = "Customer-502.1"},
-                new Vendor() { VendorId = 3, Name = "Vendor-503", Description = "Customer-503.1"}
+                new Vendor() { VendorId = 1, Name = "Иванов", Description = "", Company = "Поставщик № 1", Email = "Email"},
+                new Vendor() { VendorId = 2, Name = "Петров", Description = "", Company = "Поставщик № 2", Email = "Email"},
+                new Vendor() { VendorId = 3, Name = "Сидоров", Description = "", Company = "Поставщик № 3", Email = "Email"}
             };
         }
 

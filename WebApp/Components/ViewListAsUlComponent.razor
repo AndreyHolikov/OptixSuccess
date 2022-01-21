@@ -1,0 +1,11 @@
+﻿
+<ul>
+    @foreach (var item in collection)
+    {
+        <li>@item</li>
+    }
+</ul>
+
+@code {
+    [Parameter] public IEnumerable<string> collection { get; set; }
+}
