@@ -56,6 +56,9 @@ a, .btn-link {
 .text-align-center {
     text-align: center;
 }
+.text-align-right {
+    text-align: right;
+}
 
 .optix-font {
     font-family: 'Literata', serif;
@@ -94,4 +97,8 @@ h4.mx-auto {
 }
 
 .widget-header {
+}
+
+.color-bbb {
+    color: #BBB;
 }

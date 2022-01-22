@@ -10,12 +10,13 @@ namespace CoreBusiness
     public class OrderCustomer
     {
         public int OrderCustomerId { get; set; }
-        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         [Required]
         public DateTime Edited { get; set; }
+        //        [Required]
         public int CustomerId { get; set; }
+        //        [Required]
         public int ExcelFileId { get; set; }
     }
 }

@@ -144,7 +144,7 @@
     <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
         <div class="widget-header">
             <h4 class="mx-auto">
-                <NavLink class="nav-link optix-widget-title" href="itemorders" style="float:left;">Товары в заказах (@itemOrders.Count()) </NavLink>   
+                <NavLink class="nav-link optix-widget-title" href="itemorders" style="float:left;">Товары в заказах (@itemOrders.Where(io => io.OrderVendorId > 0).Count()) </NavLink>   
             </h4>
         </div>
         <div class="widget-content">
@@ -158,7 +158,7 @@
                                 <th class="align-middle">Товар</th>
                                 <th class="align-middle">Кол-во</th>
                                 <th class="align-middle">Цена</th>
-                                <th class="align-middle">Заказ<br/>поставщика</th>
+                                <th class="align-middle">№ заказа<br/>поставщика</th>
                                 <th>
                                     <ButtonAddComponent TypeName="ItemOrder"></ButtonAddComponent>
                                     <button tupe="button"  @onclick="(() => LoadItemOrders())" class="btn btn-link">
@@ -172,22 +172,25 @@
                             @{int i =0;}
                             @foreach (var itemOrder in itemOrders)
                             {
-                                <tr  @onclick="@(() => ClickItemOrder(itemOrder.ItemOrderId))"  class="cursor-pointer text-align-center">
-                                    <td>@itemOrder.ItemOrderId</td>
-                                    <td>@GetProductByIdUseCase.Execute(itemOrder.ProductId).Name</td>
-                                    <td>@itemOrder.Quantity</td>
-                                    <td>@itemOrder.Price</td>
-                                    <td>@GetOrderVendorByIdUseCase.Execute(itemOrder.OrderVendorId).OrderVendorId</td>
-                                    <td>
-                                        <ButtonEditComponent TypeName="vendor" Id="@itemOrder.ItemOrderId.ToString()"></ButtonEditComponent>
-                                        <button type="button" @onclick="@(() => DeleteItemOrder(itemOrder.ItemOrderId))" class="btn btn-link">
-                                            <i class="far fa-trash-alt"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                i++;
-                                if (i >= CountItemOnPage) break;
-                            }
+                                 if (itemOrder.OrderVendorId > 0)
+                                 {
+                                     <tr  @onclick="@(() => ClickItemOrder(itemOrder.ItemOrderId))"  class="cursor-pointer text-align-center">
+                                         <td>@itemOrder.ItemOrderId</td>
+                                         <td>@GetProductByIdUseCase.Execute(itemOrder.ProductId).Name</td>
+                                         <td>@itemOrder.Quantity</td>
+                                         <td>@itemOrder.Price</td>
+                                         <td>@GetOrderVendorByIdUseCase.Execute(itemOrder.OrderVendorId).OrderVendorId</td>
+                                         <td>
+                                             <ButtonEditComponent TypeName="vendor" Id="@itemOrder.ItemOrderId.ToString()"></ButtonEditComponent>
+                                             <button type="button" @onclick="@(() => DeleteItemOrder(itemOrder.ItemOrderId))" class="btn btn-link">
+                                                 <i class="far fa-trash-alt"></i>
+                                             </button>
+                                         </td>
+                                     </tr>
+                                     i++;
+                                     if (i >= CountItemOnPage) break;
+                                 }
+                             }
                         </tbody>
                 </table>
             </div>
@@ -195,10 +198,10 @@
             }
         </div>
 
-        <div class="widget-footer">
+        @*<div class="widget-footer">
             <EditForm Model="@miniItemOrder">
                 
-                <h4>Удалить товары из заказа поставщика</h4>
+                <h4>Удалить товары<br/> из заказа поставщика</h4>
 
                 <DataAnnotationsValidator />
                 <ValidationSummary />
@@ -207,7 +210,7 @@
 
                 <button type="button" class="btn btn-info" @onclick="OnClickSendItemOrderInOrderVendor">Удалить</button>
             </EditForm>
-        </div>
+        </div>*@
     </div>
 </div>
 </div>
@@ -277,15 +280,27 @@
     protected void DeleteItemOrder(int ItemOrderId)
     {
         DeleteItemOrderUseCase?.Delete(ItemOrderId);
-        LoadItemOrders();
+        miniItemOrder.selectedItemOrderIds.Remove(ItemOrderId);
+        LoadItemOrders();        
     }
 
     private IEnumerable<string> GetSelectedItemOrdersAsCollection()
     {
-        List<string> collection = new List<string>();
+        var collection = new List<string>();
+        var collectionForRemove = new List<int>();
+
         foreach (var itemOrderId in miniItemOrder.selectedItemOrderIds)
         {
-            collection.Add($"{itemOrderId}: {GetProductByIdUseCase.Execute(GetItemOrderByIdUseCase.Execute(itemOrderId).ProductId).Name}");
+            if (GetItemOrderByIdUseCase.Execute(itemOrderId) != null)
+            {
+                collection.Add($"{itemOrderId}: {GetProductByIdUseCase.Execute(GetItemOrderByIdUseCase.Execute(itemOrderId).ProductId).Name}");
+            } else {
+                collectionForRemove.Add(itemOrderId);
+            }
+        }
+        foreach (var item in collectionForRemove)
+        {
+            miniItemOrder.selectedItemOrderIds.Remove(item);
         }
         return collection;
         //string.Join(",", miniItemOrder.selectedItemOrderIds); 

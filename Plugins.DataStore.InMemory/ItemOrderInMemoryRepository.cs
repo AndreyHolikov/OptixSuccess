@@ -53,6 +53,14 @@ namespace Plugins.DataStore.InMemory
                     Price = 4.44,
                     Quantity = 55,
                     Edited = DateTime.Now
+                },
+                new ItemOrder() {
+                    ItemOrderId = 5,
+                    ProductId = 3,
+                    OrderCustomerId = 3,
+                    Price = 6.45,
+                    Quantity = 855,
+                    Edited = DateTime.Now
                 }
             };
         }

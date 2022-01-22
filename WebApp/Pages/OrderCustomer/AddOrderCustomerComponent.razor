@@ -1,8 +1,16 @@
 ﻿@page "/addordercustomer"
 @using UseCases
 
+@using System 
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Logging
+@inject ILogger<AddOrderCustomerComponent> Logger
+@inject IWebHostEnvironment Environment
+
 @inject NavigationManager NavigationManager
 @inject IAddOrderCustomerUseCase AddOrderCustomerUseCase 
+@inject IViewCustomersUseCase ViewCustomersUseCase
 
 <h3>Add OrderCustomer</h3>
 
@@ -12,6 +20,14 @@
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>
 
+        <select id="customer" @bind="orderCustomer.CustomerId" class="form-control">
+            <option selected></option>
+            @foreach(var customer in customers)
+            {
+                <option value="@customer.СustomerId">@customer.Name</option>
+            }
+        </select>
+
         <div class="form-group">
             <label for="description">Описание</label>
             <InputTextArea id="description" @bind-Value="orderCustomer.Description" class="form-control"></InputTextArea>
@@ -20,7 +36,28 @@
         <div class="form-group">
             <label for="description">Excel файл</label>
             <br/>
+            <InputFile OnChange="@SingleUpload" />
             <InputFile OnChange="@LoadFiles" multiple />
+            @if (isLoading)
+            {
+                <p>Uploading...</p>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var file in loadedFiles)
+                    {
+                        <li>
+                            <ul>
+                                <li>Name: @file.Name</li>
+                                <li>Last modified: @file.LastModified.ToString()</li>
+                                <li>Size (bytes): @file.Size</li>
+                                <li>Content type: @file.ContentType</li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            }
         </div>
 
         <button type="submit" class="btn btn-primary">Сохранить</button>
@@ -31,14 +68,32 @@
 @code {
     private OrderCustomer orderCustomer;
 
+    #region Fields for loadingFiles
+    private List<IBrowserFile> loadedFiles = new();
+    private long maxFileSize = 1024 * 15;
+    private int maxAllowedFiles = 1;
+    private bool isLoading;
+    #endregion
+
+    public IEnumerable<Customer> customers { get; set; }
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
         orderCustomer = new OrderCustomer();
+        customers = ViewCustomersUseCase.Execute();
     }
     private void OnValidSubmit()
     {
+        orderCustomer.Edited = DateTime.Now;
+        orderCustomer.ExcelFileId = 1;
+        orderCustomer.CustomerId = 1;
+
+        // TODO: AddFile To DB
+
+        orderCustomer.Description = $"Файл:{loadedFiles[0].Name}";
+
         AddOrderCustomerUseCase.Execute(orderCustomer);
         NavigationManager.NavigateTo("/ordercustomers");
     }
@@ -48,8 +103,56 @@
         NavigationManager.NavigateTo("/ordercustomers");
     }
 
-    private void LoadFiles(InputFileChangeEventArgs e)
-    {
+    #region UploadFile
 
+    private readonly IWebHostEnvironment _environment;
+    public async Task UploadAsync(IFileListEntry fileEntry)
+    {
+        var path = Path.Combine(_environment.ContentRootPath, "excelfiles", fileEntry.Name);
+        var ms = new MemoryStream();
+        await fileEntry.Data.CopyToAsync(ms);
+        using(FileStrim file = new FileStrim(path,  FileMode.Create, FileAccess.Write))
+        {
+            ms.WriteTo(file);
+        }
+    }
+
+    #endregion
+
+    private async Task SingleUpload(InputFileChangeEventArgs e)
+    {
+       var ms = new MemoryStream();
+       await e.File.OpenReadStream().CopyToAsync(ms);
+       var bytes = ms.ToArray();
+
+    }
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+        loadedFiles.Clear();
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            try
+            {
+                loadedFiles.Add(file);
+
+                var trustedFileNameForFileStorage = Path.GetRandomFileName();
+                var path = Path.Combine(Environment.ContentRootPath,
+                        Environment.EnvironmentName, "unsafe_uploads",
+                        trustedFileNameForFileStorage);
+
+                await using FileStream fs = new(path, FileMode.Create);
+                await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("File: {Filename} Error: {Error}", 
+                    file.Name, ex.Message);
+            }
+        }
+
+        isLoading = false;
     }
 }
