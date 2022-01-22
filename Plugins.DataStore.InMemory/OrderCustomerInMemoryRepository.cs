@@ -38,13 +38,20 @@ namespace Plugins.DataStore.InMemory
                     Edited = DateTime.Now,
                     CustomerId = 3,
                     ExcelFileId = 3
+                },
+                new OrderCustomer() {
+                    OrderCustomerId = 4,
+                    Description = "Описание заказа 4",
+                    Edited = DateTime.Now,
+                    CustomerId = 1,
+                    ExcelFileId = 3
                 }
             };
         }
 
         public void AddOrderCustomer(OrderCustomer orderCustomer)
         {
-            if (orderCustomers.Any(x => x.Name.Equals(orderCustomer.Name, StringComparison.OrdinalIgnoreCase))) return;
+            //if (orderCustomers.Any(x => x.Name.Equals(orderCustomer.Edited, StringComparison.OrdinalIgnoreCase))) return;
 
             if (orderCustomers != null && orderCustomers.Count > 0)
             {

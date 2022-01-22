@@ -1,0 +1,28 @@
+﻿
+@if (collection.Count() > 0)
+{
+    <div class="form-group">
+        <label>Выбраные товары: </label>
+        <ul>
+            @foreach (var item in collection)
+            {
+                <li>@item</li>
+            }
+        </ul>
+    </div>
+} else
+{
+    <div class="form-group">
+        <label>Выбрите товары</label>
+    </div>
+}
+
+@code {
+    [Parameter] public IEnumerable<string> collection { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        collection = new List<string>();
+    }
+}

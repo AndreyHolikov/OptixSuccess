@@ -4,15 +4,16 @@
 @inject UseCases.IViewVendorsUseCase ViewVendorsUseCase
 @inject UseCases.IDeleteVendorUseCase DeleteVendorUseCase
 
-<h3>Manage Vendors</h3>
+<h3>Поставщики</h3>
 
 @if(vendors != null)
 {
-        <table class="table" id="myTable">
+        <table class="table table-responsive" id="myTable">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Description</th>
+                    <th>№</th>
+                    <th>Компания</th>
+                    <th>Описание</th>
                     <th></th>
                 </tr>
             </thead>
@@ -23,15 +24,15 @@
                         <td>@vendor.Name</td>
                         <td>@vendor.Description</td>
                         <td>
-                            <button tupe="button" @onclick="@(() => EditVendor(vendor))" class="btn btn-light">Edit</button>
-                            <button tupe="button" @onclick="@(() => DeleteVendor(vendor.VendorId))" class="btn btn-light">Delete</button>
+                            <button tupe="button" @onclick="@(() => EditVendor(vendor))" class="btn btn-light">Редактировать</button>
+                            <button tupe="button" @onclick="@(() => DeleteVendor(vendor.VendorId))" class="btn btn-light">Удалить</button>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
         <br/>
-        <button type="button" @onclick="OnClickAddVendor" class="btn btn-primary">Add Vendor</button>
+        <button type="button" @onclick="OnClickAddVendor" class="btn btn-primary">Добавить</button>
 }
 
 @code {

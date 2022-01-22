@@ -12,17 +12,17 @@
 
 @if(itemOrders != null)
 {
-        <table class="table" id="myTable">
+        <table class="table table-responsive" id="myTable">
             <thead>
                 <tr>
-                    <th></th>
-                    <th>Product</th>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Edited</th>
-                    <th>OrderCustomer</th>
-                    <th>OrderVendor</th>
+                    <th>№</th>
+                    <th>Товар</th>
+                    <th>Описание</th>
+                    <th>Количество</th>
+                    <th>Цена</th>
+                    <th>Дата редактирования</th>
+                    <th>Покупатель</th>
+                    <th>Поставщик</th>
                     <th></th>
                 </tr>
             </thead>
@@ -45,12 +45,12 @@
   
                         <th>
                             <a href="/ordercustomer/@itemOrder.OrderCustomerId">
-                                @GetOrderCustomerByIdUseCase.Execute(itemOrder.OrderCustomerId)?.Name
+                                @GetOrderCustomerByIdUseCase.Execute(itemOrder.OrderCustomerId)?.Edited
                             </a>
                         </th>
                         <th>
                             <a href="/ordervendor/@itemOrder.OrderVendorId">
-                                @GetOrderVendorByIdUseCase.Execute(itemOrder.OrderVendorId)?.Name
+                                @GetOrderVendorByIdUseCase.Execute(itemOrder.OrderVendorId)?.Edited
                             </a>
                         </th>
                         <td>

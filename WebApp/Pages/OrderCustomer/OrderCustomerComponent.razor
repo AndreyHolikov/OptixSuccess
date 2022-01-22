@@ -11,7 +11,7 @@
 
 @if(orderCustomers != null)
 {
-        <table class="table table-sm align-middle">
+        <table class="table table-sm align-middle table-responsive">
             <thead>
                 <tr>
                     <th>№</th>
@@ -29,7 +29,7 @@
                 {
                     <tr>
                         <td>@orderCustomer.OrderCustomerId</td>
-                        <td>@GetCustomerByIdUseCase.Execute(orderCustomer.OrderCustomerId).Company</td>
+                        <td>@GetCustomerByIdUseCase.Execute(orderCustomer.OrderCustomerId)?.Company</td>
                         <td>@orderCustomer.Edited</td>
                         <td>
                             @ViewItemOrdersUseCase.Execute().Where(x => x.OrderCustomerId == orderCustomer.OrderCustomerId).Count()
