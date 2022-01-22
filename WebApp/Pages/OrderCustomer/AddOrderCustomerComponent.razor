@@ -105,17 +105,17 @@
 
     #region UploadFile
 
-    private readonly IWebHostEnvironment _environment;
-    public async Task UploadAsync(IFileListEntry fileEntry)
-    {
-        var path = Path.Combine(_environment.ContentRootPath, "excelfiles", fileEntry.Name);
-        var ms = new MemoryStream();
-        await fileEntry.Data.CopyToAsync(ms);
-        using(FileStrim file = new FileStrim(path,  FileMode.Create, FileAccess.Write))
-        {
-            ms.WriteTo(file);
-        }
-    }
+    //private readonly IWebHostEnvironment _environment;
+    //public async Task UploadAsync(IFileListEntry fileEntry)
+    //{
+    //    var path = Path.Combine(_environment.ContentRootPath, "excelfiles", fileEntry.Name);
+    //    var ms = new MemoryStream();
+    //    await fileEntry.Data.CopyToAsync(ms);
+    //    using(FileStrim file = new FileStrim(path,  FileMode.Create, FileAccess.Write))
+    //    {
+    //        ms.WriteTo(file);
+    //    }
+    //}
 
     #endregion
 

@@ -46,7 +46,7 @@ namespace WebApp
 
             services.AddScoped<IExcelFileRepository, ExcelFileInMemoryRepository>();
 
-            services.AddScoped<IFileUpload, >
+            //services.AddScoped<IFileUpload, >
 
             //Dependency Injection fo Use Cases and Repositories
             #region Categories
