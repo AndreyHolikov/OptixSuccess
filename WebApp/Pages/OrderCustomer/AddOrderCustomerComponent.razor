@@ -105,7 +105,7 @@
 
     #region UploadFile
 
-    private readonly IWebHostEnvironment _environment;
+    @*private readonly IWebHostEnvironment _environment;
     public async Task UploadAsync(IFileListEntry fileEntry)
     {
         var path = Path.Combine(_environment.ContentRootPath, "excelfiles", fileEntry.Name);
@@ -115,7 +115,7 @@
         {
             ms.WriteTo(file);
         }
-    }
+    }*@
 
     #endregion
 

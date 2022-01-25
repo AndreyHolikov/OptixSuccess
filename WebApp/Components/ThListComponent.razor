@@ -1,0 +1,9 @@
+﻿@foreach (var item in TextCollection)
+{
+    <th class="align-middle">"@item</th>
+}
+
+@code {
+    [Parameter] 
+    public List<string> TextCollection { get; set; }
+}

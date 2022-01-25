@@ -1,0 +1,16 @@
+﻿@* Example <TitleWidgetWithCountComponent Text="" Count="" Href=@Href CountItem=@CountItemOrdersOnPage FullCount=@itemOrders.Count()> *@
+
+<div class="widget-header">
+    <h4 class="mx-auto">
+        <NavLink class="nav-link optix-widget-title" href="@Href" style="float:left;">
+            @Text ( @(CountItem < FullCount ? $"{CountItem} из {FullCount}" : FullCount) )
+        </NavLink>   
+    </h4>
+</div>
+
+@code {
+    [Parameter] public string Text { get; set; }
+    [Parameter] public string Href { get; set; }
+    [Parameter] public int CountItem { get; set; }
+    [Parameter] public int FullCount { get; set; }
+}

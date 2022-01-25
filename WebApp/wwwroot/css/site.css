@@ -60,6 +60,10 @@ a, .btn-link {
     text-align: right;
 }
 
+.align-middle-th th {
+    text-align: center;
+}
+
 .optix-font {
     font-family: 'Literata', serif;
     /*font-family: "Literata script=latin rev=2";*/

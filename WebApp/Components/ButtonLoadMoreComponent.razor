@@ -1,0 +1,19 @@
+﻿@*Example <ButtonLoadMoreComponent Text="" OnClickCallback="" CountItem="" FullCount=""></ButtonLoadMoreComponent>*@
+
+@if (CountItem < FullCount)
+{
+    <div class="text-align-right">
+        <button tupe="button"  @onclick="OnClickCallback" class="btn btn-link @AddClass">
+            @Text
+        </button> 
+    </div>
+}
+
+@code {
+    [Parameter]    public string Text { get; set; }
+    [Parameter]    public int CountItem { get; set; }
+    [Parameter]    public int FullCount { get; set; }
+    [Parameter]    public string AddClass { get; set; }
+
+    [Parameter]    public EventCallback OnClickCallback { get; set; }
+}

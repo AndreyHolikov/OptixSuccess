@@ -23,16 +23,11 @@
 
 
 
-<div class=" optix-widget optix-font">
-<div class="row optix-row-1 optix-page-content">
+<div class="optix-widget optix-font container">
+<div class="row optix-row-1 optix-page-content justify-content-center">
     <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
+        <TitleWidgetWithCountComponent Text="Покупатели" Href="customers"  CountItem=@CountCustomersOnPage FullCount=@customers.Count()></TitleWidgetWithCountComponent>
         <div>
-            <h4 class="mx-auto">
-                <NavLink class="nav-link optix-widget-title" href="customers" style="float:left;">
-                    Покупатели (@customers.Count())
-                </NavLink>     
-            </h4>
-            <br/>
             @if (customers != null)
             {
                     <div class="table-responsive">
@@ -50,22 +45,22 @@
                             </thead>
                             <tbody>
                                 @{ int i = 0;
-                                foreach (var customer in customers)
-                                {
-                                    <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" class="cursor-pointer text-align-center">
-                                        <td class="align-middle">@customer.СustomerId</td>
-                                        <td class="align-middle">@customer.Company</td>
-                                        <td class="align-middle">@ViewOrderCustomersUseCase.Execute().Where(x => x.CustomerId == customer.СustomerId).Count()</td>
-                                        <td>
-                                            <ButtonEditComponent TypeName="customer" Id="@customer.СustomerId.ToString()"></ButtonEditComponent>
-                                            <button type="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-link">
-                                                <i class="far fa-trash-alt"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    i++;
-                                    if (i >= CountCustomersOnPage) break;
-                                }
+                                    foreach (var customer in customers)
+                                    {
+                                        <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" class="cursor-pointer text-align-center">
+                                            <td class="align-middle">@customer.СustomerId</td>
+                                            <td class="align-middle">@customer.Company</td>
+                                            <td class="align-middle">@ViewOrderCustomersUseCase.Execute().Where(x => x.CustomerId == customer.СustomerId).Count()</td>
+                                            <td>
+                                                <ButtonEditComponent TypeName="customer" Id="@customer.СustomerId.ToString()"></ButtonEditComponent>
+                                                <button type="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-link">
+                                                    <i class="far fa-trash-alt"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        i++;
+                                        if (i >= CountCustomersOnPage) break;
+                                    }
                                 }
                             </tbody>
                         </table>
@@ -74,36 +69,27 @@
             </div>
         </div>
         <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
-            <div>
-                <h4 class="mx-auto">
-                    <NavLink class="nav-link optix-widget-title" href="ordercustomers" style="float:left;">
-                        Заказы от покупателей  (@orderCustomers.Count())
-                    </NavLink>         
-                </h4>
-                <br/>
+            <TitleWidgetWithCountComponent Text="Заказы от покупателей" Href="ordercustomers"  CountItem=@CountOrderCustomersOnPage FullCount=@orderCustomers.Count()></TitleWidgetWithCountComponent>
+            <div><br/>
                 @if (orderCustomers != null)
                 {
                     <div class="table-responsive">
                         <table class="table table-hover table-sm align-middle table-responsive">
                             <thead>
-                                <tr class="text-align-center">
-                                    <th class="align-middle">№</th>
-                                    <th class="align-middle" title="Покупатель. Дата и время редактирования">
+                                <tr class="text-align-center align-middle-th th">
+                                    <th>№</th>
+                                    <th title="Покупатель. Дата и время редактирования">
                                         Покупатель<br/>
-                                        Дата
-                                        <IconCircleComponent ></IconCircleComponent>
+                                        Дата <IconCircleComponent ></IconCircleComponent>
                                     </th>
                                     <th class="align-middle" title="Количество позиций">
-                                        Позиций 
-                                        <IconCircleComponent ></IconCircleComponent>
+                                        Позиций <IconCircleComponent ></IconCircleComponent>
                                     </th>
-                                    <th class="align-middle" title="Количество товаров">
-                                        Товаров
-                                        <IconCircleComponent></IconCircleComponent>
+                                    <th title="Количество товаров">
+                                        Товаров <IconCircleComponent></IconCircleComponent>
                                     </th>
                                     <th>
                                         <ButtonAddComponent TypeName="OrderCustomer"></ButtonAddComponent>
-                                        <ButtonLoadComponent OnClickCallback="LoadOrderCustomers"></ButtonLoadComponent>
                                     </th>
                                 </tr>
                             </thead>
@@ -114,7 +100,7 @@
                                     <tr @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" class="cursor-pointer text-align-center">
                                         <td>@orderCustomer.OrderCustomerId</td>
                                         <td>
-                                            @GetCustomerByIdUseCase.Execute(orderCustomer.OrderCustomerId).Company<br/>
+                                            @GetCustomerByIdUseCase.Execute(orderCustomer.OrderCustomerId)?.Company<br/>
                                             @orderCustomer.Edited.ToString("dd.MM.yyyy")<br/>
                                             @orderCustomer.Edited.ToString("HH:mm:ss")
                                         </td>
@@ -133,29 +119,25 @@
                             </tbody>
                         </table>
                     </div>
+                    <ButtonLoadMoreComponent Text="Загрузить больше" OnClickCallback="(() => LoadMoreOrderCustomers())" CountItem=@CountOrderCustomersOnPage FullCount=@orderCustomers.Count()></ButtonLoadMoreComponent>
                 }
             </div>
         </div>
         <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
-            <div class="widget-header">
-                <h4 class="mx-auto">
-                    <NavLink class="nav-link optix-widget-title" href="itemorders" style="float:left;">
-                        Товары в заказах ( @(CountItemOrdersOnPage < itemOrders.Count() ? $"{CountItemOrdersOnPage} из {itemOrders.Count()}" : itemOrders.Count()) )
-                    </NavLink>   
-                </h4>
-            </div>
+            <TitleWidgetWithCountComponent Text="Товары в заказах" Href="itemorders"  CountItem=@CountItemOrdersOnPage FullCount=@itemOrders.Count()></TitleWidgetWithCountComponent>
             <div class="widget-content">
                 @if (itemOrders != null)
                 {
                     <div class="table-responsive">
                         <table class="table table-hover table-sm align-middle table-responsive">
                             <thead>
-                                <tr class="text-align-center">
-                                    <th class="align-middle">Id</th>
-                                    <th class="align-middle">Товар</th>
-                                    <th class="align-middle">Кол-во</th>
-                                    <th class="align-middle">Цена</th>
-                                    <th class="align-middle">№ заказа<br/>покупателя</th>
+                                <tr class="text-align-center align-middle-th">
+                                    <th>Id</th>
+                                    <th>Товар</th>
+                                    <th>Кол-во</th>
+                                    <th>Цена</th>
+                                    <th>№ заказа<br/>покупателя</th>
+
                                     <th>
                                         <ButtonAddComponent TypeName="ItemOrder"></ButtonAddComponent>
                                         <button tupe="button"  @onclick="(() => LoadItemOrders())" class="btn btn-link">
@@ -189,14 +171,7 @@
                             </tbody>
                         </table>
                     </div>
-                    if (CountItemOrdersOnPage < itemOrders.Count())
-                    {
-                        <div class="text-align-right">
-                            <button tupe="button"  @onclick="(() => LoadMoreItemOrders())" class="btn btn-link">
-                                Загрузить больше
-                            </button> 
-                        </div>
-                    }
+                    <ButtonLoadMoreComponent Text="Загрузить больше" OnClickCallback="(() => LoadMoreItemOrders())" CountItem=@CountItemOrdersOnPage FullCount=@itemOrders.Count()></ButtonLoadMoreComponent>
                     <hr/>
                 }
             </div>
@@ -297,13 +272,14 @@
     private void LoadOrderCustomers()
     {
         if (LastClickOnСustomerId > 0)
-        {
             orderCustomers = ViewOrderCustomersUseCase.Execute().Where(x => x.CustomerId == LastClickOnСustomerId)?.ToList();
-        }
         else
-        {
             orderCustomers = ViewOrderCustomersUseCase.Execute()?.ToList();
-        }
+    }
+    
+    private void LoadMoreOrderCustomers(){
+        CountOrderCustomersOnPage += 10;
+        LoadOrderCustomers();
     }
 
     protected void DeleteOrderCustomer(int OrderCustomerId)
@@ -323,13 +299,9 @@
     private void LoadItemOrders()
     {
         if (LastClickOnOrderСustomerId > 0)
-        {
             itemOrders = ViewItemOrdersUseCase.Execute()?.Where(x => x.OrderCustomerId == LastClickOnOrderСustomerId).ToList();
-        }
         else
-        {
             itemOrders = ViewItemOrdersUseCase.Execute()?.ToList();
-        }
     }
 
     private void LoadMoreItemOrders(){
