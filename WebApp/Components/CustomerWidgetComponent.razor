@@ -124,7 +124,10 @@
             </div>
         </div>
         <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
-            <TitleWidgetWithCountComponent Text="Товары в заказах" Href="itemorders"  CountItem=@CountItemOrdersOnPage FullCount=@itemOrders.Count()></TitleWidgetWithCountComponent>
+            <TitleWidgetWithCountComponent Text="Товары в заказах" Href="itemorders" 
+                CountItem=@CountItemOrdersOnPage FullCount=@itemOrders.Count()>
+            </TitleWidgetWithCountComponent>
+
             <div class="widget-content">
                 @if (itemOrders != null)
                 {
@@ -239,13 +242,17 @@
 
     #endregion
 
+    private string GetSelectedItemOrdersAsString()
+        => ""; // string.Join(",", miniItemOrder.selectedItemOrders);
+
+
     protected override void OnInitialized()
     {
         CountCustomersOnPage = CountOrderCustomersOnPage = CountItemOrdersOnPage = CountItemOnPage;
         base.OnInitialized();
         LoadCustomers();
         LoadOrderCustomers();
-        LoadItemOrders();
+        LoadItemOrders(); 
     }
 
     #region Customer
