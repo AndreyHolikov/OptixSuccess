@@ -106,3 +106,9 @@ h4.mx-auto {
 .color-bbb {
     color: #BBB;
 }
+
+.content-footer {
+    background-image: url("https://blazor.radzen.com/images/background.svg");
+    background-repeat: no-repeat;
+    background-position: right -450px top -200px;
+}

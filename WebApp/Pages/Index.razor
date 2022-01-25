@@ -7,9 +7,9 @@
     <h1>Optix Management System</h1>
 </div>
 
-<CustomerWidgetComponent CountItemOnPage=@CountItemOnPage ></CustomerWidgetComponent>
+<CustomerWidgetComponent CountItemOnPage=@CountItemOnPage OnUpdateCallback=@OnUpdateCallback ></CustomerWidgetComponent>
 <hr/>
-<VendorWidgetComponent  CountItemOnPage=@CountItemOnPage ></VendorWidgetComponent>
+<VendorWidgetComponent  CountItemOnPage=@CountItemOnPage  OnUpdateCallback=@OnUpdateCallback ></VendorWidgetComponent>
 
 @code {
 
@@ -19,4 +19,10 @@
     {
         base.OnInitialized();
     }  
+
+    protected void OnUpdateCallback()
+    {
+        int temp = CountItemOnPage;
+        CountItemOnPage = temp;
+    }
 }

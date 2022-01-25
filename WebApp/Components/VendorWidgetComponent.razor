@@ -40,7 +40,6 @@
                                 <th class="align-middle">Компания</th>
                                 <th>                
                                     <ButtonAddComponent TypeName="Vendor"></ButtonAddComponent>
-                                    <ButtonLoadComponent OnClickCallback="LoadVendors"></ButtonLoadComponent>   
                                     <button tupe="button" class="btn btn-link"></button>
                                 </th>
                             </tr>
@@ -102,8 +101,9 @@
                                 </th>
                                 <th>
                                     <ButtonAddComponent TypeName="OrderVendor"></ButtonAddComponent>
-                                    <ButtonLoadComponent OnClickCallback="LoadOrderVendors"></ButtonLoadComponent>
-                                    <button tupe="button" class="btn btn-link"></button>
+                                    <button tupe="button"  @onclick="(() => LoadOrderVendors())" class="btn btn-link">
+                                        <i class="fas fa-sync-alt" ></i>
+                                    </button> 
                                 </th>
                             </tr>
                         </thead>
@@ -138,15 +138,15 @@
                         </tbody>
                 </table>
             </div>
+            <ButtonLoadMoreComponent Text="Загрузить больше" OnClickCallback="(() => LoadMoreOrderVendors())" CountItem=@CountOrderVendorsOnPage FullCount=@orderVendors.Count()></ButtonLoadMoreComponent>
             }
         </div>
     </div>
     <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
-        <div class="widget-header">
-            <h4 class="mx-auto">
-                <NavLink class="nav-link optix-widget-title" href="itemorders" style="float:left;">Товары в заказах (@itemOrders.Where(io => io.OrderVendorId > 0).Count()) </NavLink>   
-            </h4>
-        </div>
+        <TitleWidgetWithCountComponent Text="Товары в заказах" Href="itemorders" 
+            CountItem=@CountItemOrdersOnPage FullCount=@itemOrders.Count()>
+        </TitleWidgetWithCountComponent>
+
         <div class="widget-content">
             @if (itemOrders != null)
             {
@@ -194,6 +194,7 @@
                         </tbody>
                 </table>
             </div>
+            <ButtonLoadMoreComponent Text="Загрузить больше" OnClickCallback="(() => LoadMoreItemOrders())" CountItem=@CountItemOrdersOnPage FullCount=@itemOrders.Count()></ButtonLoadMoreComponent>
             <hr/>
             }
         </div>
@@ -202,8 +203,29 @@
 </div>
 
 @code {
+    //private int countItemOnPage;
 
-    [Parameter] public int CountItemOnPage { get; set; } = 3;
+    [Parameter]     public int CountItemOnPage {  get; set; }
+    /*        get => countItemOnPage;
+    set
+    {
+    countItemOnPage = value;
+        }
+    }
+    */
+
+    [Parameter]     public EventCallback OnUpdateCallback { get; set; }
+
+    public Task UpdateComponent() => OnUpdateCallback.InvokeAsync(null);
+
+    private int CountVendorsOnPage { get; set; }
+    private int CountOrderVendorsOnPage { get; set; }
+    private int CountItemOrdersOnPage { get; set; }
+
+    private int LastClickOnVendorId { get; set; }
+    private int LastClickOnOrderVendorId { get; set; }
+    private int LastClickOnItemOrderId { get; set; }
+
 
     record MiniItemOrder
     {
@@ -225,15 +247,16 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        if (CountItemOnPage > 0) CountItemOnPage = 3;
         LoadVendors();
-        LoadOrderVendors();
-        LoadItemOrders();
     }
 
     #region Vendor
 
-    private void LoadVendors()
-        => vendors = ViewVendorsUseCase.Execute()?.ToList();
+    private void LoadVendors(){
+        vendors = ViewVendorsUseCase.Execute()?.ToList();
+        LoadOrderVendors();
+    }
 
     protected void DeleteVendor(int VendorId)
     {
@@ -246,8 +269,28 @@
     #endregion 
 
     #region OrderVendor
+
     private void LoadOrderVendors()
-        => orderVendors = ViewOrderVendorsUseCase.Execute()?.ToList();
+    {
+        if (LastClickOnOrderVendorId > 0)
+            orderVendors = ViewOrderVendorsUseCase.Execute().Where(x => x.VendorId == LastClickOnVendorId)?.ToList();
+        else
+            orderVendors = ViewOrderVendorsUseCase.Execute()?.ToList();
+
+        LoadItemOrders();
+    }
+
+    private void LoadAllOrderVendors()
+    {
+        LastClickOnOrderVendorId = 0;
+        LoadOrderVendors();
+    }
+
+    private void LoadMoreOrderVendors(){
+        CountOrderVendorsOnPage += 10;
+        LoadOrderVendors();
+    }
+
 
     protected void DeleteOrderVendor(int OrderVendorId)
     {
@@ -256,12 +299,31 @@
     }
 
     protected void ClickOrderVendor(int orderVendorId)
-        => itemOrders = ViewItemOrdersUseCase.Execute()?.Where(x => x.OrderVendorId == orderVendorId).ToList();
+    {
+        LastClickOnOrderVendorId = orderVendorId;
+        LoadItemOrders();
+    }
     #endregion 
 
     #region ItemOrder
     private void LoadItemOrders()
-        => itemOrders = ViewItemOrdersUseCase.Execute()?.ToList();
+    {
+        if (LastClickOnOrderVendorId > 0)
+            itemOrders = ViewItemOrdersUseCase.Execute()?.Where(x => x.OrderVendorId == LastClickOnOrderVendorId).ToList();
+        else
+            itemOrders = ViewItemOrdersUseCase.Execute()?.ToList();
+    }
+
+    private void LoadAllItemOrders()
+    {
+        LastClickOnOrderVendorId = 0;
+        LoadItemOrders();
+    }
+
+    private void LoadMoreItemOrders(){
+        CountItemOrdersOnPage += 10;
+        LoadItemOrders();
+    }
 
     protected void DeleteItemOrder(int ItemOrderId)
     {

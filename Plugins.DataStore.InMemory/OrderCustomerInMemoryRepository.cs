@@ -12,6 +12,13 @@ namespace Plugins.DataStore.InMemory
     {
         private List<OrderCustomer> orderCustomers;
 
+        private Random gen = new Random();
+        private DateTime RandomDay() { 
+            DateTime start = new DateTime(2022, 1, 1); 
+            int range = (DateTime.Today - start).Days; 
+            return start.AddDays(gen.Next(range)); 
+        }
+
         public OrderCustomerInMemoryRepository()
         {
             // Add some  default orderCustomers
@@ -24,27 +31,27 @@ namespace Plugins.DataStore.InMemory
                     Edited = DateTime.Now,
                     CustomerId = 1,
                     ExcelFileId = 1
-        },
+                },
                 new OrderCustomer() { 
                     OrderCustomerId = 2, 
                     Description = "Описание заказа 2",
-                    Edited = DateTime.Now,
+                    Edited = RandomDay(),
                     CustomerId = 2,
                     ExcelFileId = 2
                 },
                 new OrderCustomer() { 
                     OrderCustomerId = 3, 
                     Description = "Описание заказа 3",
-                    Edited = DateTime.Now,
+                    Edited = RandomDay(),
                     CustomerId = 3,
                     ExcelFileId = 3
                 },
                 new OrderCustomer() {
                     OrderCustomerId = 4,
-                    Description = "Описание заказа 4",
-                    Edited = DateTime.Now,
+                    Description = "Описание заказа 41",
+                    Edited = RandomDay(),
                     CustomerId = 1,
-                    ExcelFileId = 3
+                    ExcelFileId = 1
                 }
             };
         }

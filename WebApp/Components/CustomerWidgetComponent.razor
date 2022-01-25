@@ -23,7 +23,7 @@
 
 
 
-<div class="optix-widget optix-font container">
+<div class="optix-widget optix-font container ">
 <div class="row optix-row-1 optix-page-content justify-content-center">
     <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
         <TitleWidgetWithCountComponent Text="Покупатели" Href="customers"  CountItem=@CountCustomersOnPage FullCount=@customers.Count()></TitleWidgetWithCountComponent>
@@ -39,7 +39,9 @@
                                     <th class="align-middle">Кол-во<br/>заказов</th>
                                     <th>                
                                         <ButtonAddComponent TypeName="Customer"></ButtonAddComponent>
-                                       
+                                        <button tupe="button"  @onclick="(() => LoadCustomers())" class="btn btn-link">
+                                            <i class="fas fa-sync-alt" ></i>
+                                        </button> 
                                     </th>
                                 </tr>
                             </thead>
@@ -90,6 +92,9 @@
                                     </th>
                                     <th>
                                         <ButtonAddComponent TypeName="OrderCustomer"></ButtonAddComponent>
+                                        <button tupe="button"  @onclick="(() => LoadAllOrderCustomers())" class="btn btn-link">
+                                            <i class="fas fa-sync-alt" ></i>
+                                        </button> 
                                     </th>
                                 </tr>
                             </thead>
@@ -100,7 +105,7 @@
                                     <tr @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" class="cursor-pointer text-align-center">
                                         <td>@orderCustomer.OrderCustomerId</td>
                                         <td>
-                                            @GetCustomerByIdUseCase.Execute(orderCustomer.OrderCustomerId)?.Company<br/>
+                                            @GetCustomerByIdUseCase.Execute(orderCustomer.CustomerId)?.Company<br/>
                                             @orderCustomer.Edited.ToString("dd.MM.yyyy")<br/>
                                             @orderCustomer.Edited.ToString("HH:mm:ss")
                                         </td>
@@ -143,7 +148,7 @@
 
                                     <th>
                                         <ButtonAddComponent TypeName="ItemOrder"></ButtonAddComponent>
-                                        <button tupe="button"  @onclick="(() => LoadItemOrders())" class="btn btn-link">
+                                        <button tupe="button"  @onclick="(() => LoadAllItemOrders())" class="btn btn-link">
                                             <i class="fas fa-sync-alt" ></i>
                                         </button> 
                                     </th>
@@ -157,10 +162,10 @@
                                 {
                                     <tr  @onclick="@(() => ClickItemOrder(itemOrder.ItemOrderId))"  class="cursor-pointer text-align-center">
                                         <td>@itemOrder.ItemOrderId</td>
-                                        <td>@GetProductByIdUseCase.Execute(itemOrder.ProductId).Name</td>
+                                        <td>@GetProductByIdUseCase.Execute(itemOrder.ProductId)?.Name</td>
                                         <td>@itemOrder.Quantity</td>
                                         <td>@itemOrder.Price</td>
-                                        <td>@GetOrderCustomerByIdUseCase.Execute(itemOrder.OrderCustomerId).OrderCustomerId</td>
+                                        <td>@GetOrderCustomerByIdUseCase.Execute(itemOrder.OrderCustomerId)?.OrderCustomerId</td>
                                         <td>
                                             <ButtonEditComponent TypeName="customer" Id="@itemOrder.ItemOrderId.ToString()"></ButtonEditComponent>
                                             <button type="button" @onclick="@(() => DeleteItemOrder(itemOrder.ItemOrderId))" class="btn btn-link">
@@ -178,6 +183,8 @@
                     <hr/>
                 }
             </div>
+        </div>
+        <div class="col col-auto m-2 p-4 bg-light border widget-column-border">
 
             <div class="widget-footer">
                 <EditForm Model="@miniItemOrder">
@@ -188,6 +195,7 @@
                     <ValidationSummary />
 
                     <ViewListAsUlComponent collection="@GetSelectedItemOrdersAsCollection()"></ViewListAsUlComponent>
+                    <button type="button" class="btn btn-link" @onclick="OnClearListSelectedItemOrders">Очистить список</button>
 
                     <div class="form-group">
                         <label for="orderVendorId">№ заказа поставщика</label>
@@ -199,8 +207,9 @@
                         </InputNumber>
                     </div>
 
+                    
                     <button type="button" class="btn btn-info" @onclick="OnClickSendItemOrderInOrderVendor">Отправить *</button>
-                    <p> * - что увидеть изменения в таблице<br/> "Заказы для поставщиков" ее нужно обновить. </p>
+                    <p> * - что увидеть изменения в таблицах<br/> "Заказы для поставщиков" и <br/> "Товары в заказах"<br/> их нужно обновить. </p>
                 </EditForm>
                 <div class="alert @alertClass" role="alert">
                     @warningMessage1
@@ -211,7 +220,10 @@
 </div>
 
 @code {
-    [Parameter] public int CountItemOnPage { get; set; } = 3;
+    [Parameter]     public int CountItemOnPage { get; set; } = 3;
+    [Parameter]     public EventCallback OnUpdateCallback { get; set; }
+
+    public Task UpdateComponent() => OnUpdateCallback.InvokeAsync(null);
 
     private int CountCustomersOnPage { get; set; }
     private int CountOrderCustomersOnPage { get; set; }
@@ -251,19 +263,22 @@
         CountCustomersOnPage = CountOrderCustomersOnPage = CountItemOrdersOnPage = CountItemOnPage;
         base.OnInitialized();
         LoadCustomers();
-        LoadOrderCustomers();
-        LoadItemOrders(); 
+        
     }
 
     #region Customer
 
     private void LoadCustomers()
-        => customers = ViewCustomersUseCase.Execute()?.ToList();
+    {
+        customers = ViewCustomersUseCase.Execute()?.ToList();
+        LoadOrderCustomers();
+    }
 
     protected void DeleteCustomer(int CustomerId)
     {
         DeleteCustomerUseCase?.Delete(CustomerId);
         LoadCustomers();
+        UpdateComponent();
     }
 
     protected void ClickCustomer(int customerId) 
@@ -282,8 +297,16 @@
             orderCustomers = ViewOrderCustomersUseCase.Execute().Where(x => x.CustomerId == LastClickOnСustomerId)?.ToList();
         else
             orderCustomers = ViewOrderCustomersUseCase.Execute()?.ToList();
+        
+        LoadItemOrders(); 
     }
-    
+
+    private void LoadAllOrderCustomers()
+    {
+        LastClickOnСustomerId = 0;
+        LoadOrderCustomers();
+    }
+
     private void LoadMoreOrderCustomers(){
         CountOrderCustomersOnPage += 10;
         LoadOrderCustomers();
@@ -293,6 +316,7 @@
     {
         DeleteOrderCustomerUseCase?.Delete(OrderCustomerId);
         LoadOrderCustomers();
+        UpdateComponent();
     }
 
     protected void ClickOrderCustomer(int orderCustomerId)
@@ -311,6 +335,12 @@
             itemOrders = ViewItemOrdersUseCase.Execute()?.ToList();
     }
 
+    private void LoadAllItemOrders()
+    {
+        LastClickOnOrderСustomerId = 0;
+        LoadItemOrders();
+    }
+
     private void LoadMoreItemOrders(){
         CountItemOrdersOnPage += 10;
         LoadItemOrders();
@@ -320,7 +350,8 @@
     {
         DeleteItemOrderUseCase?.Delete(ItemOrderId);
         miniItemOrder.selectedItemOrderIds.Remove(ItemOrderId);
-        LoadItemOrders();        
+        LoadItemOrders();    
+        UpdateComponent();
     }
 
     private IEnumerable<string> GetSelectedItemOrdersAsCollection()
@@ -370,6 +401,7 @@
             miniItemOrder.selectedItemOrderIds.Clear();
             alertClass = "alert-success";
             warningMessage1 = "Товары успешно добавлены";
+            UpdateComponent();
         } else {
             alertClass = "alert-danger";
             warningMessage1 = $"Заказ c номером {miniItemOrder.OrderVendorId} не найден";
@@ -386,6 +418,11 @@
             alertClass = "alert-danger";
             warningMessage1 = $"Заказ c номером {miniItemOrder.OrderVendorId} не найден";
         }
+    }
+
+    protected void OnClearListSelectedItemOrders()
+    {
+        miniItemOrder.selectedItemOrderIds.Clear();
     }
     #endregion 
 }
