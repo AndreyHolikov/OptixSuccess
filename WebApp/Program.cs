@@ -15,6 +15,8 @@ namespace WebApp
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
+
+            //builder.Services.AddScoped<DialogService>();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
