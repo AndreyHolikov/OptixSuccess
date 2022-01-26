@@ -13,7 +13,7 @@ using WebApp.Data;
 using Plugins.DataStore.InMemory;
 using UseCases.DataStorePluginInterfaces;
 using UseCases;
-
+using Radzen;
 
 namespace WebApp
 {
@@ -45,6 +45,8 @@ namespace WebApp
             services.AddScoped<IVendorRepository, VendorInMemoryRepository>();
 
             services.AddScoped<IExcelFileRepository, ExcelFileInMemoryRepository>();
+
+            services.AddScoped<DialogService>();
 
             //services.AddScoped<IFileUpload, >
 

@@ -20,6 +20,13 @@
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>
 
+        <RadzenCard>
+            <h4 class="mb-4">Binding to simple collection</h4>
+            <RadzenDropDown AllowClear="true" TValue="string" Class="w-100" 
+                            Data=@(customers.Select(c => c.Company).Distinct())
+                            Change=@(args => OnChange(args, "DropDown")) />
+        </RadzenCard>
+
         <select id="customer" @bind="orderCustomer.CustomerId" class="form-control">
             <option selected></option>
             @foreach(var customer in customers)
@@ -60,6 +67,19 @@
             }
         </div>
 
+        <RadzenFileInput @bind-Value=@orderCustomer.Name TValue="string" Change=@OnChange />
+        <RadzenCard>
+            <h4 class="mb-4">Employee: <b>@(orderCustomer.Name)</b></h4>
+            <RadzenFileInput @bind-Value=@orderCustomer.Name TValue="string" Class="w-100" 
+                Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) />
+        </RadzenCard>
+
+        @*<RadzenFileInput @bind-Value="TextAlign" TValue="string" Class="w-100" 
+            Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) />
+        </RadzenCard>*@
+
+
+
         <button type="submit" class="btn btn-primary">Сохранить</button>
         <button type="button" class="btn btn-primary" @onclick="OnCansel">Оменить</button>
     </EditForm>
@@ -68,12 +88,30 @@
 @code {
     private OrderCustomer orderCustomer;
 
+        void OnChange(string value)
+    {
+        Console.WriteLine($"Value changed to {value}");
+    }
+
     #region Fields for loadingFiles
     private List<IBrowserFile> loadedFiles = new();
     private long maxFileSize = 1024 * 15;
     private int maxAllowedFiles = 1;
     private bool isLoading;
+
+    @*Employee firstEmployee;
+    EventConsole console;*@
     #endregion
+
+    void OnChange(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+    }
+
+        void OnError(UploadErrorEventArgs args, string name)
+    {
+        //console.Log($"{args.Message}");
+    }
 
     public IEnumerable<Customer> customers { get; set; }
 
@@ -84,6 +122,7 @@
         orderCustomer = new OrderCustomer();
         customers = ViewCustomersUseCase.Execute();
     }
+
     private void OnValidSubmit()
     {
         orderCustomer.Edited = DateTime.Now;
