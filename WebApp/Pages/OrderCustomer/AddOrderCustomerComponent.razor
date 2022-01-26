@@ -12,6 +12,9 @@
 @inject IAddOrderCustomerUseCase AddOrderCustomerUseCase 
 @inject IViewCustomersUseCase ViewCustomersUseCase
 
+
+@using ClosedXML.Excel;
+
 <h3>Add OrderCustomer</h3>
 
 @if (orderCustomer != null)
@@ -20,12 +23,7 @@
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>
 
-        <RadzenCard>
-            <h4 class="mb-4">Binding to simple collection</h4>
-            <RadzenDropDown AllowClear="true" TValue="string" Class="w-100" 
-                            Data=@(customers.Select(c => c.Company).Distinct())
-                            Change=@(args => OnChange(args, "DropDown")) />
-        </RadzenCard>
+
 
         <select id="customer" @bind="orderCustomer.CustomerId" class="form-control">
             <option selected></option>
@@ -67,18 +65,9 @@
             }
         </div>
 
-        <RadzenFileInput @bind-Value=@orderCustomer.Name TValue="string" Change=@OnChange />
-        <RadzenCard>
-            <h4 class="mb-4">Employee: <b>@(orderCustomer.Name)</b></h4>
-            <RadzenFileInput @bind-Value=@orderCustomer.Name TValue="string" Class="w-100" 
-                Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) />
-        </RadzenCard>
-
-        @*<RadzenFileInput @bind-Value="TextAlign" TValue="string" Class="w-100" 
-            Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) />
-        </RadzenCard>*@
 
 
+        
 
         <button type="submit" class="btn btn-primary">Сохранить</button>
         <button type="button" class="btn btn-primary" @onclick="OnCansel">Оменить</button>
@@ -154,15 +143,15 @@
         {
             ms.WriteTo(file);
         }
-    }*@
+        }*@
 
     #endregion
 
     private async Task SingleUpload(InputFileChangeEventArgs e)
     {
-       var ms = new MemoryStream();
-       await e.File.OpenReadStream().CopyToAsync(ms);
-       var bytes = ms.ToArray();
+        var ms = new MemoryStream();
+        await e.File.OpenReadStream().CopyToAsync(ms);
+        var bytes = ms.ToArray();
 
     }
 
@@ -194,4 +183,6 @@
 
         isLoading = false;
     }
+
+    
 }

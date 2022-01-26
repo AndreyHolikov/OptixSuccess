@@ -46,7 +46,7 @@ namespace WebApp
 
             services.AddScoped<IExcelFileRepository, ExcelFileInMemoryRepository>();
 
-            services.AddScoped<DialogService>();
+            services.AddScoped<TooltipService>();
 
             //services.AddScoped<IFileUpload, >
 

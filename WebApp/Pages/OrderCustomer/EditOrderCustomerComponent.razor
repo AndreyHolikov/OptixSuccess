@@ -1,10 +1,15 @@
 ﻿@page "/editordercustomer/{ordercustomerId}"
+@using System.IO
+@using ClosedXML.Excel
 @using UseCases
+@inject IJSRuntime JSRuntime
 
 @inject NavigationManager NavigationManager
 @inject IEditOrderCustomerUseCase EditOrderCustomerUseCase
 @inject IGetOrderCustomerByIdUseCase GetOrderCustomerByIdUseCase 
 @inject IGetExcelFileByIdUseCase GetExcelFileByIdUseCase
+
+@inject IViewItemOrdersUseCase ViewItemOrdersUseCase
 
 <h3>Редактирование заказа</h3>
 
@@ -27,6 +32,8 @@
             <label for="ExcelFile">Excel файл</label>
             <a href="@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId).FullPath">@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId).Name</a>
         </div>
+
+        <button type="button" @onclick="@(() => DownloadExcelDocument())">Скачать Excel файл с товарами</button>
 
         <button type="submit" class="btn btn-primary">Сохранить</button>
         <button type="button" class="btn btn-primary" @onclick="OnCansel">Отменить</button>
@@ -64,5 +71,47 @@
     private void OnCansel()
     {
         NavigationManager.NavigateTo("/ordercustomers");
+    }
+
+    public async Task DownloadExcelDocument()
+    {
+
+        //string apiUriJson = "OrderCustomersJson";
+        if (int.TryParse(this.OrderCustomerId, out int iOrderCustomerId))
+        {
+            List<OrderCustomer> orderCustomers = (List<OrderCustomer>)ViewItemOrdersUseCase.Execute().Where(x => x.OrderCustomerId == iOrderCustomerId);
+                // = await httpClient.GetJsonAsync<List<OrderCustomer>>(apiUriJson);
+
+            using (var workbook = new XLWorkbook())
+            {
+                IXLWorksheet worksheet =
+                workbook.Worksheets.Add("OrderCustomers");
+                worksheet.Cell(1, 1).Value = "№";
+                worksheet.Cell(1, 2).Value = "Edited";
+
+                for (int i = 1; i <= 2; i++)
+                {
+                    worksheet.Cell(1, i).Style.Font.Bold = true;
+                }
+
+                int index = 1;
+                foreach (var orderCustomer in orderCustomers)
+                {
+                    worksheet.Cell(index + 1, 1).Value = orderCustomer.OrderCustomerId;
+                    worksheet.Cell(index + 1, 2).Value = orderCustomer.Edited;
+
+                    index++;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+
+                    var fileName = "OrderCustomers.xlsx";
+                    await JSRuntime.InvokeAsync<object>("saveAsFile", fileName, Convert.ToBase64String(content));
+                }
+            }
+        }
     }
 }

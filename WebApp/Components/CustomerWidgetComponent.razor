@@ -21,6 +21,8 @@
 
 @using WebApp.Components
 
+@using System.Linq.Dynamic.Core
+@*using Microsoft.EntityFrameworkCore*@
 
 
 <div class="optix-widget optix-font container ">
@@ -52,7 +54,7 @@
                                         <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" class="cursor-pointer text-align-center">
                                             <td class="align-middle">@customer.СustomerId</td>
                                             <td class="align-middle">@customer.Company</td>
-                                            <td class="align-middle">@ViewOrderCustomersUseCase.Execute().Where(x => x.CustomerId == customer.СustomerId).Count()</td>
+                                            <td class="align-middle">@GetOrderCustomerCount(customer.СustomerId)</td>
                                             <td>
                                                 <ButtonEditComponent TypeName="customer" Id="@customer.СustomerId.ToString()"></ButtonEditComponent>
                                                 <button type="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-link">
@@ -66,6 +68,49 @@
                                 }
                             </tbody>
                         </table>
+
+                        <RadzenDataGrid Data="@customers" TItem="Customer" Count="@countCustomers" AllowVirtualization="true" 
+                            AllowPaging="true" PageSize="2" PageSizeOptions="@pageSizeOptions" 
+                            AllowColumnResize="true" ColumnWidth="60px"
+                            AllowSorting="true"
+                            SelectionMode="DataGridSelectionMode.Single" Filterable="false">
+                            <Columns>
+                                <RadzenDataGridColumn TItem="Customer" Property="СustomerId" Title="ID" Width="30px"  />
+                                <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Company" Width="100px">
+                                    <Template Context="customer">
+                                        <a href="/ordercustomers/@customer.СustomerId">@customer.Company</a>
+                                    </Template>
+                                </RadzenDataGridColumn>
+                                <RadzenDataGridColumn TItem="Customer" Property="CustomerId" Title="Заказов" Sortable="false" Width="30px">
+                                    <Template Context="customer">
+                                        @GetOrderCustomerCount(customer.СustomerId)
+                                    </Template>
+                                </RadzenDataGridColumn>
+
+                                <RadzenDataGridColumn TItem="Customer" Context="customer" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+                                        <Template Context="customer">
+                                         <button type="button" @onclick="@(() => ClickCustomer(customer.СustomerId))" class="btn btn-link">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                         <button type="button" @onclick="@(() => ShowOrderCustomerByCustomerId(customer.СustomerId))" class="btn btn-link">
+                                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                        </button>
+                                        <ButtonEditComponent TypeName="customer" Id="@customer.СustomerId.ToString()"></ButtonEditComponent>
+                                         <button type="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-link">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                        </Template>
+                                </RadzenDataGridColumn>
+                            </Columns>
+                        </RadzenDataGrid>
+
+
+                        <ButtonAddComponent TypeName="Customer"></ButtonAddComponent>
+                        <button tupe="button"  @onclick="(() => LoadCustomers())" class="btn btn-link" title="Показать всех" >
+                            <i class="fas fa-sync-alt" ></i>
+                        </button> 
+                        Найдено: <b>@customers.Count()</b>
+                        <RadzenButton Text="Export XLS" Icon="grid_on" Click="@(args => Export("excel"))" Class="btn-link" />
                     </div>
                 }
             </div>
@@ -79,7 +124,7 @@
                         <table class="table table-hover table-sm align-middle table-responsive">
                             <thead>
                                 <tr class="text-align-center align-middle-th th">
-                                    <th>№</th>
+                                    <th class="text-center">№</th>
                                     <th title="Покупатель. Дата и время редактирования">
                                         Покупатель<br/>
                                         Дата <IconCircleComponent ></IconCircleComponent>
@@ -220,6 +265,39 @@
 </div>
 
 @code {
+
+    IEnumerable<int> pageSizeOptions = new int[] { 10, 20, 30 };
+     private int countCustomers { get; set; }
+    // RadzenDataGrid<Customer> grid;
+
+    void LoadDataCustomers(LoadDataArgs args)
+    {
+        //var query =  ViewCustomersUseCase.Execute()?.AsQueryable();
+
+        //if (!string.IsNullOrEmpty(args.Filter))
+        //{
+        //    query = query.Where(args.Filter);
+        //}
+
+        //if (!string.IsNullOrEmpty(args.OrderBy))
+        //{
+        //    query = query.OrderBy(args.OrderBy);
+        //}
+
+        //customers = query.Skip(args.Skip.Value).Take(args.Top.Value).ToList();
+
+        //count = dbContext.OrderDetails.Count();
+
+        customers = ViewCustomersUseCase.Execute()?.ToList();
+        countCustomers = customers.Count();
+        LoadOrderCustomers();
+    }
+
+    public void Export(string type)
+    {
+        //service.Export("Customer", type, new Query() { OrderBy = grid.Query.OrderBy, Filter = grid.Query.Filter });
+    }
+
     [Parameter]     public int CountItemOnPage { get; set; } = 3;
     [Parameter]     public EventCallback OnUpdateCallback { get; set; }
 
@@ -245,6 +323,7 @@
 
     #region private fields
     private List<CoreBusiness.Customer> customers;
+    private List<CoreBusiness.Customer> selectedCustomers;
     private List<CoreBusiness.OrderCustomer> orderCustomers;
     private List<CoreBusiness.ItemOrder> itemOrders;
     private MiniItemOrder miniItemOrder = new MiniItemOrder();
@@ -263,7 +342,7 @@
         CountCustomersOnPage = CountOrderCustomersOnPage = CountItemOrdersOnPage = CountItemOnPage;
         base.OnInitialized();
         LoadCustomers();
-        
+
     }
 
     #region Customer
@@ -287,6 +366,16 @@
         LoadOrderCustomers();
         LastClickOnOrderСustomerId = ViewOrderCustomersUseCase.Execute().Where(x => x.CustomerId == LastClickOnСustomerId).First().OrderCustomerId;
         LoadItemOrders();
+    }
+
+    protected string GetOrderCustomerCount(int CustomerId)
+    {
+        return ViewOrderCustomersUseCase.Execute().Where(x => x.CustomerId == CustomerId).Count().ToString();
+    }
+
+    protected void ShowOrderCustomerByCustomerId(int CustomerId)
+    {
+        NavigationManager.NavigateTo($"/ordercustomers/{CustomerId}");
     }
     #endregion
 
