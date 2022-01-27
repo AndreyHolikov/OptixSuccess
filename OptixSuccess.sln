@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugins.DataStore.InMemory"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UseCases", "UseCases\UseCases.csproj", "{389824AB-D5B5-4E4A-AA8F-27B268310728}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "radzen-blazor", "radzen-blazor", "{B24A787D-FE0D-4341-96BC-75D8D72DB6C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
