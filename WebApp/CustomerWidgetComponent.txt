@@ -1,0 +1,200 @@
+﻿@*Example <CustomerWidgetComponent CountCustomersOnPage=3></CustomerWidgetComponent>*@
+
+@using System.Linq.Dynamic.Core
+@using WebApp.Components
+
+@inject NavigationManager NavigationManager
+
+@inject IViewCustomersUseCase ViewCustomersUseCaseDeleteCustomer
+@inject IDeleteCustomerUseCase DeleteCustomerUseCase
+@inject IGetCustomerByIdUseCase GetCustomerByIdUseCase
+
+@inject IViewOrderCustomersUseCase ViewOrderCustomersUseCase
+@inject IDeleteOrderCustomerUseCase DeleteOrderCustomerUseCase
+@inject IGetOrderCustomerByIdUseCase GetOrderCustomerByIdUseCase
+
+<TitleWidgetWithCountComponent Text="Покупатели" Href="customers"  CountItem=@CountItem FullCount=@customers.Count()>
+</TitleWidgetWithCountComponent>
+<div class="col col-auto m-2 p-4 bg-light border widget-column-border">
+    @if (customers != null)
+    {
+    <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle cursor-pointer text-align-center table-responsive">
+            <thead>
+                <tr class="text-align-center">
+                    <th class="align-middle">№</th>
+                    <th class="align-middle">Компания</th>
+                    <th class="align-middle">Кол-во<br/>заказов</th>
+                    <th>                
+                        <ButtonAddComponent TypeName="Customer"></ButtonAddComponent>
+                        <button tupe="button"  @onclick="(() => LoadCustomers())" class="btn btn-link">
+                            <i class="fas fa-sync-alt" ></i>
+                        </button> 
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int i = 0;
+                    foreach (var customer in customers)
+                    {
+                        <tr  @onclick="@(() => ClickCustomer(customer.СustomerId))" class="cursor-pointer text-align-center">
+                            <td class="align-middle">@customer.СustomerId</td>
+                            <td class="align-middle">@customer.Company</td>
+                            <td class="align-middle">@GetOrderCustomerCount(customer.СustomerId)</td>
+                            <td>
+                                <ButtonEditComponent TypeName="customer" Id="@customer.СustomerId.ToString()"></ButtonEditComponent>
+                                <button type="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-link">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        i++;
+                        if (i >= CountItem) break;
+                    }
+                }
+            </tbody>
+        </table>
+
+        <RadzenDataGrid Data="@customers" TItem="Customer" Count="@countCustomers" AllowVirtualization="true"  
+            AllowPaging="true" PageSize="2" PageSizeOptions="@pageSizeOptions" 
+            AllowColumnResize="true" ColumnWidth="60px"
+            AllowSorting="true"
+            SelectionMode="DataGridSelectionMode.Single" Filterable="false">
+            <Columns>
+                <RadzenDataGridColumn TItem="Customer" Property="СustomerId" Title="ID" Width="30px"  />
+                <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Company" Width="100px">
+                    <Template Context="customer">
+                        <a href="/ordercustomers/customer.СustomerId">customer.Company</a>
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Customer" Property="CustomerId" Title="Заказов" Sortable="false" Width="30px">
+                    <Template Context="customer">
+                        GetOrderCustomerCount(customer.СustomerId))
+                    </Template>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="Customer" Context="customer" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+                        <Template Context="customer">
+                         <button type="button" @onclick="ClickCustomer(customer.СustomerId))" class="btn btn-link">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                         <button type="button" @onclick="ShowOrderCustomerByCustomerId(customer.СustomerId))" class="btn btn-link">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                        </button>
+                        <ButtonEditComponent TypeName="customer" Id="customer.СustomerId.ToString()"></ButtonEditComponent>
+                         <button type="button" @onclick="DeleteCustomer(customer.СustomerId))" class="btn btn-link">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                        </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+
+
+        <ButtonAddComponent TypeName="Customer"></ButtonAddComponent>
+        <button tupe="button"  @onclick="(() => LoadCustomers())" class="btn btn-link" title="Показать всех" >
+            <i class="fas fa-sync-alt" ></i>
+        </button> 
+        Найдено: <b>@customers.Count()</b>
+        <RadzenButton Text="Export XLS" Icon="grid_on" Click="@*(args => Export("excel"))*@" Class="btn-link" />
+    </div>
+}
+</div>
+
+@code {
+
+    #region public fields
+    [Parameter]
+    public int CountItem { get; set; }
+
+    [Parameter]     
+    public EventCallback<int> OnUpdateCallback { get; set; }
+    #endregion    
+
+    #region private fields
+    private int countCustomers { get; set; }
+    // RadzenDataGrid<Customer> grid;
+    private List<CoreBusiness.Customer> customers;
+    //private List<CoreBusiness.Customer> selectedCustomers;
+
+    private int LastClickOnCustomerId { get; set; }
+
+    private IEnumerable<int> pageSizeOptions = new int[] { 10, 20, 30 };
+    // EventCallback
+    public Task UpdateComponent(int LastClickOnCustomerId = 0) => OnUpdateCallback.InvokeAsync(LastClickOnCustomerId);
+    #endregion
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadCustomers();
+    }
+
+    #region Customer
+    private void LoadCustomers()
+    {
+        customers = ViewCustomersUseCase.Execute()?.ToList();
+        //LoadCustomers();
+    }
+
+    private void LoadDataCustomers(LoadDataArgs args)
+    {
+       // var query =  ViewCustomersUseCase.Execute().AsQueryable();
+        //var query =  ViewCustomersUseCase.Execute().AsQueryable();
+
+        //if (!string.IsNullOrEmpty(args.Filter))
+        //{
+        //    query = query.Where(args.Filter);
+        //}
+
+        //if (!string.IsNullOrEmpty(args.OrderBy))
+        //{
+        //    query = query.OrderBy(args.OrderBy);
+        //}
+
+        //countCustomers = customers.Count();
+
+        //customers = query.Skip(args.Skip.Value).Take(args.Top.Value).ToList();
+
+        //count = dbContext.OrderDetails.Count();       
+
+        customers = ViewCustomersUseCase.Execute()?.ToList();
+        countCustomers = customers.Count();
+
+        //LoadOrderCustomers();
+    }
+
+    protected void DeleteCustomer(int CustomerId)
+    {
+        DeleteCustomerUseCase?.Delete(CustomerId);
+        LoadCustomers();
+        UpdateComponent();
+    }
+
+    protected void ClickCustomer(int customerId) 
+    {
+        LastClickOnCustomerId = customerId;
+        UpdateComponent(LastClickOnCustomerId);
+        // LoadOrderCustomers();
+        
+        //TODO: LastClickOnOrderСustomerId = ViewOrderCustomersUseCase.Execute().Where(x => x.CustomerId == LastClickOnCustomerId).First().OrderCustomerId;
+        // LoadItemOrders();
+    }
+
+    protected string GetOrderCustomerCount(int CustomerId)
+    {
+        return ViewOrderCustomersUseCase.Execute().Where(x => x.CustomerId == CustomerId).Count().ToString();
+    }
+
+    protected void ShowOrderCustomerByCustomerId(int CustomerId)
+    {
+        NavigationManager.NavigateTo($"/ordercustomers/{CustomerId}");
+    }
+    #endregion
+
+    public void Export(string type)
+    {
+        //service.Export("Customer", type, new Query() { OrderBy = grid.Query.OrderBy, Filter = grid.Query.Filter });
+    }
+}

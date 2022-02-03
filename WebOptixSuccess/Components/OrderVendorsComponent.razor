@@ -1,0 +1,112 @@
+﻿@using CoreBusiness
+@using Microsoft.EntityFrameworkCore
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+@if (OrderVendors == null)
+{
+    <p><em>Loading...</em></p>
+} else {
+            <RadzenPanel AllowCollapse="true" Style="margin: 10px" >
+                <HeaderTemplate>
+                    <h4 class="m-0 d-flex align-items-center">
+                        <RadzenIcon Icon="account_box" Class="mr-1" /><b>Заказы для поставщиков</b>
+                    </h4>
+                </HeaderTemplate>
+                <ChildContent>
+                    <RadzenDataGrid 
+                        ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" 
+                        AllowSorting="true" Data="@OrderVendors" TItem="OrderVendor" @bind-Value="@SelectedOrderVendors"
+                        AllowColumnResize="true">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId" Title="Id" Width="50px" />
+                            <RadzenDataGridColumn TItem="OrderVendor" Property="Vendor.Company" Title="Компания" Width="150px" />
+                            <RadzenDataGridColumn TItem="OrderVendor" Property="Edited" Title="Дата" Width="120px" />
+                            <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId" Title="Позиций" Width="70px" TextAlign="TextAlign.Center" >
+                                <Template Context="detail">
+                                    @detail.ItemOrders.Count()
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId" Title="" TextAlign="TextAlign.Center" Width="100px" Filterable="false" Sortable="false">
+                                <Template Context="detail">
+                                    @*<ButtonEditComponent TypeName="customer" Id="customer.СustomerId.ToString()"></ButtonEditComponent>*@
+                                     <button type="button" @onclick="@(() => DeleteOrderVendor(detail.OrderVendorId))" class="btn btn-link">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </Template>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+
+                    <RadzenButton Click=@(args => OnClick("Secondary button")) Text="Добавить поставщика" 
+                        ButtonStyle="ButtonStyle.Light" style="margin:10px;" />
+                    <RadzenButton Click=@(args => OnClick("Secondary button")) Text="Добавить заказ поставщика" 
+                        ButtonStyle="ButtonStyle.Light" style="margin:10px;" />
+                </ChildContent>
+            </RadzenPanel>
+            }
+
+@code {
+    IEnumerable<Vendor>? vendors = null;
+    int countVendors;
+
+    [Parameter]
+    public IQueryable<OrderVendor>? OrderVendors { get; set; }
+
+    [Parameter]
+    public IList<ItemOrder>? ItemOrderCollection { get; set; }
+    [Parameter]
+    public SelectedOrderModel SelectedOrder { get; set; } = new SelectedOrderModel();
+    [Parameter]
+    public IList<OrderVendor> SelectedOrderVendors {
+        get => selectedOrders;
+        set
+        {
+            selectedOrders = value;
+            ItemOrderCollection = selectedOrders?.FirstOrDefault()?.ItemOrders;
+            SelectedOrder.Company = selectedOrders?.FirstOrDefault()?.Vendor?.Company ?? "";
+            SelectedOrder.SelectedOrderId = selectedOrders?.FirstOrDefault()?.OrderVendorId;
+        }}
+
+
+    IList<OrderVendor> selectedOrders = new List<OrderVendor>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadVendors();
+    }
+
+    private void LoadVendors()
+    {
+        vendors = dbContext.Vendors.ToList();
+    }
+
+    private void OnClick(string text)
+    {
+
+    }
+
+    private void DeleteOrderVendor(int OrderVendorId)
+    {
+
+    }
+
+    private void LoadDataVendors(LoadDataArgs args)
+    {
+        //var query = dbContext.Vendors.AsQueryable();
+
+        if (!string.IsNullOrEmpty(args.Filter))
+        {
+            vendors = dbContext.Vendors.Where(c => c.Company.Contains(args.Filter)).ToList();
+        } else
+        {
+            vendors = dbContext.Vendors.ToList();
+        }
+        countVendors = vendors.Count();
+
+        //console.Log($"LoadData with filter: {args.Filter}");
+
+        InvokeAsync(StateHasChanged);
+    }
+}

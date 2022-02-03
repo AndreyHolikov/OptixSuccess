@@ -1,0 +1,3 @@
+﻿add-migration Init-1
+add-migration Init-1 -Project Plugins.DataStore.SQL -Context AppDbContext
+update-database

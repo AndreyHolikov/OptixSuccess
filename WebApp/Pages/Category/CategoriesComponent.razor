@@ -24,7 +24,7 @@
                         <td>@category.Description</td>
                         <td>
                             <button tupe="button" @onclick="@(() => EditCategory(category))" class="btn btn-light">Edit</button>
-                            <button tupe="button" @onclick="@(() => DeleteCategory(category.СategoryId))" class="btn btn-light">Delete</button>
+                            <button tupe="button" @onclick="@(() => DeleteCategory(category.CategoryId))" class="btn btn-light">Delete</button>
                         </td>
                     </tr>
                 }
@@ -50,7 +50,7 @@
 
     protected void EditCategory(Category category)
     {
-        NavigationManager.NavigateTo($"/editcategory/{category.СategoryId}");
+        NavigationManager.NavigateTo($"/editcategory/{category.CategoryId}");
     }
 
     protected void DeleteCategory(int CategoryId)

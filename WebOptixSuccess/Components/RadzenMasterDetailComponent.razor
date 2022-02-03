@@ -1,0 +1,156 @@
+﻿@*<h3>RadzenMasterDetailComponent</h3>*@
+@using CoreBusiness
+@using Microsoft.EntityFrameworkCore
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+<div class="row">
+    <div class="col-md-5">
+        <RadzenPanel AllowCollapse="true" Style="margin: 10px" On>
+            <HeaderTemplate>
+                <h4 class="m-0 d-flex align-items-center">
+                    <RadzenIcon Icon="account_box" Class="mr-1" /><b>Заказы от покупателей</b>
+                </h4>
+            </HeaderTemplate>
+            <ChildContent>
+                @if (OrderCustomers == null) {
+                    <p><em>Loading...</em></p>
+                } else {                   
+                <RadzenDataGrid 
+                    ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" 
+                    AllowSorting="true" Data="@OrderCustomers" TItem="OrderCustomer" @bind-Value="@SelectedOrderCustomers"
+                    AllowColumnResize="true"
+                    PagerHorizontalAlign="HorizontalAlign.Center"
+                    PageSizeOptions="@pageSizeOptions">
+                    <EmptyTemplate>
+                        <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">Добавьте нового покупателя и заказ.</p>
+                    </EmptyTemplate>
+                    <Columns>
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="Id" Width="50px" />
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Customer.Company" Title="Компания" Width="150px" />
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Edited" Title="Дата" Width="120px" />
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="Позиций" Width="70px" TextAlign="TextAlign.Center" >
+                            <Template Context="detail">
+                                @detail.ItemOrders.Count()
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+                }
+                <OrderCustomersComponent UpdateCallback=@LoadOrderCustomers></OrderCustomersComponent>
+                </ChildContent>
+            </RadzenPanel>
+        
+        <hr/>
+        <RadzenPanel AllowCollapse="true" Style="margin: 10px" >
+            <HeaderTemplate>
+                <h4 class="m-0 d-flex align-items-center">
+                    <RadzenIcon Icon="account_box" Class="mr-1" /><b>Заказы от покупателей</b>
+                </h4>
+            </HeaderTemplate>
+            <ChildContent>
+                @if (OrderCustomers == null) {
+                    <p><em>Loading...</em></p>
+                } else {                   
+                <RadzenDataGrid 
+                    ColumnWidth="200px" AllowFiltering="true" PageSize="5" 
+                    AllowSorting="true" Data="@OrderCustomers" TItem="OrderCustomer" @bind-Value="@SelectedOrderCustomers"
+                    AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Center"
+                    PageSizeOptions="@pageSizeOptions"
+                    AllowColumnResize="true">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="Id" Width="50px" />
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Customer.Company" Title="Компания" Width="150px" />
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Edited" Title="Дата" Width="120px" />
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="Позиций" Width="70px" TextAlign="TextAlign.Center" >
+                            <Template Context="detail">
+                                @detail.ItemOrders.Count()
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+                }
+                <OrderVendorsComponent></OrderVendorsComponent>
+                </ChildContent>
+            </RadzenPanel>
+        @*<OrderVendorsComponent OrderVendors="@OrderVendors" ItemOrderCollection=@ItemOrderCollection SelectedOrderVendors=@SelectedOrderVendors 
+            SelectedOrder=@SelectedOrder></OrderVendorsComponent>*@
+    </div>
+
+    <div class="col-md-7">
+        <OrderManagerComponent SelectedOrder=@SelectedOrder UpdateCallback=@LoadOrderCustomers ></OrderManagerComponent>
+        <ItemOrdersComponent ItemOrderCollection=@ItemOrderCollection UpdateCallback=@LoadOrderCustomers></ItemOrdersComponent>
+    </div>
+</div>
+
+    @* TODO:Add EventConsole <EventConsole @ref=@console Class="mt-4"/>*@
+
+@code {
+    //EventConsole? console;
+
+    #region private Fields
+    private IQueryable<OrderCustomer>? OrderCustomers { get; set; } 
+    private IQueryable<OrderVendor>? OrderVendors { get; set; }
+    private IEnumerable<int> pageSizeOptions = new int[] { 10, 20, 30 };
+    private IList<ItemOrder>? ItemOrderCollection { get; set; } = null;
+    private IList<OrderCustomer> selectedOrderCustomers = new List<OrderCustomer>();
+    private IList<OrderVendor> selectedOrderVendors = new List<OrderVendor>();
+    private Order? SelectedOrder { get; set; } = null;
+
+    private IList<OrderCustomer> SelectedOrderCustomers {
+        get => selectedOrderCustomers;
+        set
+        {
+            selectedOrderCustomers = value;
+            ItemOrderCollection = selectedOrderCustomers?.FirstOrDefault()?.ItemOrders;
+            SelectedOrder = selectedOrderCustomers?.FirstOrDefault();
+        }}
+
+    private IList<OrderVendor> SelectedOrderVendors {
+        get => selectedOrderVendors;
+        set
+        {
+            selectedOrderVendors = value;
+            ItemOrderCollection = selectedOrderVendors?.FirstOrDefault()?.ItemOrders;
+        }}
+    #endregion
+
+    #region public Parameters
+    [Parameter]
+    public bool Refresh { get; set; }
+    #endregion    
+
+    #region protected Methods
+    protected override void OnInitialized()
+    {
+        LoadOrderCustomers();
+        LoadOrderVendors();
+    }
+    #endregion    
+
+    #region private Methods
+    private void LoadOrderCustomers()
+    {
+        OrderCustomers = dbContext.OrderCustomers.OrderByDescending(o => o.Edited)
+            .Include("Customer")
+            .Include("ItemOrders")
+            //.Include("ItemOrder")
+            .Include("ItemOrders.Product");
+            
+            if(OrderCustomers != null && OrderCustomers.Count()>0)
+                SelectedOrderCustomers = new List<OrderCustomer>() { OrderCustomers.First() }; //.FirstOrDefault() };
+    }
+    private void LoadOrderVendors()
+    {
+        OrderVendors = dbContext.OrderVendors.OrderByDescending(o => o.Edited)
+            .Include("Vendor")
+            .Include("ItemOrders")
+            .Include("ItemOrders.Product");
+    }
+    private void OrderManagerUpdate()
+    {
+        LoadOrderCustomers();
+        LoadOrderVendors();
+    }
+    #endregion 
+}

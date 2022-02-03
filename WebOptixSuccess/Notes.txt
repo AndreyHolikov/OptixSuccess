@@ -1,0 +1,33 @@
+﻿#pragma warning disable 4014
+...
+#pragma warning restore 4014
+
+pc-631\sqlexpress
+HelloEF3
+HelloEFSecond
+HEF
+RoundTheCodeBlazor
+WebOptixApp
+WebOptixSuccess
+HelloEFSecond-1
+BsaEfThird
+
+Install-Package Microsoft.EntityFrameworkCore 
+Install-Package Microsoft.EntityFrameworkCore.Tools 
+Install-Package Microsoft.EntityFrameworkCore.SqlServer
+
+'Install-Package Microsoft.EntityFrameworkCore.SqlServer -v 1.1.1'
+
+add-migration Init-1
+add-migration Init-1 -Project Plugins.DataStore.SQL -Context AppDbContext
+update-database
+
+Remarks
+
+To see the examples, type: get-help Add-Migration -examples.
+For more information, type: get-help Add-Migration -detailed.
+For technical information, type: get-help Add-Migration -full.
+
+https://coding.abel.nu/2012/03/ef-migrations-command-reference/
+
+https://blazor.radzen.com/get-started

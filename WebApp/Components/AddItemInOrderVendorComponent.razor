@@ -1,0 +1,121 @@
+﻿@*<AddItemInOrderVendorComponent></AddItemInOrderVendorComponent>*@
+
+@inject IGetItemOrderByIdUseCase GetItemOrderByIdUseCase
+@inject IEditItemOrderUseCase EditItemOrderUseCase
+@inject IGetProductByIdUseCase GetProductByIdUseCase
+@inject IGetOrderVendorByIdUseCase GetOrderVendorByIdUseCase
+
+@using WebApp.Model
+
+
+
+@code {
+
+    #region public fields
+    [Parameter]   
+    public int ParentOrderСustomerId { get; set; }
+    [Parameter]
+    public MiniItemOrder miniItemOrder { get; set; }
+    // EventCallback
+    [Parameter]     
+    public EventCallback OnUpdateCallback { get; set; }
+    #endregion
+
+    private string warningMessage1 { get; set; }
+    private string alertClass { get; set; }
+
+    #region private fields
+    //private List<CoreBusiness.Customer> customers;
+    //private List<CoreBusiness.Customer> selectedCustomers;    
+
+    private Task UpdateComponent() => OnUpdateCallback.InvokeAsync(null);
+    #endregion
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        miniItemOrder = new MiniItemOrder();
+    }
+
+    protected void OnClickSendItemOrderInOrderVendor()
+    {
+        if (GetOrderVendorByIdUseCase.Execute(miniItemOrder.OrderVendorId) != null)
+        {
+            foreach (int id in miniItemOrder.selectedItemOrderIds)
+            {
+                ItemOrder itemOrder = GetItemOrderByIdUseCase.Execute(id);
+                itemOrder.OrderVendorId = miniItemOrder.OrderVendorId;
+                EditItemOrderUseCase.Execute(itemOrder);
+            }
+            miniItemOrder.selectedItemOrderIds.Clear();
+            alertClass = "alert-success";
+            warningMessage1 = "Товары успешно добавлены";
+
+            UpdateComponent();
+        } else {
+            alertClass = "alert-danger";
+            warningMessage1 = $"Заказ c номером {miniItemOrder.OrderVendorId} не найден";
+        }
+    }
+
+    private IEnumerable<string> GetSelectedItemOrdersAsCollection()
+    {
+        var collection = new List<string>();
+        var collectionForRemove = new List<int>();
+
+        foreach (var itemOrderId in miniItemOrder.selectedItemOrderIds)
+        {
+            if (GetItemOrderByIdUseCase.Execute(itemOrderId) != null)
+            {
+                int? tempProductId = GetItemOrderByIdUseCase.Execute(itemOrderId).ProductId;
+                Product tempProduct = (tempProductId == null)
+                    ? null 
+                    : GetProductByIdUseCase.Execute(tempProductId ?? default(int));
+                string tempProductName = (tempProduct == null)
+                    ? "null"
+                    : tempProduct?.Name;
+                collection.Add($"{itemOrderId}: {tempProductName}");
+            } else {
+                collectionForRemove.Add(itemOrderId);
+            }
+        }
+        foreach (var item in collectionForRemove)
+        {
+            miniItemOrder.selectedItemOrderIds.Remove(item);
+        }
+
+        alertClass = "alert-light";
+        warningMessage1 = "";
+
+        return collection;
+        //string.Join(",", miniItemOrder.selectedItemOrderIds); 
+    }
+
+    protected void OnChangeOrderVendorId()
+    {
+        if (GetOrderVendorByIdUseCase.Execute(miniItemOrder.OrderVendorId) != null)
+        {
+            alertClass = "alert-info";
+            warningMessage1 = $"Заказ: {GetOrderVendorByIdUseCase.Execute(miniItemOrder.OrderVendorId).Edited}";
+        } else {
+            alertClass = "alert-danger";
+            warningMessage1 = $"Заказ c номером {miniItemOrder.OrderVendorId} не найден";
+        }
+    }
+
+    protected void OnClearListSelectedItemOrders()
+    {
+        miniItemOrder.selectedItemOrderIds.Clear();
+    }
+
+    private string GetSelectedItemOrdersAsString()
+        => ""; // string.Join(",", miniItemOrder.selectedItemOrders);
+
+    //protected void ClickItemOrder(int itemOrderId)
+    //{
+    //    if (miniItemOrder.selectedItemOrderIds.IndexOf(itemOrderId) == -1) // .Exists(x => x. == itemOrderId))
+    //        miniItemOrder.selectedItemOrderIds.Add(itemOrderId);
+    //    else
+    //        miniItemOrder.selectedItemOrderIds.Remove(itemOrderId);
+    //}    
+}

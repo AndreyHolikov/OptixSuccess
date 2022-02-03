@@ -1,0 +1,78 @@
+﻿@page "/addcustomer"
+@using CoreBusiness
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+@inject NavigationManager NavigationManager
+
+<h3>Редактирование клиента</h3>
+
+@if (customer != null)
+{
+    <EditForm Model="customer"  OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="form-group">
+            <label for="name">Login</label>
+            <InputText id="name" @bind-Value="customer.Name" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="fullname">ФИО</label>
+            <InputText id="fullname" @bind-Value="customer.Fullname" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <InputText id="password" @bind-Value="customer.Password" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <InputText id="email" @bind-Value="customer.Email" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="company">Организация</label>
+            <InputText id="company" @bind-Value="customer.Company" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Телефон</label>
+            <InputText id="phone" @bind-Value="customer.Phone" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Описание</label>
+            <InputTextArea id="description" @bind-Value="customer.Description" class="form-control"></InputTextArea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCansel">Отменить</button>
+    </EditForm>
+}
+
+@code {
+    #region private fields
+    private Customer customer = new Customer();
+    #endregion
+
+
+    #region protected methods
+    protected override void OnInitialized() => base.OnInitialized();
+    #endregion
+
+
+    #region private methods
+    private void OnValidSubmit()
+    {
+        dbContext.Customers.Add(customer);
+        //AddCustomerUseCase.Execute(customer);
+        GoToPageCustomers();
+    }
+
+    private void OnCansel() => GoToPageCustomers();
+
+    private void GoToPageCustomers() => NavigationManager.NavigateTo("/customers");
+    #endregion
+}

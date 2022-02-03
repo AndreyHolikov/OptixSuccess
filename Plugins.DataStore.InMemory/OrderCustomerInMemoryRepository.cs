@@ -25,33 +25,13 @@ namespace Plugins.DataStore.InMemory
 
             orderCustomers = new List<OrderCustomer>()
             {
-                new OrderCustomer() { 
-                    OrderCustomerId = 1, 
-                    Description = "Описание заказа 1",
-                    Edited = DateTime.Now,
-                    CustomerId = 1,
-                    ExcelFileId = 1
+                new OrderCustomer() { OrderCustomerId = 1, Description = "Описание заказа 1",Edited = DateTime.Now,CustomerId = 1,ExcelFileId = 1
                 },
-                new OrderCustomer() { 
-                    OrderCustomerId = 2, 
-                    Description = "Описание заказа 2",
-                    Edited = RandomDay(),
-                    CustomerId = 2,
-                    ExcelFileId = 2
+                new OrderCustomer() { OrderCustomerId = 2, Description = "Описание заказа 2",Edited = RandomDay(),CustomerId = 2,ExcelFileId = 2
                 },
-                new OrderCustomer() { 
-                    OrderCustomerId = 3, 
-                    Description = "Описание заказа 3",
-                    Edited = RandomDay(),
-                    CustomerId = 3,
-                    ExcelFileId = 3
+                new OrderCustomer() { OrderCustomerId = 3, Description = "Описание заказа 3",Edited = RandomDay(),CustomerId = 3,ExcelFileId = 3
                 },
-                new OrderCustomer() {
-                    OrderCustomerId = 4,
-                    Description = "Описание заказа 41",
-                    Edited = RandomDay(),
-                    CustomerId = 1,
-                    ExcelFileId = 1
+                new OrderCustomer() {OrderCustomerId = 4,Description = "Описание заказа 41",Edited = RandomDay(),CustomerId = 1,ExcelFileId = 1
                 }
             };
         }

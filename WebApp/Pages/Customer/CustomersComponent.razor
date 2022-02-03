@@ -29,18 +29,18 @@
                 @foreach(var customer in customers)
                 {
                     <tr>
-                        <td>@customer.СustomerId</td>
+                        <td>@customer.CustomerId</td>
                         <td>@customer.Name</td>
                         <td>@customer.Fullname</td>
                         <td>@customer.Company</td>
                         <td>@customer.Email</td>
                         <td>@customer.Phone</td>
                         <td>@customer.Description</td>
-                        <td>@GetOrderCustomerByCustomerIdUseCase.Execute(customer.СustomerId).Count()</td>
+                        <td>@GetOrderCustomerByCustomerIdUseCase.Execute(customer.CustomerId).Count()</td>
                         <td>
-                            <ButtonEditComponent TypeName="customer" Id="@customer.СustomerId.ToString()" Text="Редактировать"></ButtonEditComponent>
+                            <ButtonEditComponent TypeName="customer" Id="@customer.CustomerId.ToString()" Text="Редактировать"></ButtonEditComponent>
                             
-                            <button tupe="button" @onclick="@(() => DeleteCustomer(customer.СustomerId))" class="btn btn-light"><i class="far fa-trash-alt"></i> Удалить</button>
+                            <button tupe="button" @onclick="@(() => DeleteCustomer(customer.CustomerId))" class="btn btn-light"><i class="far fa-trash-alt"></i> Удалить</button>
                         </td>
                     </tr>
                 }

@@ -28,9 +28,9 @@
                         <td>@orderVendor.Description</td>
                         <td>@GetVendorByIdUseCase.Execute(orderVendor.VendorId)?.Name</td>
                         <td>
-                            <a href="@GetExcelFileByIdUseCase.Execute(orderVendor.ExcelFileId).FullPath">
+@*                            <a href="@GetExcelFileByIdUseCase.Execute(orderVendor.ExcelFileId).FullPath">
                                 @GetExcelFileByIdUseCase.Execute(orderVendor.ExcelFileId).Name
-                            </a>
+                            </a>*@
                         </td>
                         <td>
                             <button tupe="button" @onclick="@(() => EditOrderVendor(orderVendor))" class="btn btn-light">Редактировать</button>

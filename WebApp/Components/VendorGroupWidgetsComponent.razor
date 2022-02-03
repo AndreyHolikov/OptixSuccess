@@ -126,7 +126,7 @@
                                         <button tupe="button" @onclick="@(() => ClickOrderVendor(orderVendor.OrderVendorId))" class="btn btn-link">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <ButtonEditComponent TypeName="orderVendor" Id="@orderVendor.OrderVendorId.ToString()"></ButtonEditComponent>
+                                        <ButtonEditComponent TypeName="orderVendor" Id="@orderVendor.OrderVendorId"></ButtonEditComponent>
                                         <button type="button" @onclick="@(() => DeleteOrderVendor(orderVendor.OrderVendorId))" class="btn btn-link">
                                             <i class="far fa-trash-alt"></i>
                                         </button>
