@@ -1,6 +1,6 @@
 ﻿@using CoreBusiness
 @using Microsoft.EntityFrameworkCore
-
+@inject NavigationManager NavigationManager
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 
 @if (ItemOrderCollection == null)
@@ -61,6 +61,10 @@
                                     ButtonStyle="ButtonStyle.Light" Style="margin: 10px;"/>
                                 <RadzenButton Icon="control_point" Text="Добавить любой товар" Click="@(() => AddRandomItemOrder())"
                                     Class="mb-4" ButtonStyle="ButtonStyle.Light"  Style="margin: 10px;" />  
+                            </div>
+                            <div class="col-md-6" >
+                                <RadzenButton Text="Export XLS" Icon="grid_on" Click="@(args => Export("excel"))" Class="mb-4 mr-2" ButtonStyle="ButtonStyle.Light"/>
+                                <RadzenButton Text="Export CSV" Icon="wrap_text" Click="@(args => Export("csv"))" Class="mb-4" ButtonStyle="ButtonStyle.Light"/>  
                             </div>
                             <div class="col-md-6" >
                                 <p><b>1* (№ зак.пок)</b> - № Заказа от покупателя</p>
@@ -160,7 +164,7 @@
         {
             tempOrderCustomerId = (ItemOrderCollection?.First()?.OrderCustomerId) ?? (dbContext.OrderCustomers.FirstOrDefault()?.OrderCustomerId);
         }
-        
+
         if ( tempOrderCustomerId != null )
         {
             itemOrder.OrderCustomerId = tempOrderCustomerId ?? default(int);
@@ -173,8 +177,21 @@
             //ItemOrderCollection.Add(itemOrder);
             #pragma warning disable 4014
             Reset();  //https://docs.microsoft.com/ru-ru/dotnet/csharp/language-reference/compiler-messages/cs4014
-                            // https://www.stackfinder.ru/questions/22629951/suppressing-warning-cs4014-because-this-call-is-not-awaited-execution-of-the
+                      // https://www.stackfinder.ru/questions/22629951/suppressing-warning-cs4014-because-this-call-is-not-awaited-execution-of-the
             #pragma warning restore 4014            
         }
+    }
+
+    public void Export(string type)
+    {
+        if (grid != null)
+        {
+            serviceExport("OrderDetails", type, new Query() { OrderBy = grid.Query.OrderBy, Filter = grid.Query.Filter });
+        }
+    }
+
+    public void serviceExport(string table, string type, Query? query = null)
+    {
+        NavigationManager.NavigateTo(query != null ? query.ToUrl($"/export/northwind/{table}/{type}") : $"/export/northwind/{table}/{type}", true);
     }
 }

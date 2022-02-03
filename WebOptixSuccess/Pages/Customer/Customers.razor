@@ -3,7 +3,6 @@
 @using CoreBusiness
 @using Microsoft.EntityFrameworkCore
 @using Plugins.DataStore.SQL
-@using Radzen.Blazor
 
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 @inject NavigationManager NavigationManager
@@ -59,20 +58,6 @@
 
         // This demo is using https://dynamic-linq.net
         var query = dbContext.Customers.AsQueryable();
-
-        //if (!string.IsNullOrEmpty(args.Filter))
-        //{
-        //    // Filter via the Where method
-        //    //TODO:Connect Filter 
-        //    //query = query.Where( args.Filter.ToString());
-        //}
-
-        //if (!string.IsNullOrEmpty(args.OrderBy))
-        //{
-        //    // Sort via the OrderBy method
-        //    //TODO:Connect OrderBy 
-        //    //query = query.OrderBy(args.OrderBy.ToString());
-        //}
 
         // Important!!! Make sure the Count property of RadzenDataGrid is set.
         count = query.Count();

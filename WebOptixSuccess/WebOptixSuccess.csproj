@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Pages\Customer\VeiwCustomersComponent.razor" />
+    <Content Include="Pages\Customer\Customers.razor" />
   </ItemGroup>
 
   <ItemGroup>
