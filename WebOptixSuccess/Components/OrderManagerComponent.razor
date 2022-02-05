@@ -1,5 +1,5 @@
 ﻿@using CoreBusiness
-
+@using Plugins.OsExcel
 
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 
@@ -23,6 +23,8 @@
     </div>
     <div class="row">
         <div class="col-md-12">
+            <button type="button" @onclick="@(() => DownloadExcelDocument())">Download</button>
+
             <RadzenUpload Url="upload/single" Progress=@(args => OnProgress(args, "Single file upload")) ChooseText="Загрузить Excel" />
             @*TODO: RadzenFileInput 
                 <RadzenFileInput @bind-Value=@SelectedOrders?.FirstOrDefault()?.Name TValue="string" Class="w-100" 
@@ -118,7 +120,7 @@
     protected void DeleteOrder()
     {
         if (SelectedOrder?.GetType() == typeof(OrderCustomer)) DeleteOrderCustomer();
-            else if (SelectedOrder?.GetType() == typeof(OrderVendor)) DeleteOrderVendor();
+        else if (SelectedOrder?.GetType() == typeof(OrderVendor)) DeleteOrderVendor();
 
         UpdateCallback.InvokeAsync();
     }
@@ -147,6 +149,23 @@
                 dbContext.OrderVendors.Remove(orderVendor);
                 dbContext.SaveChanges();
             }
+        }
+    }
+
+    @inject IJSRuntime JSRuntime
+
+    public async Task DownloadExcelDocument()
+    {
+        Worker worker = new Worker();
+        var workbook = worker.GetProductsXLWorkbook();
+
+        using (var stream = new MemoryStream())
+        {
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+ 
+            var fileName = "Products.xlsx";
+            await JSRuntime.InvokeAsync<object>("saveAsFile", fileName, Convert.ToBase64String(content));
         }
     }
 }

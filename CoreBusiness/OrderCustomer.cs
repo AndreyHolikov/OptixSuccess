@@ -10,6 +10,7 @@ namespace CoreBusiness
     public class OrderCustomer : Order
     {
         public int OrderCustomerId { get; set; }
+        [Required]
         public int CustomerId { get; set; }
         public int ExcelFileId { get; set; }
         public Customer Customer { get; set; }

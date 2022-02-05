@@ -10,6 +10,7 @@ namespace CoreBusiness
     public class OrderVendor : Order
     {
         public int OrderVendorId { get; set; }
+        [Required]
         public int VendorId { get; set; }
 
         public Vendor Vendor { get; set; }

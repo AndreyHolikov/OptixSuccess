@@ -37,12 +37,13 @@ namespace Plugins.DataStore.SQL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            int limirRow = 10;
             //base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Category>()
                 .HasMany(c => c.Products)
                 .WithOne(p => p.Category)
                 .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.SetNull); 
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Customer>()
                 .HasMany(c => c.OrderCustomers)
@@ -75,13 +76,13 @@ namespace Plugins.DataStore.SQL
 
             // seeding some data
             modelBuilder.Entity<Category>().HasData(new[]{
-                new Category() { CategoryId = 1, Name = "Beverages" },
-                new Category() { CategoryId = 2, Name = "Bakery" },
-                new Category() { CategoryId = 3, Name = "Meat" }
+                new Category() { CategoryId = 1, Name = "SofLens 59 6 pk" },
+                new Category() { CategoryId = 2, Name = "SofLens Daily Disposable 30 pk" },
+                new Category() { CategoryId = 3, Name = "Optima FW 4 pk" }
             });
 
             modelBuilder.Entity<Product>().HasData(new[]{
-                new Product { ProductId = 1, CategoryId = 1, Name = "SofLens 59 6 pk", BC = " 8.6", Sph = "-0.50", Cell = "C4", Quantity = 1, Price = 1.00},
+                new Product { ProductId = 1, CategoryId = 1, Name = "SofLens 59 6 pk", BC = " 8.6", Sph = "-0.50", Cell = "C4", Quantity = 1, Price = 1.00, Description = "Описание 1001"},
                 #region Product 2-100
 new Product { ProductId = 2, CategoryId = 1, Name = "SofLens 59 6 pk", BC = " 8.6", Sph = "-0.75", Cell = "C5", Quantity = 1, Price = 1.00},
 new Product { ProductId = 3, CategoryId = 1, Name = "SofLens 59 6 pk", BC = " 8.6", Sph = "-1.00", Cell = "C6", Quantity = 1, Price = 1.00},
@@ -640,79 +641,147 @@ new Product { ProductId = 552, CategoryId = 1, Name = "Раствор BIOTRUE 30
                 #endregion Product 1xx - 5xx
             });
 
-            modelBuilder.Entity<Customer>().HasData(new[]{
-                new Customer() { CustomerId = 1, Name = "Иванов И.И.",  Fullname = "Иванов И.И.",  Company = "Оптика № 1",  Email = "k1@gmail.com", Phone = "+375 29 123-12-12", Description = "Описание компании 1"},
-                new Customer() { CustomerId = 2, Name = "Петров П.П.",  Fullname = "Петров П.П.",  Company = "Оптика Нова", Email = "k2@gmail.com", Phone = "+375 29 123-12-13", Description = "Описание компании 2"},
-                new Customer() { CustomerId = 3, Name = "Смирнов С.С.", Fullname = "Смирнов С.С.", Company = "ИП Смирнов",  Email = "k3@gmail.com", Phone = "+375 29 123-12-14", Description = "Описание компании 3"}
-            });
-            
-            modelBuilder.Entity<OrderCustomer>().HasData(new[]{
-                new OrderCustomer() { OrderCustomerId = 1, Description = "Описание заказа 1",   Edited = DateTime.Now,  CustomerId = 1, ExcelFileId = 1 },
-                new OrderCustomer() { OrderCustomerId = 2, Description = "Описание заказа 2",   Edited = RandomDay(),   CustomerId = 2, ExcelFileId = 2 },
-                new OrderCustomer() { OrderCustomerId = 3, Description = "Описание заказа 3",   Edited = RandomDay(),   CustomerId = 3, ExcelFileId = 3 },
-                new OrderCustomer() { OrderCustomerId = 4, Description = "Описание заказа 41",  Edited = RandomDay(),   CustomerId = 1, ExcelFileId = 1}
+            #region Add Customer
+            var customers = new List<Customer>();
+
+            customers.Add(new Customer() { CustomerId = 1, Name = "Иванов И.И.", Fullname = "Иванов И.И.", Company = "Оптика № 1", Email = "k1@gmail.com", Phone = "+375 29 123-12-12", Description = "Описание компании 1" });
+            customers.Add(new Customer() { CustomerId = 2, Name = "Петров П.П.", Fullname = "Петров П.П.", Company = "Оптика Нова", Email = "k2@gmail.com", Phone = "+375 29 123-12-13", Description = "Описание компании 2"});
+            customers.Add(new Customer() { CustomerId = 3, Name = "Смирнов С.С.", Fullname = "Смирнов С.С.", Company = "ИП Смирнов",  Email = "k3@gmail.com", Phone = "+375 29 123-12-14", Description = "Описание компании 3"});
+
+            #region Add Random Customer
+            for (int i = 4; i < limirRow; i++)
+                customers.Add(new Customer()
+                {
+                    CustomerId = i,
+                    Name = $"Покупатель: 10{i}",
+                    Description = $"Customer c10{i}",
+                    Fullname = $"Покупатель: 10{i}",
+                    Company = $"Покупатель: 10{i}", 
+                    Password = $"{i}",
+                    Email = "k3@gmail.com",
+                    Phone = "+375 29 123-12-14"
+                });
+
+            modelBuilder.Entity<Customer>().HasData(customers);
+            #endregion Add Random Customer
+            #endregion Add Customer
+
+            #region Add OrderCustomer
+            var randomOrderCustomer = new List<OrderCustomer>() {
+                new OrderCustomer() { OrderCustomerId = 1, Description = "Описание oc201-c101",   Edited = DateTime.Now,  CustomerId = 1, ExcelFileId = 1 },
+                new OrderCustomer() { OrderCustomerId = 2, Description = "Описание oc202-c102",   Edited = RandomDay(),   CustomerId = 2, ExcelFileId = 2 },
+                new OrderCustomer() { OrderCustomerId = 3, Description = "Описание oc203-c103",   Edited = RandomDay(),   CustomerId = 3, ExcelFileId = 3 },
+                new OrderCustomer() { OrderCustomerId = 4, Description = "Описание oc204-c101",   Edited = RandomDay(),   CustomerId = 1, ExcelFileId = 1 }
+            };
+
+            #region Add Random OrderCustomer
+            for (int i = 5; i < limirRow; i++)
+            {
+                int randomCustomerId = random.Next(1, limirRow);
+                randomOrderCustomer.Add(new OrderCustomer()
+                {
+                    OrderCustomerId = i,
+                    Name = $"OrderVendor: 20{i}",
+                    Description = $"Описание ov20{i}-c{randomCustomerId}",
+                    Edited = RandomDay(),
+                    CustomerId = randomCustomerId
+                });
+            }
+
+
+            modelBuilder.Entity<OrderCustomer>().HasData(randomOrderCustomer);
+            #endregion Add Random OrderCustomer
+            #endregion Add OrderCustomer
+
+            #region Add Vendor
+
+            modelBuilder.Entity<Vendor>().HasData(new[]{
+                new Vendor() { VendorId = 1, Name = "Поставщик № 501",   Description = "Описание p501", Company = "Поставщик № 501", Email = "mail-501@gmail.com" },
             });
 
-            modelBuilder.Entity<ItemOrder>().HasData(new[]{
-                new ItemOrder() { ItemOrderId = 1, ProductId = 1, OrderCustomerId = 1, OrderVendorId = 1, Price = 1.11, Quantity = 22, Edited = DateTime.Now },
+            #region Add Random Vendor
+            List<Vendor> randomVendors = new List<Vendor>();
+
+            for (int i = 2; i < limirRow; i++)
+                randomVendors.Add(new Vendor()
+                {
+                    VendorId = i,
+                    Name = $"Поставщик: 50{i}",
+                    Company = $"Поставщик: 50{i}",
+                    Description = $"Описание p50{i}-{random.Next(1, limirRow)}",
+                    Email = $"mail-50{i}@gmail.com"
+                });
+
+            modelBuilder.Entity<Vendor>().HasData(randomVendors);
+            #endregion Add Random Vendor
+            #endregion Add Vendor
+
+            #region Add OrderVendor
+
+            List<OrderVendor> orderVendors = new List<OrderVendor>();
+
+            orderVendors.Add(
+                new OrderVendor() { OrderVendorId = 1, Name = "OrderVendor-401", Description = "Описание ov401", Edited = DateTime.Now, VendorId = 1 }
+            );
+
+            #region Add Random OrderVendor
+
+
+            for (int i = 2; i < limirRow; i++)
+            {
+                int randomVendorId = random.Next(1, limirRow);
+                orderVendors.Add(new OrderVendor()
+                {
+                    OrderVendorId = i,
+                    Name = $"OrderVendor: 40{i}",
+                    Description = $"Описание 40{i}-{randomVendorId}",
+                    Edited = RandomDay(),
+                    VendorId = randomVendorId
+                });
+            }
+
+            modelBuilder.Entity<OrderVendor>().HasData(orderVendors);
+            #endregion Add Random OrderVendor
+            #endregion Add OrderVendor
+
+            #region Add ItemOrders
+            List<ItemOrder> itemOrders = new List<ItemOrder>();
+
+            itemOrders.AddRange( new List<ItemOrder>(){
+                new ItemOrder() { ItemOrderId = 1, ProductId = 1, OrderCustomerId = 1, OrderVendorId = 1, Price = 1.11, Quantity = 22, Edited = DateTime.Now, Description = $"Опиасние oc201-io301-ov401 p1001" },
                 #region
-                new ItemOrder() { ItemOrderId = 2, ProductId = 2, OrderCustomerId = 1, OrderVendorId = 2, Price = 2.22, Quantity = 33,Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 3, ProductId = 3, OrderCustomerId = 2, OrderVendorId = 1, Price = 3.33, Quantity = 44,Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 4, ProductId = 4, OrderCustomerId = 3, OrderVendorId = 3, Price = 4.44,Quantity = 55,Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 5, ProductId = 5, OrderCustomerId = 3, Price = 6.45, Quantity = 855, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 6, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 7, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 8, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 9, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 10, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 11, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 12, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 13, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 14, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 15, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 16, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 17, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 18, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 19, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 21, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 22, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 23, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 24, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 25, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 26, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 27, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 28, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 29, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 30, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now },
-                new ItemOrder() { ItemOrderId = 31, ProductId = 6, OrderCustomerId = 3, Edited = DateTime.Now }
+                new ItemOrder() { ItemOrderId = 2, ProductId = 2, OrderCustomerId = 1, OrderVendorId = 1, Price = 2.22, Quantity = 33,Edited = DateTime.Now, Description = $"Опиасние oc201-io302-ov401 p1002" },
+                new ItemOrder() { ItemOrderId = 3, ProductId = 3, OrderCustomerId = 1, OrderVendorId = 1, Price = 3.33, Quantity = 44,Edited = DateTime.Now, Description = $"Опиасние oc201-io303-ov401 p1003" },
+                new ItemOrder() { ItemOrderId = 4, ProductId = 4, OrderCustomerId = 1, OrderVendorId = 1, Price = 4.44, Quantity = 55,Edited = DateTime.Now, Description = $"Опиасние oc201-io304-ov401 p1004" },
+                new ItemOrder() { ItemOrderId = 5, ProductId = 5, OrderCustomerId = 1, Price = 6.45, Quantity = 855, Edited = DateTime.Now, Description = $"Опиасние oc201-io305-ov403 p1005" },
+                new ItemOrder() { ItemOrderId = 6, ProductId = 6, OrderCustomerId = 1, Edited = DateTime.Now, Description = $"Опиасние oc201-io306-ov404 p1006" }
                 #endregion
              });
 
             #region Add Random ItemOrders
-            List<ItemOrder> itemOrders = new List<ItemOrder>();
 
-            for (int i = 32; i < 100; i++)
-                itemOrders.Add( new ItemOrder() { 
-                    ItemOrderId = i, 
-                    ProductId = random.Next(1,100), 
-                    OrderCustomerId = random.Next(1, 3), 
-                    Edited = RandomDay() 
+
+            for (int i = 7; i < limirRow; i++)
+            {
+                int randomProductId = random.Next(1, limirRow);
+                int randomOrderCustomerId = random.Next(1, limirRow);
+                int randomOrderVendorId = random.Next(1, limirRow);
+                itemOrders.Add(new ItemOrder()
+                {
+                    ItemOrderId = i,
+                    ProductId = randomProductId,
+                    OrderCustomerId = randomOrderCustomerId,
+                    OrderVendorId = randomOrderVendorId,
+                    Description = $"Опиасние oc20{randomOrderCustomerId}-io30{i}-ov40{randomOrderVendorId} p100{randomProductId}",
+                    Edited = RandomDay()
                 });
+            }
 
             modelBuilder.Entity<ItemOrder>().HasData(itemOrders);
             #endregion Add Random ItemOrders
-
-            modelBuilder.Entity<OrderVendor>().HasData(new[]{
-                new OrderVendor() { OrderVendorId = 1, Name = "OrderVendor-401", Description = "Customer-401.1", Edited = DateTime.Now,VendorId = 1 },
-                new OrderVendor() { OrderVendorId = 2, Name = "OrderVendor-402", Description = "Customer-402.1", Edited = DateTime.Now,VendorId = 1 },
-                new OrderVendor() { OrderVendorId = 3, Name = "OrderVendor-403", Description = "Customer-403.1", Edited = DateTime.Now,VendorId = 1 }
-            });
-            
-            modelBuilder.Entity<Vendor>().HasData(new[]{
-                new Vendor() { VendorId = 1, Name = "Иванов",   Description = "", Company = "Поставщик № 1", Email = "Email" },
-                new Vendor() { VendorId = 2, Name = "Петров",   Description = "", Company = "Поставщик № 2", Email = "Email" },
-                new Vendor() { VendorId = 3, Name = "Сидоров",  Description = "", Company = "Поставщик № 3", Email = "Email" }
-            });
+            #endregion Add ItemOrders
         }
+
+        
     }
 }

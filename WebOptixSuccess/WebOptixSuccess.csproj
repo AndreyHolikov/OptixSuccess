@@ -29,7 +29,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CoreBusiness\CoreBusiness.csproj" />
+    <ProjectReference Include="..\OptixSuccess.Services\OptixSuccess.Services.csproj" />
+    <ProjectReference Include="..\Plugins.DataStore.InMemory\Plugins.DataStore.InMemory.csproj" />
     <ProjectReference Include="..\Plugins.DataStore.SQL\Plugins.DataStore.SQL.csproj" />
+    <ProjectReference Include="..\Plugins.OsExcel\Plugins.OsExcel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Development\unsafe_uploads\" />
+    <Folder Include="unsafe_uploads\" />
   </ItemGroup>
 
 </Project>

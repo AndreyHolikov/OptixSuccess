@@ -2,7 +2,10 @@
 @using CoreBusiness
 @using Microsoft.EntityFrameworkCore
 
+
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+<BlazorExportToExcelComponent></BlazorExportToExcelComponent>
 
 <div class="row">
     <div class="col-md-5">
@@ -14,7 +17,7 @@
             </HeaderTemplate>
             <ChildContent>
                 @if (OrderCustomers == null) {
-                    <p><em>Loading...</em></p>
+                    <p><em>Loading OrderCustomers ...</em></p>
                 } else {                   
                 <RadzenDataGrid 
                     ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" 
@@ -45,24 +48,24 @@
         <RadzenPanel AllowCollapse="true" Style="margin: 10px" >
             <HeaderTemplate>
                 <h4 class="m-0 d-flex align-items-center">
-                    <RadzenIcon Icon="account_box" Class="mr-1" /><b>Заказы от покупателей</b>
+                    <RadzenIcon Icon="account_box" Class="mr-1" /><b>Заказы для поставщиков</b>
                 </h4>
             </HeaderTemplate>
             <ChildContent>
-                @if (OrderCustomers == null) {
-                    <p><em>Loading...</em></p>
+                @if (OrderVendors == null) {
+                    <p><em>Loading Vendors ...</em></p>
                 } else {                   
                 <RadzenDataGrid 
                     ColumnWidth="200px" AllowFiltering="true" PageSize="5" 
-                    AllowSorting="true" Data="@OrderCustomers" TItem="OrderCustomer" @bind-Value="@SelectedOrderCustomers"
+                    AllowSorting="true" Data="@OrderVendors" TItem="OrderVendor" @bind-Value="@SelectedOrderVendors"
                     AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Center"
                     PageSizeOptions="@pageSizeOptions"
                     AllowColumnResize="true">
                     <Columns>
-                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="Id" Width="50px" />
-                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Customer.Company" Title="Компания" Width="150px" />
-                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Edited" Title="Дата" Width="120px" />
-                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="Позиций" Width="70px" TextAlign="TextAlign.Center" >
+                        <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId" Title="Id" Width="50px" />
+                        <RadzenDataGridColumn TItem="OrderVendor" Property="Vendor.Company" Title="Компания" Width="150px" />
+                        <RadzenDataGridColumn TItem="OrderVendor" Property="Edited" Title="Дата" Width="120px" />
+                        <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId" Title="Позиций" Width="70px" TextAlign="TextAlign.Center" >
                             <Template Context="detail">
                                 @detail.ItemOrders.Count()
                             </Template>
@@ -83,10 +86,17 @@
     </div>
 </div>
 
+<RadzenButton Click="TestEventConsole" Text="TestEventConsole" />
     @* TODO:Add EventConsole <EventConsole @ref=@console Class="mt-4"/>*@
+    <EventConsole @ref=@console Class="mt-4" />
 
 @code {
-    //EventConsole? console;
+    private void TestEventConsole()
+    {
+        console.Log($"set SelectedOrderCustomers");
+    }
+
+    EventConsole console = new EventConsole();
 
     #region private Fields
     private IQueryable<OrderCustomer>? OrderCustomers { get; set; } 
@@ -125,6 +135,7 @@
     {
         LoadOrderCustomers();
         LoadOrderVendors();
+        
     }
     #endregion    
 
@@ -151,6 +162,7 @@
     {
         LoadOrderCustomers();
         LoadOrderVendors();
+        
     }
     #endregion 
 }

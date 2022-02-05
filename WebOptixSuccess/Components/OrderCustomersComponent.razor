@@ -1,8 +1,10 @@
 ﻿@using CoreBusiness
 @using Microsoft.EntityFrameworkCore
-@inject NotificationService NotificationService
+@using UseCases
+@*@inject IAddCustomerUseCase AddCustomerUseCase *@
 
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
+@inject NotificationService NotificationService
 
 <div class="row" style="margin:10px;">
     <div class="col-md-6">
@@ -43,8 +45,12 @@
     {
         //console.Log($"{name} value changed to {value}");
         Customer newCustomer = new Customer(){ Name = value, Company = value };
+
+        //AddCustomerUseCase.Execute(newCustomer);
+
         dbContext.Customers.Add(newCustomer);
         dbContext.SaveChanges();
+
         LoadCustomers();
         var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Покупатель успешно добавлен.", Detail = "Покупатель успешно добавлен!", Duration = 4000 };
         NotificationService.Notify(message);
