@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugins.DataStore.SQL", "Pl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebOptixSuccess", "WebOptixSuccess\WebOptixSuccess.csproj", "{0A59593D-B576-4B0D-84A7-FEF25FDB2892}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugins.OsExcel", "Plugins.OsExcel\Plugins.OsExcel.csproj", "{C0DDD196-0FEB-4EF2-ACC5-1A323ED92AA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugins.OsExcel", "Plugins.OsExcel\Plugins.OsExcel.csproj", "{C0DDD196-0FEB-4EF2-ACC5-1A323ED92AA9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OptixSuccess.Services", "OptixSuccess.Services\OptixSuccess.Services.csproj", "{BB6EBF60-33FE-49AE-ABA0-FFD3790DA6D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{C0DDD196-0FEB-4EF2-ACC5-1A323ED92AA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0DDD196-0FEB-4EF2-ACC5-1A323ED92AA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0DDD196-0FEB-4EF2-ACC5-1A323ED92AA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB6EBF60-33FE-49AE-ABA0-FFD3790DA6D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB6EBF60-33FE-49AE-ABA0-FFD3790DA6D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB6EBF60-33FE-49AE-ABA0-FFD3790DA6D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB6EBF60-33FE-49AE-ABA0-FFD3790DA6D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
