@@ -14,6 +14,8 @@ using Plugins.DataStore.InMemory;
 using UseCases.DataStorePluginInterfaces;
 using UseCases;
 using Radzen;
+using Plugins.DataStore.SQL;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApp
 {
@@ -34,6 +36,8 @@ namespace WebApp
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
 
+            services.AddDbContext<AppDbContext>();
+
             //Dependency  Injection for In-Memory DataStore
             services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
             services.AddScoped<IProductRepository, ProductInMemoryRepository>();
@@ -46,7 +50,7 @@ namespace WebApp
 
             services.AddScoped<IExcelFileRepository, ExcelFileInMemoryRepository>();
 
-            services.AddScoped<DialogService>();
+            services.AddScoped<TooltipService>();
 
             //services.AddScoped<IFileUpload, >
 

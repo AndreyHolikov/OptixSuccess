@@ -1,0 +1,171 @@
+﻿@using CoreBusiness
+@using Plugins.OsExcel
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+<RadzenCard Style="margin-bottom:20px">
+    @if(SelectedOrder == null)
+    {
+        <p>loading...</p>
+    } else {
+    <div class="row">
+        <div class="col-md-3">
+            <div>Компания :</div>
+            <b>@Company</b>
+        </div>
+        <div class="col-md-3">
+            <div>Заказ:</div>
+            <b>@OrderId</b>
+        </div>
+        <div class="col-md-3">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" @onclick="@(() => DownloadExcelDocument())">Download</button>
+
+            <RadzenUpload Url="upload/single" Progress=@(args => OnProgress(args, "Single file upload")) ChooseText="Загрузить Excel" />
+            @*TODO: RadzenFileInput 
+                <RadzenFileInput @bind-Value=@SelectedOrders?.FirstOrDefault()?.Name TValue="string" Class="w-100" 
+                Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) />*@
+            <RadzenButton Text="Export XLS" Icon="grid_on" Click="@(args => Export("excel"))" Class="mb-4 mr-2" ButtonStyle="ButtonStyle.Light"/>
+            <RadzenButton Text="Export CSV" Icon="wrap_text" Click="@(args => Export("csv"))" Class="mb-4" ButtonStyle="ButtonStyle.Light"/>  
+            <button type="button" @onclick="@DeleteOrder" class="btn btn-link">
+                <i class="far fa-trash-alt"></i> Удалить заказ
+            </button>
+        </div>
+     </div>
+     }
+	 </RadzenCard>
+
+@code {
+    private Order? selectedOrder { get; set; }
+    private string? Company { get; set; }
+    private int? OrderId { get; set; }
+
+    [Parameter]
+    public Order? SelectedOrder
+    {
+        get => selectedOrder;
+        set
+        {
+            selectedOrder = value;
+            if (selectedOrder != null)
+            {
+                Company = GetCompany();
+                OrderId = GetOrderId();
+            }
+        }
+    } 
+    [Parameter]
+    public EventCallback UpdateCallback { get; set; }
+
+    private string GetCompany()
+    {
+        if (SelectedOrder != null)
+        {
+            if (SelectedOrder is OrderCustomer) return ((OrderCustomer)SelectedOrder).Customer.Company;
+            else if (SelectedOrder.GetType() == typeof(OrderVendor)) return ((OrderVendor)SelectedOrder).Vendor.Company;
+        } 
+        throw new Exception("Type SelectedOrder not found!");
+        //return SelectedOrder.GetType() switch
+        //{
+        //    typeof(OrderCustomer) => ((OrderCustomer)SelectedOrder).Customer.Company,
+        //    typeof(OrderVendor) => ((OrderVendor)SelectedOrder).Vendor.Company,
+        //    _ => throw new Exception("Type SelectedOrder not found!"),
+        //};
+    }
+
+    private int GetOrderId()
+    {
+        if (SelectedOrder != null)
+        {
+            if (SelectedOrder.GetType() == typeof(OrderCustomer)) return ((OrderCustomer)SelectedOrder).OrderCustomerId;
+            else if (SelectedOrder.GetType() == typeof(OrderVendor)) return ((OrderVendor)SelectedOrder).OrderVendorId;
+        } 
+        throw new Exception("Type SelectedOrder not found!");
+    }
+
+    //Загрузка файла заказа
+    int progress;
+    string info = "";
+
+    void OnProgress(UploadProgressArgs args, string name)
+    {
+        this.info = $"% '{name}' / {args.Loaded} of {args.Total} bytes.";
+        this.progress = args.Progress;
+
+        if (args.Progress == 100)
+        {
+            //console.Clear();
+
+            foreach (var file in args.Files)
+            {
+                //console.Log($"Uploaded: {file.Name} / {file.Size} bytes");
+            }
+        }
+    }
+
+    void OnError(UploadErrorEventArgs args, string name)
+    {
+        //console.Log($"{args.Message}");
+    }
+
+    public void Export(string type)
+    {
+        //service.Export("OrderDetails", type, new Query() { OrderBy = grid.Query.OrderBy, Filter = grid.Query.Filter });
+    }
+
+    protected void DeleteOrder()
+    {
+        if (SelectedOrder?.GetType() == typeof(OrderCustomer)) DeleteOrderCustomer();
+        else if (SelectedOrder?.GetType() == typeof(OrderVendor)) DeleteOrderVendor();
+
+        UpdateCallback.InvokeAsync();
+    }
+    protected void DeleteOrderCustomer()
+    {
+        int ocId = SelectedOrder != null ? ((OrderCustomer)SelectedOrder).OrderCustomerId: -1;
+        if( ocId > 0 )
+        {
+            OrderCustomer? orderCustomer = dbContext.OrderCustomers.Find(ocId);
+            if (orderCustomer != null)
+            {
+                dbContext.OrderCustomers.Remove(orderCustomer);
+                dbContext.SaveChanges();
+            }
+        }
+    }
+
+    protected void DeleteOrderVendor()
+    {
+        int ovId = SelectedOrder != null ? ((OrderVendor)SelectedOrder).OrderVendorId: -1;
+        if( ovId > 0 )
+        {
+            OrderVendor? orderVendor = dbContext.OrderVendors.Find(ovId);
+            if (orderVendor != null)
+            {
+                dbContext.OrderVendors.Remove(orderVendor);
+                dbContext.SaveChanges();
+            }
+        }
+    }
+
+    @inject IJSRuntime JSRuntime
+
+    public async Task DownloadExcelDocument()
+    {
+        Worker worker = new Worker();
+        var workbook = worker.GetProductsXLWorkbook();
+
+        using (var stream = new MemoryStream())
+        {
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+ 
+            var fileName = "Products.xlsx";
+            await JSRuntime.InvokeAsync<object>("saveAsFile", fileName, Convert.ToBase64String(content));
+        }
+    }
+}

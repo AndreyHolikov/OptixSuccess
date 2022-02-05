@@ -8,13 +8,12 @@
 </div>
 
 
-<CustomerWidgetComponent CountItemOnPage=@CountItemOnPage OnUpdateCallback=@OnUpdateCallback ></CustomerWidgetComponent>
-<hr/>
-<VendorWidgetComponent  CountItemOnPage=@CountItemOnPage  OnUpdateCallback=@OnUpdateCallback ></VendorWidgetComponent>
+<CustomerGroupWidgetsComponent ></CustomerGroupWidgetsComponent><hr/>
+@*<VendorGroupWidgetsComponent    CountItemOnPage=@CountItem></VendorGroupWidgetsComponent>*@
 
 @code {
 
-    private int CountItemOnPage { get; set; } = 3;
+    private int CountItem { get; set; } = 3;
 
     protected override void OnInitialized()
     {
@@ -23,7 +22,8 @@
 
     protected void OnUpdateCallback()
     {
-        int temp = CountItemOnPage;
-        CountItemOnPage = temp;
+        int temp = CountItem;
+        CountItem = temp;
+        //CustomerGroupWidgetsComponent.
     }
 }

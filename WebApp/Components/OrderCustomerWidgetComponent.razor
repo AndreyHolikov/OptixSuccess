@@ -1,0 +1,132 @@
+﻿@* Example <OrderCustomerWidgetComponent> *@
+
+@*Customer*@
+@inject IGetCustomerByIdUseCase GetCustomerByIdUseCase
+@*OrderCustomer*@
+@inject IViewOrderCustomersUseCase ViewOrderCustomersUseCase
+@inject IDeleteOrderCustomerUseCase DeleteOrderCustomerUseCase
+@*ItemOrder*@
+@inject IGetItemOrdersByOrderCustomerIdUseCase GetItemOrdersByOrderCustomerIdUseCase
+
+<div class="col col-auto m-2 p-4 bg-light border widget-column-border">
+    <TitleWidgetWithCountComponent Text="Заказы от покупателей" Href="ordercustomers"  CountItem=@CountItem FullCount=@orderCustomers.Count()></TitleWidgetWithCountComponent>
+    <div><br/>
+        @if (orderCustomers != null)
+        {
+            <div class="table-responsive">
+                <table class="table table-hover table-sm align-middle table-responsive">
+                    <thead>
+                        <tr class="text-align-center align-middle-th th">
+                            <th class="text-center">№</th>
+                            <th title="Покупатель. Дата и время редактирования">
+                                Покупатель<br/>
+                                Дата <IconCircleComponent ></IconCircleComponent>
+                            </th>
+                            <th class="align-middle" title="Количество позиций">
+                                Позиций <IconCircleComponent ></IconCircleComponent>
+                            </th>
+                            <th title="Количество товаров">
+                                Товаров <IconCircleComponent></IconCircleComponent>
+                            </th>
+                            <th>
+                                <ButtonAddComponent TypeName="OrderCustomer"></ButtonAddComponent>
+                                <button tupe="button"  @onclick="(() => LoadAllOrderCustomers())" class="btn btn-link">
+                                    <i class="fas fa-sync-alt" ></i>
+                                </button> 
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int i = 0;
+                        foreach (var orderCustomer in orderCustomers)
+                        {
+                            <tr @onclick="@(() => ClickOrderCustomer(orderCustomer.OrderCustomerId))" class="cursor-pointer text-align-center">
+                                <td>@orderCustomer.OrderCustomerId</td>
+                                <td>
+                                    @GetCustomerByIdUseCase.Execute(orderCustomer.CustomerId)?.Company<br/>
+                                    @orderCustomer.Edited.ToString("dd.MM.yyyy")<br/>
+                                    @orderCustomer.Edited.ToString("HH:mm:ss")
+                                </td>
+                                <td>@GetItemOrdersByOrderCustomerIdUseCase.Execute(orderCustomer.OrderCustomerId).Count()</td>
+                                <td>@GetItemOrdersByOrderCustomerIdUseCase.Execute(orderCustomer.OrderCustomerId).Sum(n => n.Quantity)</td>
+                                <td>
+                                    <ButtonEditComponent TypeName="orderCustomer" Id="@orderCustomer.OrderCustomerId.ToString()"></ButtonEditComponent>
+                                    <button type="button" @onclick="@(() => DeleteOrderCustomer(orderCustomer.OrderCustomerId))" class="btn btn-link">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            i++;
+                            if (i >= CountItem) break;
+                        }}
+                    </tbody>
+                </table>
+            </div>
+            <ButtonLoadMoreComponent Text="Загрузить больше" OnClickCallback="(() => LoadMoreOrderCustomers())" CountItem=@CountItem FullCount=@orderCustomers.Count()></ButtonLoadMoreComponent>
+        }
+    </div>
+</div>
+
+@code {
+    #region public fields
+    [Parameter]   
+    public int ParentCustomerId { get; set; }
+    [Parameter]     
+    public int CountItem { get; set; }  = 3;
+    // EventCallback
+    [Parameter]     
+    public EventCallback OnUpdateCallback { get; set; }
+    public EventCallback EventClickOrderCustomer { get; set; }
+    #endregion
+
+    #region private fields
+    private List<CoreBusiness.OrderCustomer> orderCustomers;
+    private int LastClickOnOrderСustomerId { get; set; }
+
+    private IEnumerable<int> pageSizeOptions = new int[] { 10, 20, 30 };
+
+    private Task UpdateComponent() => OnUpdateCallback.InvokeAsync(null);
+    #endregion       
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadOrderCustomers();
+    }
+
+    #region OrderCustomer
+    private void LoadOrderCustomers()
+    {
+        if (ParentCustomerId > 0)
+            orderCustomers = ViewOrderCustomersUseCase.Execute().Where(x => x.CustomerId == ParentCustomerId)?.ToList();
+        else
+            orderCustomers = ViewOrderCustomersUseCase.Execute()?.ToList();
+        
+        UpdateComponent(); // LoadItemOrders(); 
+    }
+
+    private void LoadAllOrderCustomers()
+    {
+        ParentCustomerId = 0;
+        LoadOrderCustomers();
+    }
+
+    private void LoadMoreOrderCustomers(){
+        CountItem += 10;
+        LoadOrderCustomers();
+    }
+
+    protected void DeleteOrderCustomer(int OrderCustomerId)
+    {
+        DeleteOrderCustomerUseCase?.Delete(OrderCustomerId);
+        LoadOrderCustomers();
+        UpdateComponent();
+    }
+
+    protected void ClickOrderCustomer(int orderCustomerId)
+    {
+        LastClickOnOrderСustomerId = orderCustomerId;
+        UpdateComponent(); // LoadItemOrders();
+    }
+    #endregion
+}

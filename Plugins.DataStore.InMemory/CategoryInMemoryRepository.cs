@@ -16,9 +16,9 @@ namespace Plugins.DataStore.InMemory
 
             categories = new List<Category>()
             {
-                new Category() { СategoryId = 1, Name = "Beverages", Description = "Beverage"},
-                new Category() { СategoryId = 2, Name = "Bakery", Description = "Bakery"},
-                new Category() { СategoryId = 3, Name = "Meat", Description = "Meat"}
+                new Category() { CategoryId = 1, Name = "Beverages", Description = "Beverage"},
+                new Category() { CategoryId = 2, Name = "Bakery", Description = "Bakery"},
+                new Category() { CategoryId = 3, Name = "Meat", Description = "Meat"}
             };
         }
 
@@ -28,19 +28,19 @@ namespace Plugins.DataStore.InMemory
 
             if (categories != null && categories.Count > 0)
             {
-                var maxId = categories.Max(x => x.СategoryId);
-                category.СategoryId = maxId + 1;
+                var maxId = categories.Max(x => x.CategoryId);
+                category.CategoryId = maxId + 1;
                 
             } else
             {
-                category.СategoryId = 1;
+                category.CategoryId = 1;
             }
             categories.Add(category);
         }
 
         public void UpdateCategory(Category category)
         {
-            var categoryToUpdate = GetCategoryById(category.СategoryId);
+            var categoryToUpdate = GetCategoryById(category.CategoryId);
             if (categoryToUpdate != null)
             {
                 categoryToUpdate.Name = category.Name;
@@ -50,7 +50,7 @@ namespace Plugins.DataStore.InMemory
 
         public Category GetCategoryById(int categoryId)
         {
-            return categories?.Find(x => x.СategoryId == categoryId);
+            return categories?.Find(x => x.CategoryId == categoryId);
             //return categories?.SingleOrDefault(x => x.СategoryId == categoryId);
             //return categories?.FirstOrDefault(x => x.СategoryId == categoryId);
         }

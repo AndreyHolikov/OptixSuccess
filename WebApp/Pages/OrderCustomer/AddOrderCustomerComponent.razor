@@ -12,6 +12,9 @@
 @inject IAddOrderCustomerUseCase AddOrderCustomerUseCase 
 @inject IViewCustomersUseCase ViewCustomersUseCase
 
+
+@using ClosedXML.Excel;
+
 <h3>Add OrderCustomer</h3>
 
 @if (orderCustomer != null)
@@ -152,15 +155,15 @@
         {
             ms.WriteTo(file);
         }
-    }*@
+        }*@
 
     #endregion
 
     private async Task SingleUpload(InputFileChangeEventArgs e)
     {
-       var ms = new MemoryStream();
-       await e.File.OpenReadStream().CopyToAsync(ms);
-       var bytes = ms.ToArray();
+        var ms = new MemoryStream();
+        await e.File.OpenReadStream().CopyToAsync(ms);
+        var bytes = ms.ToArray();
 
     }
 
@@ -192,4 +195,6 @@
 
         isLoading = false;
     }
+
+    
 }

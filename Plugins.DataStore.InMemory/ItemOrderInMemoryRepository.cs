@@ -18,50 +18,11 @@ namespace Plugins.DataStore.InMemory
 
             itemOrders = new List<ItemOrder>()
             {
-                new ItemOrder() { 
-                    ItemOrderId = 1, 
-                    ProductId = 1, 
-                    OrderCustomerId = 1, 
-                    OrderVendorId = 1, 
-                    Price = 1.11, 
-                    Quantity = 22,
-                    Edited = DateTime.Now
-                },
-                new ItemOrder() { 
-                    ItemOrderId = 2, 
-                    ProductId = 1, 
-                    OrderCustomerId = 1, 
-                    OrderVendorId = 2, 
-                    Price = 2.22, 
-                    Quantity = 33,
-                    Edited = DateTime.Now
-                },
-                new ItemOrder() { 
-                    ItemOrderId = 3, 
-                    ProductId = 1, 
-                    OrderCustomerId = 2, 
-                    OrderVendorId = 1, 
-                    Price = 3.33, 
-                    Quantity = 44,
-                    Edited = DateTime.Now
-                },
-                new ItemOrder() { 
-                    ItemOrderId = 4, 
-                    ProductId = 1, 
-                    OrderCustomerId = 3, 
-                    OrderVendorId = 3, 
-                    Price = 4.44,
-                    Quantity = 55,
-                    Edited = DateTime.Now
-                },
-                new ItemOrder() {
-                    ItemOrderId = 5,
-                    ProductId = 3,
-                    OrderCustomerId = 3,
-                    Price = 6.45,
-                    Quantity = 855,
-                    Edited = DateTime.Now
-                }
+                new ItemOrder() {  ItemOrderId = 1, ProductId = 1, OrderCustomerId = 1, OrderVendorId = 1, Price = 1.11, Quantity = 22, Edited = DateTime.Now },
+                new ItemOrder() { ItemOrderId = 2, ProductId = 1, OrderCustomerId = 1, OrderVendorId = 2, Price = 2.22, Quantity = 33,Edited = DateTime.Now },
+                new ItemOrder() { ItemOrderId = 3, ProductId = 1, OrderCustomerId = 2, OrderVendorId = 1, Price = 3.33, Quantity = 44,Edited = DateTime.Now },
+                new ItemOrder() { ItemOrderId = 4, ProductId = 1, OrderCustomerId = 3, OrderVendorId = 3, Price = 4.44,Quantity = 55,Edited = DateTime.Now },
+                new ItemOrder() { ItemOrderId = 5, ProductId = 3, OrderCustomerId = 3, Price = 6.45, Quantity = 855, Edited = DateTime.Now }
             };
         }
 

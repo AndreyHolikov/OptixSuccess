@@ -1,12 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CoreBusiness // Core Business - Основной бизнес
+namespace CoreBusiness
 {
     public class Category
     {
-        public int СategoryId { get; set; }
-        [Required]
-        public string Name { get; set; }
+        public int CategoryId { get; set; }
+        public string Name { get; set; } = "Category";
         public string Description { get; set; }
+
+        public List<Product> Products { get; set; }
     }
 }

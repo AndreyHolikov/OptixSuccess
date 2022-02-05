@@ -1,0 +1,64 @@
+﻿@using WebApp.Components
+@using System.Linq.Dynamic.Core
+@using WebApp.Model
+
+<div class="optix-widget optix-font container ">
+    <div class="row optix-row-1 optix-page-content justify-content-center">
+        <CustomerWidgetComponent 
+            CountItem=@CountItem 
+           OnUpdateCallback="OnUpdateCustomerWidget" >
+        </CustomerWidgetComponent>
+        
+        <OrderCustomerWidgetComponent 
+            CountItem=@CountItem 
+            OnUpdateCallback=@OnUpdateOrderCustomerWidget>
+        </OrderCustomerWidgetComponent>
+        
+        <ItemOrderCustomerWidgetComponent 
+            CountItem=@CountItem 
+            OnUpdateCallback="@(() => OnUpdateItemOrderCustomerWidget(1))">
+        </ItemOrderCustomerWidgetComponent>
+    </div>
+</div>
+
+@code {
+    #region private fields
+    private int ParentCustomerId { get; set; }
+    private int ParentOrderCustomerId { get; set; }
+
+    private MiniItemOrder miniItemOrder { get; set; }
+
+    private int CountItem { get; set; } = 3;
+    #endregion 
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        miniItemOrder = new MiniItemOrder();
+    }
+
+    private void OnUpdateCustomerWidget(int parentCustomerId)
+    {
+        ParentCustomerId = parentCustomerId;
+    }
+
+    private void OnUpdateOrderCustomerWidget()
+    {
+        ParentOrderCustomerId = 0;
+    }
+
+    private void OnUpdateItemOrderCustomerWidget(int itemOrderId)
+    {
+        if (miniItemOrder.selectedItemOrderIds.IndexOf(itemOrderId) == -1) // .Exists(x => x. == itemOrderId))
+        {
+            miniItemOrder.selectedItemOrderIds.Add(itemOrderId);
+        } else {
+            miniItemOrder.selectedItemOrderIds.Remove(itemOrderId);
+        }
+    }
+
+    private void OnUpdateItemOrderCustomer()
+    {
+        
+    }
+}

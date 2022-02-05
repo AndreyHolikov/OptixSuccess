@@ -1,0 +1,255 @@
+﻿@*<ItemOrderCustomerWidgetComponent></ItemOrderCustomerWidgetComponent>*@
+@using WebApp.Model
+
+@*ItemOrder*@
+@inject IViewItemOrdersUseCase ViewItemOrdersUseCase
+@inject IDeleteItemOrderUseCase DeleteItemOrderUseCase
+@inject IGetItemOrderByIdUseCase GetItemOrderByIdUseCase
+@inject IEditItemOrderUseCase EditItemOrderUseCase
+
+@*Product*@
+@inject IGetProductByIdUseCase GetProductByIdUseCase
+
+@*OrderVendor*@
+@inject IGetOrderVendorByIdUseCase GetOrderVendorByIdUseCase
+
+@*OrderCustomer*@
+@inject IGetOrderCustomerByIdUseCase GetOrderCustomerByIdUseCase
+
+<div class="col col-auto m-2 p-4 bg-light border widget-column-border">
+    <TitleWidgetWithCountComponent Text="Товары в заказах" Href="itemorders" 
+        CountItem=@CountItem FullCount=@itemOrders.Count()>
+    </TitleWidgetWithCountComponent>
+
+    <div class="widget-content">
+        @if (itemOrders != null)
+        {
+            <div class="table-responsive">
+                <table class="table table-hover table-sm align-middle table-responsive">
+                    <thead>
+                        <tr class="text-align-center align-middle-th">
+                            <th>Id</th>
+                            <th>Товар</th>
+                            <th>Кол-во</th>
+                            <th>Цена</th>
+                            <th>№ заказа<br/>покупателя</th>
+
+                            <th>
+                                <ButtonAddComponent TypeName="ItemOrder"></ButtonAddComponent>
+                                <button tupe="button"  @onclick="(() => LoadAllItemOrders())" class="btn btn-link">
+                                    <i class="fas fa-sync-alt" ></i>
+                                </button> 
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 0;
+                        }
+                        @foreach (var itemOrder in itemOrders)
+                        {
+                            <tr @onclick="@(() => OnClickItemOrder(itemOrder.ItemOrderId))"  class="cursor-pointer text-align-center">
+                                <td>@itemOrder.ItemOrderId</td>
+                                <td>
+                                    @(GetProductByIdUseCase.Execute(itemOrder.ProductId)?.Name)
+                                    @*@((itemOrder.ProductId != null) 
+                                    ? GetProductByIdUseCase.Execute(itemOrder.ProductId ?? default(int))?.Name 
+                                    : "")*@
+                                </td>
+                                <td>@itemOrder.Quantity</td>
+                                <td>@itemOrder.Price</td>
+                                <td>@GetOrderCustomerByIdUseCase.Execute(itemOrder.OrderCustomerId)?.OrderCustomerId</td>
+                                <td>
+                                    <ButtonEditComponent TypeName="customer" Id="@itemOrder.ItemOrderId.ToString()"></ButtonEditComponent>
+                                    <button type="button" @onclick="@(() => DeleteItemOrder(itemOrder.ItemOrderId))" class="btn btn-link">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            i++;
+                            if (i >= CountItem) break;
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <ButtonLoadMoreComponent Text="Загрузить больше" OnClickCallback="(() => LoadMoreItemOrders())" 
+                CountItem=@CountItem FullCount=@itemOrders.Count()></ButtonLoadMoreComponent>
+            <hr/>
+        }
+    </div>
+</div>
+<div class="col col-auto m-2 p-4 bg-light border widget-column-border">
+    <div class="widget-footer">
+        <EditForm Model="@miniItemOrder">
+
+            <h5>Добавить выбранные товары<br/> в заказ поставщика</h5>
+
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <ViewListAsUlComponent collection="@GetSelectedItemOrdersAsCollection()"></ViewListAsUlComponent>
+            <button type="button" class="btn btn-link" @onclick="OnClearListSelectedItemOrders">Очистить список</button>
+
+            <div class="form-group">
+                <label for="orderVendorId">№ заказа поставщика</label>
+                <InputNumber 
+                id="orderVendorId" 
+                @bind-Value="miniItemOrder.OrderVendorId" 
+                class="form-control" 
+                @onclick="OnChangeOrderVendorId">
+                </InputNumber>
+            </div>
+
+        
+            <button type="button" class="btn btn-info" @onclick="OnClickSendItemOrderInOrderVendor">Отправить *</button>
+            <p> * - что увидеть изменения в таблицах<br/> "Заказы для поставщиков" и <br/> "Товары в заказах"<br/> их нужно обновить. </p>
+        </EditForm>
+        <div class="alert @alertClass" role="alert">
+            @warningMessage1
+        </div>
+    </div>
+</div>
+
+@code {
+    #region public fields
+    [Parameter]   
+    public int ParentOrderCustomerId { get; set; }
+    [Parameter]     
+    public int CountItem { get; set; }  = 3;
+    // EventCallback
+    [Parameter]     
+    public EventCallback OnUpdateCallback { get; set; }
+    public EventCallback EventClickOrderCustomer { get; set; }
+    [Parameter]
+    public EventCallback<int> OnClickItemOrderCallback { get; set; } //+
+    #endregion
+
+    #region private fields
+    private List<CoreBusiness.ItemOrder> itemOrders;
+    private MiniItemOrder miniItemOrder { get; set; }
+    private int LastClickOnItemOrderId { get; set; }
+
+    public string warningMessage1 { get; set; }
+    public string alertClass { get; set; }
+    private IEnumerable<int> pageSizeOptions = new int[] { 10, 20, 30 };
+
+    private Task UpdateComponent() => OnUpdateCallback.InvokeAsync(null);
+    #endregion
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadItemOrders();
+        miniItemOrder = new MiniItemOrder();
+    }
+
+    #region ItemOrder
+    private void LoadItemOrders()
+    {
+        if (ParentOrderCustomerId > 0)
+            itemOrders = ViewItemOrdersUseCase.Execute()?.Where(x => x.OrderCustomerId == ParentOrderCustomerId).ToList();
+        else
+            itemOrders = ViewItemOrdersUseCase.Execute()?.ToList();
+    }
+
+    private void LoadAllItemOrders()
+    {
+        ParentOrderCustomerId = 0;
+        LoadItemOrders();
+    }
+
+    private void LoadMoreItemOrders(){
+        CountItem += 10;
+        LoadItemOrders();
+    }
+
+    protected void DeleteItemOrder(int ItemOrderId)
+    {
+        DeleteItemOrderUseCase?.Delete(ItemOrderId);
+        miniItemOrder.selectedItemOrderIds.Remove(ItemOrderId);
+        LoadItemOrders();    
+        UpdateComponent();
+    }    
+
+    protected void OnClickItemOrder(int itemOrderId)
+    {
+        OnClickItemOrderCallback.InvokeAsync(itemOrderId);
+    }    
+    #endregion 
+
+    #region AddItemOrder
+    protected void OnClickSendItemOrderInOrderVendor()
+    {
+        if (GetOrderVendorByIdUseCase.Execute(miniItemOrder.OrderVendorId) != null)
+        {
+            foreach (int id in miniItemOrder.selectedItemOrderIds)
+            {
+                ItemOrder itemOrder = GetItemOrderByIdUseCase.Execute(id);
+                itemOrder.OrderVendorId = miniItemOrder.OrderVendorId;
+                EditItemOrderUseCase.Execute(itemOrder);
+            }
+            miniItemOrder.selectedItemOrderIds.Clear();
+            alertClass = "alert-success";
+            warningMessage1 = "Товары успешно добавлены";
+
+            UpdateComponent();
+        } else {
+            alertClass = "alert-danger";
+            warningMessage1 = $"Заказ c номером {miniItemOrder.OrderVendorId} не найден";
+        }
+    }
+
+    private IEnumerable<string> GetSelectedItemOrdersAsCollection()
+    {
+        var collection = new List<string>();
+        var collectionForRemove = new List<int>();
+
+        foreach (var itemOrderId in miniItemOrder.selectedItemOrderIds)
+        {
+            if (GetItemOrderByIdUseCase.Execute(itemOrderId) != null)
+            {
+                int? tempProductId = GetItemOrderByIdUseCase.Execute(itemOrderId).ProductId;
+                Product tempProduct = (tempProductId == null)
+                    ? null 
+                    : GetProductByIdUseCase.Execute(tempProductId ?? default(int));
+                string tempProductName = (tempProduct == null)
+                    ? "null"
+                    : tempProduct?.Name;
+                collection.Add($"{itemOrderId}: {tempProductName}");
+            } else {
+                collectionForRemove.Add(itemOrderId);
+            }
+        }
+        foreach (var item in collectionForRemove)
+        {
+            miniItemOrder.selectedItemOrderIds.Remove(item);
+        }
+
+        alertClass = "alert-light";
+        warningMessage1 = "";
+
+        return collection;
+        //string.Join(",", miniItemOrder.selectedItemOrderIds); 
+    }
+
+    protected void OnChangeOrderVendorId()
+    {
+        if (GetOrderVendorByIdUseCase.Execute(miniItemOrder.OrderVendorId) != null)
+        {
+            alertClass = "alert-info";
+            warningMessage1 = $"Заказ: {GetOrderVendorByIdUseCase.Execute(miniItemOrder.OrderVendorId).Edited}";
+        } else {
+            alertClass = "alert-danger";
+            warningMessage1 = $"Заказ c номером {miniItemOrder.OrderVendorId} не найден";
+        }
+    }
+
+    protected void OnClearListSelectedItemOrders()
+    {
+        miniItemOrder.selectedItemOrderIds.Clear();
+    }
+
+    private string GetSelectedItemOrdersAsString()
+        => ""; // string.Join(",", miniItemOrder.selectedItemOrders);
+    #endregion
+}

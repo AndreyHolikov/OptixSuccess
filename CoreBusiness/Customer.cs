@@ -9,7 +9,7 @@ namespace CoreBusiness
 {
     public  class Customer
     {
-        public int СustomerId { get; set; }
+        public int CustomerId { get; set; }
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
@@ -18,5 +18,7 @@ namespace CoreBusiness
         public string Email { get; set; }
         public string Company { get; set; }
         public string Phone { get; set; }
+
+        public List<OrderCustomer> OrderCustomers { get; set; }
     }
 }

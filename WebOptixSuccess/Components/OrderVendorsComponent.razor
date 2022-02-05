@@ -1,0 +1,99 @@
+﻿@using CoreBusiness
+@using Microsoft.EntityFrameworkCore
+@inject NotificationService NotificationService
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+<div class="row" style="margin:10px;">
+    <div class="col-md-6">
+        Добавить поставщика
+        <RadzenTextBox Placeholder="Введите имя поставщика" Change=@(args => OnChangeAddVendor(args)) Class="w-100" />
+    </div>
+    <div class="col-md-6">
+         Добавить заказ поставщика
+        <RadzenDropDown AllowClear="true" TValue="int" AllowVirtualization="true" Class="w-100" 
+            LoadData=@LoadDataVendors AllowFiltering="true" Count="@countVendors"
+            Data=@vendors TextProperty="Company" ValueProperty="VendorId"
+            Change=@(args => OnChangeAddOrderVendor(args)) Placeholder="Выберите поставщика" />
+    </div>
+</div>
+
+
+@code {
+    IEnumerable<Vendor>? vendors = null;
+    int countVendors;
+
+    [Parameter]
+    public EventCallback UpdateCallback { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadVendors();
+    }
+
+    void LoadVendors()
+    {
+        vendors = dbContext.Vendors.ToList();
+    }
+
+    //EventConsole console;
+
+    void OnChangeAddVendor(string value)
+    {
+        //console.Log($"{name} value changed to {value}");
+        Vendor newVendor = new Vendor(){ Name = value, Company = value };
+        dbContext.Vendors.Add(newVendor);
+        dbContext.SaveChanges();
+        LoadVendors();
+        var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Поставщик успешно добавлен.", Detail = "Поставщик успешно добавлен!", Duration = 4000 };
+        NotificationService.Notify(message);
+    }
+
+    //Выбор поставщика при добавлении заказа
+    void OnChangeAddOrderVendor(object args)
+    {
+        //var str = value;
+
+        //console.Log($"{name} value changed to {str}");
+
+        if ( args != null && (int)args > 0 )
+        {
+            dbContext.OrderVendors.Add(
+                new OrderVendor()
+                    {
+                        VendorId = (int)args,
+                        Edited = DateTime.Now
+                    }
+            );
+            dbContext.SaveChanges();
+            UpdateCallback.InvokeAsync();
+        }
+        var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Заказ успешно добавлен.", Detail = "Заказ успешно добавлен!", Duration = 4000 };
+        NotificationService.Notify(message);
+    }
+
+    public void OnClick(string text)
+    {
+
+    }
+
+    void LoadDataVendors(LoadDataArgs args)
+    {
+        //var query = dbContext.Vendors.AsQueryable();
+
+        if (!string.IsNullOrEmpty(args.Filter))
+        {
+            vendors = dbContext.Vendors.Where(c => c.Company.Contains(args.Filter)).ToList();
+        } else
+        {
+            vendors = dbContext.Vendors.ToList();
+        }
+        countVendors = vendors.Count();
+
+        //console.Log($"LoadData with filter: {args.Filter}");
+
+        InvokeAsync(StateHasChanged);
+    }
+}

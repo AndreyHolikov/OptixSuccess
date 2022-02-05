@@ -7,15 +7,12 @@ using System.Threading.Tasks;
 
 namespace CoreBusiness
 {
-    public class OrderVendor
+    public class OrderVendor : Order
     {
         public int OrderVendorId { get; set; }
         [Required]
-        public string Name { get; set; }
-        public string Description { get; set; }
-        [Required]
-        public DateTime Edited { get; set; }
         public int VendorId { get; set; }
-        public int ExcelFileId { get; set; }
+
+        public Vendor Vendor { get; set; }
     }
 }

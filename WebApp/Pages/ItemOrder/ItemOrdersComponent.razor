@@ -35,7 +35,11 @@
                         </th>
                         <th>
                             <a href="/product/@itemOrder.ProductId">
-                                @GetProductByIdUseCase.Execute(itemOrder.ProductId)?.Name
+                                @(GetProductByIdUseCase.Execute(itemOrder.ProductId)?.Name)
+                                @*@((itemOrder.ProductId == null)
+                                    ? GetProductByIdUseCase.Execute(itemOrder.ProductId ?? default(int))?.Name
+                                    : ""
+                                )*@
                             </a>
                         </th>
                         <td>@itemOrder.Description</td>
@@ -50,7 +54,7 @@
                         </th>
                         <th>
                             <a href="/ordervendor/@itemOrder.OrderVendorId">
-                                @GetOrderVendorByIdUseCase.Execute(itemOrder.OrderVendorId)?.Edited
+                                @GetOrderVendorByIdUseCase.Execute(itemOrder.OrderVendorId ?? default(int))?.Edited
                             </a>
                         </th>
                         <td>

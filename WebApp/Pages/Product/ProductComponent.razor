@@ -28,8 +28,8 @@
                     <tr>
                         <td>@product.Name</td>
                         <td>@product.Description</td>
-                        <td>@GetCategoryByIdUseCase.Execute(product.CategoryId)?.Name</td>
-                        <td>@(Math.Round(product.Price, 2))</td>
+                        <td>@GetCategoryByIdUseCase.Execute((int)product.CategoryId)?.Name</td>
+                        <td>@(Math.Round((double)product.Price, 2))</td>
                         <td>@product.Quantity</td>
                         <td>
                             <button tupe="button" @onclick="@(() => EditProduct(product))" class="btn btn-light">Редактировать</button>

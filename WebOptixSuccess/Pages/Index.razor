@@ -1,0 +1,36 @@
+﻿@page "/"
+@using Microsoft.EntityFrameworkCore
+@using WebOptixSuccess.Components
+@inject NavigationManager NavigationManager
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+<PageTitle>Optix Management System</PageTitle>
+
+<h1>Optix Management System</h1>
+
+<RadzenMasterDetailComponent Refresh="@true"></RadzenMasterDetailComponent>
+
+<hr style="margin:20px;"/>
+
+
+<RadzenButton Text="Очистить все таблицы" Click="@DeleteAllData"
+                        ButtonStyle="ButtonStyle.Light" style="margin:10px;" />
+<RadzenButton Text="Обновить" Click="@Refresh"
+                        ButtonStyle="ButtonStyle.Light" style="margin:10px;" />
+
+@code {
+    void DeleteAllData()
+    {
+        foreach (var x in dbContext.ItemOrders)         dbContext.ItemOrders.Remove(x);
+        foreach (var x in dbContext.OrderCustomers)     dbContext.OrderCustomers.Remove(x);
+        foreach (var x in dbContext.OrderVendors)       dbContext.OrderVendors.Remove(x);
+        foreach (var x in dbContext.Customers)          dbContext.Customers.Remove(x);
+        foreach (var x in dbContext.Vendors)            dbContext.Vendors.Remove(x);
+        dbContext.SaveChanges();
+    }
+
+    void Refresh()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}
