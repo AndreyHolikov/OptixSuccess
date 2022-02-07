@@ -1,5 +1,5 @@
-﻿DROP TABLE [dbo].[Category] 
-DROP TABLE [dbo].[Product] 
+﻿DROP TABLE [dbo].[Products] 
+DROP TABLE [dbo].[Categories] 
 
 DROP TABLE [dbo].[ItemOrders]
 DROP TABLE [dbo].[OrderCustomers] 

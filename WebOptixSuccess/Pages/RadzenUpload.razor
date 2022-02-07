@@ -1,0 +1,128 @@
+﻿@page "/RadzenUpload"
+
+<h3>RadzenUpload</h3>
+
+
+Single file upload
+@*<RadzenUpload Url="upload/single" Progress="@((args) => OnProgress(args, "Single file upload"))" />
+
+Multiple files upload
+<RadzenUpload Multiple="true" Url="upload/multiple" Progress="@((args) => OnProgress(args, "Multiple files upload"))" />
+
+Upload images only
+<RadzenUpload Multiple="true" Accept="image/*" Url="upload/multiple" Progress="@((args) => OnProgress(args, "Images only upload"))" />
+
+Upload with additional parameter
+<RadzenUpload Multiple="true" Accept="image/*" Url=@($"upload/{1}") Progress="@((args) => OnProgress(args, "Upload with additional parameter"))" />*@
+
+<hr/>
+
+@*<div class="row px-3">
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-md-4 p-3">
+                <RadzenCard>
+                    <h4 class="mb-4">Single file upload</h4>
+                    <RadzenUpload Url="upload/single" Progress=@(args => OnProgress(args, "Single file upload")) Class="w-100">
+                    </RadzenUpload>
+                </RadzenCard>
+            </div>
+            <div class="col-md-4 p-3">
+                <RadzenCard>
+                    <h4 class="mb-4">Custom HTTP headers</h4>
+                    <RadzenUpload Url="upload/single" Progress=@(args => OnProgress(args, "Single file upload")) Class="w-100">
+                        <RadzenUploadHeader Name="Authorization" Value="Bearer <token>" />
+                        <RadzenUploadHeader Name="X-Uploaded-By" Value="Radzen" />
+                    </RadzenUpload>
+                </RadzenCard>
+            </div>
+            <div class="col-md-4 p-3">
+                <RadzenCard>
+                    <h4 class="mb-4">Multiple files upload</h4>
+                    <RadzenUpload Multiple="true" Url="upload/multiple" Progress=@(args => OnProgress(args, "Multiple files upload")) Class="w-100" />
+                </RadzenCard>
+            </div>
+            <div class="col-md-4 p-3">
+                <RadzenCard>
+                    <h4 class="mb-4">Upload images only</h4>
+                    <RadzenUpload Multiple="true" Accept="image/*" Url="upload/multiple" Progress=@(args => OnProgress(args, "Images only upload")) Class="w-100" />
+                </RadzenCard>
+            </div>
+            <div class="col-md-4 p-3">
+                <RadzenCard>
+                    <h4 class="mb-4">Upload with additional parameter</h4>
+                    <RadzenUpload Multiple="true" Accept="image/*" Url=@($"upload/{customParameter}") Progress=@(args => OnProgress(args, "Upload with additional parameter")) Class="w-100" />
+                </RadzenCard>
+            </div>
+            <div class="col-md-4 p-3">
+                <RadzenCard>
+                    <h4 class="mb-4">Upload completed</h4>
+                    <RadzenUpload Url="upload/single" Complete=@OnComplete Class="w-100" />
+                </RadzenCard>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="row">
+            <div class="col p-3">
+                <RadzenCard>
+                    <h4 class="mb-4">Manual Upload</h4>
+                    <RadzenUpload @ref="upload" Auto="false" Multiple="true" Url="upload/multiple" Change=@(args => OnChange(args, "Manual Upload"))
+                            Progress=@(args => OnProgress(args, "Manual Upload")) Class="w-100" />
+                    <RadzenButton Text="Upload" Click=@(args => upload.Upload()) class="d-block mt-4" />
+                </RadzenCard>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<EventConsole @ref=@console Class="mt-4" />
+
+
+@code {
+    int progress;
+    string info;
+
+    void OnProgress(UploadProgressArgs args, string name)
+    {
+        this.info = $"% '{name}' / {args.Loaded} of {args.Total} bytes.";
+        this.progress = args.Progress;
+    }
+
+    EventConsole console;
+
+    RadzenUpload upload;
+
+    int customParameter = 1;
+
+    void OnChange(UploadChangeEventArgs args, string name)
+    {
+        foreach (var file in args.Files)
+        {
+            console.Log($"File: {file.Name} / {file.Size} bytes");
+        }
+
+        console.Log($"{name} changed");
+    }
+
+    void OnProgress2(UploadProgressArgs args, string name)
+    {
+        this.info = $"% '{name}' / {args.Loaded} of {args.Total} bytes.";
+        this.progress = args.Progress;
+
+        if (args.Progress == 100)
+        {
+            console.Clear();
+
+            foreach (var file in args.Files)
+            {
+                console.Log($"Uploaded: {file.Name} / {file.Size} bytes");
+            }
+        }
+    }
+
+    void OnComplete(UploadCompleteEventArgs args)
+    {
+        console.Log($"Server response: {args.RawResponse}");
+    }
+}

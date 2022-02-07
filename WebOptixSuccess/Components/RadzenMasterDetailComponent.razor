@@ -1,4 +1,5 @@
 ﻿@*<h3>RadzenMasterDetailComponent</h3>*@
+
 @using CoreBusiness.Models
 @using Microsoft.EntityFrameworkCore
 @using System.Globalization
@@ -6,10 +7,8 @@
 
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 
-<BlazorExportToExcelComponent></BlazorExportToExcelComponent>
-
 <div class="row">
-    <div class="col-md-5">
+    <div class="col-12 col-lg-4 col-xl-4">
         <RadzenPanel AllowCollapse="true" Style="margin: 10px" On>
             <HeaderTemplate>
                 <h4 class="m-0 d-flex align-items-center">
@@ -30,10 +29,10 @@
                         <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">Добавьте нового покупателя и заказ.</p>
                     </EmptyTemplate>
                     <Columns>
-                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="Id" Width="50px" Frozen="true"/>
-                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Customer.Company" Title="Компания" Width="150px" />
-                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Edited" Title="Дата" Width="70px" FormatString="{0:d}" />
-                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="Позиций" Width="70px" TextAlign="TextAlign.Center" >
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId"  Title="Id"          Width="50px" Frozen="true"/>
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Customer.Company" Title="Компания"    Width="130px" />
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Edited"           Title="Дата"        Width="70px" FormatString="{0:d}" />
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId"  Title="Позиций"     Width="70px" TextAlign="TextAlign.Center" >
                             <Template Context="detail">
                                 @detail.ItemOrders.Count()
                             </Template>
@@ -51,7 +50,7 @@
         <RadzenPanel AllowCollapse="true" Style="margin: 10px" >
             <HeaderTemplate>
                 <h4 class="m-0 d-flex align-items-center">
-                    <RadzenIcon Icon="account_box" Class="mr-1" /><b>Заказы для поставщиков</b>
+                    <RadzenIcon Icon="person_pin" Class="mr-1" /><b>Заказы для поставщиков</b>
                 </h4>
             </HeaderTemplate>
             <ChildContent>
@@ -65,10 +64,10 @@
                     PageSizeOptions="@pageSizeOptions"
                     AllowColumnResize="true">
                     <Columns>
-                        <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId" Title="Id" Width="50px" />
-                        <RadzenDataGridColumn TItem="OrderVendor" Property="Vendor.Company" Title="Компания" Width="150px" />
-                        <RadzenDataGridColumn TItem="OrderVendor" Property="Edited" Title="Дата" Width="120px" />
-                        <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId" Title="Позиций" Width="70px" TextAlign="TextAlign.Center" >
+                        <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId"  Title="Id"          Width="50px" Frozen="true"/>
+                        <RadzenDataGridColumn TItem="OrderVendor" Property="Vendor.Company" Title="Компания"    Width="130px" />
+                        <RadzenDataGridColumn TItem="OrderVendor" Property="Edited"         Title="Дата"        Width="70px" FormatString="{0:d}"/>
+                        <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId"  Title="Позиций"     Width="100px" TextAlign="TextAlign.Center" >
                             <Template Context="detail">
                                 @detail.ItemOrders.Count()
                             </Template>
@@ -85,7 +84,7 @@
             SelectedOrder=@SelectedOrder></OrderVendorsComponent>*@
     </div>
 
-    <div class="col-md-7">
+    <div class="col-12 col-lg-8 col-xl-8">
         <OrderManagerComponent SelectedOrder=@SelectedOrder UpdateCallback=@LoadOrderCustomers ></OrderManagerComponent>
         <ItemOrdersComponent ItemOrderCollection=@ItemOrderCollection UpdateCallback=@LoadOrderCustomers></ItemOrdersComponent>
     </div>
@@ -100,11 +99,8 @@
     </HeaderTemplate>
     <ChildContent>
         <div class="row" style="margin:10px;">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <EventConsole @ref=@console Class="mt-4" />
-            </div>
-            <div class="col-md-4">
-                <RadzenButton Click="TestEventConsole" Text="Проверка консоли" />
             </div>
         </div>   
     </ChildContent>
@@ -112,7 +108,6 @@
 
 @code {
     EventConsole console = new EventConsole();
-    private void TestEventConsole() => console.Log($"Проверка консоли прошла успешно.");
 
     #region private Fields
     private IQueryable<OrderCustomer>? OrderCustomers { get; set; } 
@@ -155,7 +150,7 @@
     {
         LoadOrderCustomers();
         LoadOrderVendors();
-        
+
     }
     #endregion    
 
@@ -167,9 +162,14 @@
             .Include("ItemOrders")
             //.Include("ItemOrder")
             .Include("ItemOrders.Product");
-            
-            if(OrderCustomers != null && OrderCustomers.Count()>0)
+
+        if (OrderCustomers != null)
+        {
+            if (OrderCustomers.Count() > 0)
+            {
                 SelectedOrderCustomers = new List<OrderCustomer>() { OrderCustomers.First() }; //.FirstOrDefault() };
+            }
+        }
     }
     private void LoadOrderVendors()
     {

@@ -9,10 +9,12 @@ namespace Plugins.DataStore.SQL
 {
     public class DemoData
     {
+        private List<Product> Products;
         public int limirRow { get; set; }
 
-        public DemoData(int limirRow = 10)
+        public DemoData(List<Product> products, int limirRow = 10)
         {
+            this.Products = products;
             this.limirRow = limirRow;
         }
 
@@ -119,6 +121,7 @@ namespace Plugins.DataStore.SQL
             #endregion Add Random OrderVendor
             return orderVendors;    
         }
+
         public List<ItemOrder> GetItemOrders()
         {
             List<ItemOrder> itemOrders = new();
@@ -137,7 +140,9 @@ namespace Plugins.DataStore.SQL
             #region Add Random ItemOrders
             for (int i = 7; i < limirRow; i++)
             {
-                int randomProductId = random.Next(1, limirRow);
+                int randomProductId = random.Next(2, 550);
+                randomProductId = (Products.Find(x => x.ProductId == randomProductId) == null) ? randomProductId + 1 : randomProductId;
+
                 int randomOrderCustomerId = random.Next(1, limirRow);
                 int randomOrderVendorId = random.Next(1, limirRow);
                 itemOrders.Add(new ItemOrder()

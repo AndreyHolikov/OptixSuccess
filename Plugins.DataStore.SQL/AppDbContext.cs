@@ -18,14 +18,16 @@ namespace Plugins.DataStore.SQL
         public DbSet<ItemOrder> ItemOrders { get; set; } = null;
         public DbSet<OrderVendor> OrderVendors { get; set; } = null;
         public DbSet<Vendor> Vendors { get; set; } = null;
+
+        public DbSet<FileModel> Files { get; set; }
         #endregion
 
         public AppDbContext() { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseSqlServer(@"Data Source=PC-631\SQLEXPRESS;Initial Catalog=WebOptixSuccess;Integrated Security=True;Pooling=False");
-            optionsBuilder.UseSqlServer(@"Data Source=motiv-laptop\sqlexpress;Initial Catalog=WebOptixSuccess;Integrated Security=True;Pooling=False");
+            optionsBuilder.UseSqlServer(@"Data Source=PC-631\SQLEXPRESS;Initial Catalog=WebOptixSuccess;Integrated Security=True;Pooling=False");
+            //optionsBuilder.UseSqlServer(@"Data Source=motiv-laptop\sqlexpress;Initial Catalog=WebOptixSuccess;Integrated Security=True;Pooling=False");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -73,7 +75,7 @@ namespace Plugins.DataStore.SQL
                 new Category() { CategoryId = 3, Name = "Optima FW 4 pk" }
             });
 
-            modelBuilder.Entity<Product>().HasData(new[]{
+            var products = new List<Product>() { 
                 new Product { ProductId = 1, CategoryId = 1, Name = "SofLens 59 6 pk", BC = " 8.6", Sph = "-0.50", Cell = "C4", Quantity = 1, Price = 1.00, Description = "Описание 1001"},
                 #region Product 2-100
 new Product { ProductId = 2, CategoryId = 1, Name = "SofLens 59 6 pk", BC = " 8.6", Sph = "-0.75", Cell = "C5", Quantity = 1, Price = 1.00},
@@ -179,10 +181,10 @@ new Product { ProductId = 101, CategoryId = 1, Name = " SofLens Daily Disposable
 new Product { ProductId = 102, CategoryId = 1, Name = " SofLens Daily Disposable 30 pk", BC = " 8.6", Sph = "+5.50", Cell = "J24", Quantity = 1, Price = 1.00},
 new Product { ProductId = 103, CategoryId = 1, Name = " SofLens Daily Disposable 30 pk", BC = " 8.6", Sph = "+5.75", Cell = "J25", Quantity = 1, Price = 1.00},
 new Product { ProductId = 104, CategoryId = 1, Name = " SofLens Daily Disposable 30 pk", BC = " 8.6", Sph = "+6.00", Cell = "J26", Quantity = 1, Price = 1.00},
-new Product { ProductId = 105, CategoryId = 1, Name = " SofLens Daily Disposable 30 pk", BC = " 8.6", Sph = "+6.50", Cell = "J27", Quantity = 1, Price = 1.00}
+new Product { ProductId = 105, CategoryId = 1, Name = " SofLens Daily Disposable 30 pk", BC = " 8.6", Sph = "+6.50", Cell = "J27", Quantity = 1, Price = 1.00},
 #endregion Product 2 - 1xx
                 #region Product 1xx - 5xx
-/*new Product { ProductId = 106, CategoryId = 1, Name = "", BC = "", Sph = "", Cell = "", Quantity = 1, Price = 1.00},
+new Product { ProductId = 106, CategoryId = 1, Name = "", BC = "", Sph = "", Cell = "", Quantity = 1, Price = 1.00},
 new Product { ProductId = 107, CategoryId = 1, Name = " SofLens Daily Disposable 90 pk", BC = " 8.6", Sph = "-0.75", Cell = "m5", Quantity = 1, Price = 1.00},
 new Product { ProductId = 108, CategoryId = 1, Name = " SofLens Daily Disposable 90 pk", BC = " 8.6", Sph = "-1.00", Cell = "m6", Quantity = 1, Price = 1.00},
 new Product { ProductId = 109, CategoryId = 1, Name = " SofLens Daily Disposable 90 pk", BC = " 8.6", Sph = "-1.25", Cell = "m7", Quantity = 1, Price = 1.00},
@@ -629,11 +631,13 @@ new Product { ProductId = 549, CategoryId = 1, Name = "Раствор ReNu MPS 2
 new Product { ProductId = 550, CategoryId = 1, Name = "Раствор ReNu MPS 360", BC = "", Sph = "", Cell = "e43", Quantity = 1, Price = 1.00},
 new Product { ProductId = 551, CategoryId = 1, Name = "Раствор BIOTRUE 120", BC = "", Sph = "", Cell = "e44", Quantity = 1, Price = 1.00},
 new Product { ProductId = 552, CategoryId = 1, Name = "Раствор BIOTRUE 300", BC = "", Sph = "", Cell = "e45", Quantity = 1, Price = 1.00}
-*/
-                #endregion Product 1xx - 5xx
-            });
 
-            DemoData demoData = new(10);
+                #endregion Product 1xx - 5xx
+            };
+
+            modelBuilder.Entity<Product>().HasData(products);
+
+            DemoData demoData = new(products, 100);
 
             // Add Customer
             modelBuilder.Entity<Customer>().HasData(demoData.GetCustomers());

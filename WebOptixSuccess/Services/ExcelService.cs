@@ -1,20 +1,16 @@
-﻿//using OfficeOpenXml;
+﻿using OfficeOpenXml;
 using Plugins.DataStore.SQL;
 using CoreBusiness;
 
-namespace OptixSuccess.Services
+
+namespace WebOptixSuccess.Services
 {
     public class ExcelService
     {
-        AppDbContext dbContext = new AppDbContext();
-        public static byte[] GenerateExcelWorkbook()
+        public static byte[] GenerateExcelWorkbook(AppDbContext dbContext)
         {
-            var list = dbContext.ItemOrders;
-                //new List<UserInfo>()
-                //{
-                //    new UserInfo { UserName = "catcher", Age = 18 },
-                //    new UserInfo { UserName = "james", Age = 20 },
-                //};
+            var itemOrders = dbContext.ItemOrders.AsEnumerable();
+
             var stream = new MemoryStream();
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -23,7 +19,7 @@ namespace OptixSuccess.Services
                 var workSheet = package.Workbook.Worksheets.Add("Sheet1");
 
                 // simple way
-                workSheet.Cells.LoadFromCollection(list, true);
+                workSheet.Cells.LoadFromCollection(itemOrders, true);
 
                 ////// mutual
                 ////workSheet.Row(1).Height = 20;
@@ -45,11 +41,6 @@ namespace OptixSuccess.Services
                 return package.GetAsByteArray();
             }
         }
-    }
 
-    public class UserInfo
-    {
-        public string? UserName { get; set; }
-        public int Age { get; set; }
     }
 }

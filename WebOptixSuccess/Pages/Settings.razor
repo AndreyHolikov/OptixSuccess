@@ -47,7 +47,7 @@
 
     void FillDemoData()
     {
-        DemoData demoData = new();
+        DemoData demoData = new(dbContext.Products.ToList(), 100);
         Random random = new();
 
         var demoCustomers = demoData.GetCustomers();
