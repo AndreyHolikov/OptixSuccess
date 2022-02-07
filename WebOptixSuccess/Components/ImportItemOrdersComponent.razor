@@ -1,0 +1,87 @@
+﻿@using System 
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Logging
+@inject ILogger<ImportItemOrdersComponent> Logger
+@inject IWebHostEnvironment Environment
+
+<InputFile OnChange="@LoadFiles" multiple class="custom-file-input" accept=".xls,.xlsx"/>
+
+@if (isLoading)
+{
+    <p>Uploading...</p>
+}
+else
+{
+    @foreach (var file in loadedFiles){
+        <p>Name: @file.Name</p>
+    }
+}
+
+<RadzenUpload Url="upload/single" Progress=@(args => OnProgress(args)) ChooseText="Загрузить Excel" />
+    <p>@info</p>
+
+@code {
+    private List<IBrowserFile> loadedFiles = new();
+    private long maxFileSize = 1024 * 1000;
+    private int maxAllowedFiles = 1;
+    private bool isLoading;
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+        loadedFiles.Clear();
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            try
+            {
+                loadedFiles.Add(file);
+
+                var trustedFileNameForFileStorage = $"{DateTime.Now.Date}-{file.Name}";
+                //var trustedFileNameForFileStorage = Path.GetRandomFileName();
+                var path = Path.Combine(Environment.ContentRootPath,
+                        Environment.EnvironmentName, "unsafe_uploads",
+                        trustedFileNameForFileStorage);
+
+                await using FileStream fs = new(path, FileMode.Create);
+                await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("File: {Filename} Error: {Error}", 
+                    file.Name, ex.Message);
+            }
+        }
+
+        isLoading = false;
+    }
+
+    //Загрузка файла заказа
+    int progress;
+    string info = "";
+
+    void OnProgress(UploadProgressArgs args)
+    {
+        if (args.Files.Count() > 0)
+        {
+            this.info = $"% '{args.Files.First().Name}' / {args.Loaded} of {args.Total} bytes.";
+            this.progress = args.Progress;
+
+            if (args.Progress == 100)
+            {
+                //console.Clear();
+
+                foreach (var file in args.Files)
+                {
+                    //console.Log($"Uploaded: {file.Name} / {file.Size} bytes");
+                }
+            }
+        }
+    }
+
+    void OnError(UploadErrorEventArgs args, string name)
+    {
+        //console.Log($"{args.Message}");
+    }
+}

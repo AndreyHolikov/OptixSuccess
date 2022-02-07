@@ -6,8 +6,9 @@
 @inject IHttpClientFactory ClientFactory
 @inject ILogger<FileUpload2> Logger
 
+<PageTitle>file-upload-2</PageTitle>
 
-<h1>Upload Files</h1>
+<h1>file-upload-2</h1>
 
 <p>
     <label>
@@ -115,7 +116,7 @@
             var client = ClientFactory.CreateClient();
 
             var response = 
-                await client.PostAsync("https://localhost:5001/Filesave", 
+                await client.PostAsync("https://localhost:7275/Filesave", 
                 content);
 
             if (response.IsSuccessStatusCode)

@@ -1,48 +1,48 @@
 ﻿@using CoreBusiness.Models
-@using Plugins.OsExcel
 
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 
-<RadzenCard Style="margin-bottom:20px">
+<RadzenPanel AllowCollapse="true" Style="margin: 10px" Off>
+    <HeaderTemplate>
+        <h4 class="m-0 d-flex align-items-center">
+            <RadzenIcon Icon="terminal" Class="mr-1" /><b>Управление зказом</b>
+        </h4>
+    </HeaderTemplate>
+    <ChildContent>
     @if(SelectedOrder == null)
     {
         <p>loading...</p>
     } else {
     <div class="row">
-        <div class="col-md-3">
-            <div>Компания :</div>
-            <b>@Company</b>
-        </div>
-        <div class="col-md-3">
-            <div>Заказ:</div>
-            <b>@OrderId</b>
-        </div>
-        <div class="col-md-3">
 
+        <div class="col-md-3">
+            <p>Компания: <wbr/><b>@Company</b></p>
+        </div>
+        <div class="col-md-3">
+            <p>Заказ: <wbr/><span>@OrderId</span>-@selectedOrder?.Edited</p>
+        </div>
+        <div class="col-md-6">
+            <p><i>Дополнительная информация</i></p>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
-            <button type="button" @onclick="@(() => DownloadExcelDocument())">Download</button>
-
-            <RadzenUpload Url="upload/single" Progress=@(args => OnProgress(args, "Single file upload")) ChooseText="Загрузить Excel" />
-            @*TODO: RadzenFileInput 
-                <RadzenFileInput @bind-Value=@SelectedOrders?.FirstOrDefault()?.Name TValue="string" Class="w-100" 
-                Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) />*@
-            <RadzenButton Text="Export XLS" Icon="grid_on" Click="@(args => Export("excel"))" Class="mb-4 mr-2" ButtonStyle="ButtonStyle.Light"/>
-            <RadzenButton Text="Export CSV" Icon="wrap_text" Click="@(args => Export("csv"))" Class="mb-4" ButtonStyle="ButtonStyle.Light"/>  
+            <ImportItemOrdersComponent></ImportItemOrdersComponent>
+            <ExportItemOrdersComponent SelectedOrder="@selectedOrder" Company="@Company" OrderId="@OrderId"></ExportItemOrdersComponent>
             <button type="button" @onclick="@DeleteOrder" class="btn btn-link">
                 <i class="far fa-trash-alt"></i> Удалить заказ
             </button>
         </div>
      </div>
      }
-	 </RadzenCard>
+    </ChildContent>
+</RadzenPanel>
 
 @code {
     private Order? selectedOrder { get; set; }
     private string? Company { get; set; }
-    private int? OrderId { get; set; }
+    private int? OrderId { get; set; }   
 
     [Parameter]
     public Order? SelectedOrder
@@ -65,16 +65,13 @@
     {
         if (SelectedOrder != null)
         {
-            if (SelectedOrder is OrderCustomer) return ((OrderCustomer)SelectedOrder).Customer.Company;
-            else if (SelectedOrder.GetType() == typeof(OrderVendor)) return ((OrderVendor)SelectedOrder).Vendor.Company;
+            if (SelectedOrder is OrderCustomer) 
+                return ((OrderCustomer)SelectedOrder).Customer.Company;
+
+            else if (SelectedOrder.GetType() == typeof(OrderVendor)) 
+                return ((OrderVendor)SelectedOrder).Vendor.Company;
         } 
         throw new Exception("Type SelectedOrder not found!");
-        //return SelectedOrder.GetType() switch
-        //{
-        //    typeof(OrderCustomer) => ((OrderCustomer)SelectedOrder).Customer.Company,
-        //    typeof(OrderVendor) => ((OrderVendor)SelectedOrder).Vendor.Company,
-        //    _ => throw new Exception("Type SelectedOrder not found!"),
-        //};
     }
 
     private int GetOrderId()
@@ -86,36 +83,7 @@
         } 
         throw new Exception("Type SelectedOrder not found!");
     }
-
-    //Загрузка файла заказа
-    int progress;
-    string info = "";
-
-    void OnProgress(UploadProgressArgs args, string name)
-    {
-        this.info = $"% '{name}' / {args.Loaded} of {args.Total} bytes.";
-        this.progress = args.Progress;
-
-        if (args.Progress == 100)
-        {
-            //console.Clear();
-
-            foreach (var file in args.Files)
-            {
-                //console.Log($"Uploaded: {file.Name} / {file.Size} bytes");
-            }
-        }
-    }
-
-    void OnError(UploadErrorEventArgs args, string name)
-    {
-        //console.Log($"{args.Message}");
-    }
-
-    public void Export(string type)
-    {
-        //service.Export("OrderDetails", type, new Query() { OrderBy = grid.Query.OrderBy, Filter = grid.Query.Filter });
-    }
+       
 
     protected void DeleteOrder()
     {
@@ -137,7 +105,6 @@
             }
         }
     }
-
     protected void DeleteOrderVendor()
     {
         int ovId = SelectedOrder != null ? ((OrderVendor)SelectedOrder).OrderVendorId: -1;
@@ -150,22 +117,5 @@
                 dbContext.SaveChanges();
             }
         }
-    }
-
-    @inject IJSRuntime JSRuntime
-
-    public async Task DownloadExcelDocument()
-    {
-        Worker worker = new Worker();
-        var workbook = worker.GetProductsXLWorkbook();
-
-        using (var stream = new MemoryStream())
-        {
-            workbook.SaveAs(stream);
-            var content = stream.ToArray();
- 
-            var fileName = "Products.xlsx";
-            await JSRuntime.InvokeAsync<object>("saveAsFile", fileName, Convert.ToBase64String(content));
-        }
-    }
+    }    
 }

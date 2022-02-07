@@ -10,9 +10,6 @@
             <RadzenTabs>
                 <Tabs>
                     <RadzenTabsItem Text="Детали заказа">
-
-                        
-
                         <RadzenDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" Data="@(ItemOrderCollection)" TItem="ItemOrder"
                             AllowPaging="true" PageSize="3" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
                             AllowColumnResize="true" >
@@ -20,32 +17,32 @@
                                 <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">В данном заказе еще нет товаров. Добавьте товары в заказ.</p>
                             </EmptyTemplate>
                             <Columns>
-                                <RadzenDataGridColumn TItem="ItemOrder" Property="ItemOrderId" Title="Id" Width="70px" TextAlign="TextAlign.Center"/>
-                                <RadzenDataGridColumn TItem="ItemOrder" Property="Product.ProductName" Title="Товар" Width="200px" >
+                                <RadzenDataGridColumn TItem="ItemOrder" Property="ItemOrderId" Title="Id" Width="70px" TextAlign="TextAlign.Center" Frozen="true"/>
+                                <RadzenDataGridColumn TItem="ItemOrder" Property="Product.ProductName" Title="Товар" Width="180px" >
                                     <Template Context="detail">
                                         @String.Format("{0}, BC:{1}, Sph:{2}, (Id:{3})", detail?.Product?.Name, @detail?.Product?.BC, @detail?.Product?.Sph, @detail?.ProductId)
                                     </Template>
                                 </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="ItemOrder" Property="OrderCustomerId" Title="№ зак.пок*" Width="100px" TextAlign="TextAlign.Center"/>
+                                <RadzenDataGridColumn TItem="ItemOrder" Property="OrderCustomerId" Title="№ зак.пок*" Width="130px" TextAlign="TextAlign.Center"/>
 
-                                <RadzenDataGridColumn TItem="ItemOrder" Property="OrderVendorId" Title="№ зак. пост*" TextAlign="TextAlign.Center">
+                                <RadzenDataGridColumn TItem="ItemOrder" Property="OrderVendorId" Title="№ зак. пост*" Width="130px" TextAlign="TextAlign.Center">
                                     <Template Context="detail">
                                         <RadzenNumeric TValue="int?" Change=@(() => OnChangeItemOrderVendor(detail.ItemOrderId, detail.OrderVendorId)) Class="w-100" @bind-Value=@detail.OrderVendorId/>
                                     </Template>
                                 </RadzenDataGridColumn>
 
-                                <RadzenDataGridColumn TItem="ItemOrder" Property="Price" Title="Цена" TextAlign="TextAlign.Center">
+                                <RadzenDataGridColumn TItem="ItemOrder" Property="Price" Title="Цена" Width="100px" TextAlign="TextAlign.Center">
                                     <Template Context="detail">
                                         @String.Format(new System.Globalization.CultureInfo("ru-ru"), "{0:C}", detail.Price)
                                     </Template>
-                                </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="ItemOrder" Property="Quantity" Title="Кол-во" TextAlign="TextAlign.Center"/>
-                                <RadzenDataGridColumn TItem="ItemOrder" Property="Summ" Title="Сумма" TextAlign="TextAlign.Center">
+                                </RadzenDataGridColumn> 
+                                <RadzenDataGridColumn TItem="ItemOrder" Property="Quantity" Title="Кол-во" Width="100px" TextAlign="TextAlign.Center"/>
+                                <RadzenDataGridColumn TItem="ItemOrder" Property="Summ" Title="Сумма" Width="100px" TextAlign="TextAlign.Center">
                                     <Template Context="itemOrder">
                                         @String.Format("{0} руб.", itemOrder.Price * itemOrder.Quantity)
                                     </Template>
                                 </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="ItemOrder" TextAlign="TextAlign.Center">
+                                <RadzenDataGridColumn TItem="ItemOrder" TextAlign="TextAlign.Center" Width="100px" Filterable="false" Sortable="false">
                                     <Template Context="detail">
                                         <RadzenButton Icon="delete_forever" Click="@(() => DeleteItemOrder(detail.ItemOrderId))"
                                             Class="mb-4" ButtonStyle="ButtonStyle.Light" />  
