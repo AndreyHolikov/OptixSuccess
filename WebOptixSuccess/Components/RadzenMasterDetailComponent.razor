@@ -1,6 +1,7 @@
 ﻿@*<h3>RadzenMasterDetailComponent</h3>*@
-@using CoreBusiness
+@using CoreBusiness.Models
 @using Microsoft.EntityFrameworkCore
+@using System.Globalization
 
 
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
@@ -29,9 +30,9 @@
                         <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">Добавьте нового покупателя и заказ.</p>
                     </EmptyTemplate>
                     <Columns>
-                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="Id" Width="50px" />
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="Id" Width="50px" Frozen="true"/>
                         <RadzenDataGridColumn TItem="OrderCustomer" Property="Customer.Company" Title="Компания" Width="150px" />
-                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Edited" Title="Дата" Width="120px" />
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Edited" Title="Дата" Width="70px" FormatString="{0:d}" />
                         <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="Позиций" Width="70px" TextAlign="TextAlign.Center" >
                             <Template Context="detail">
                                 @detail.ItemOrders.Count()
@@ -40,8 +41,10 @@
                     </Columns>
                 </RadzenDataGrid>
                 }
-                <OrderCustomersComponent UpdateCallback=@LoadOrderCustomers></OrderCustomersComponent>
                 </ChildContent>
+                <SummaryTemplate>
+                    <OrderCustomersComponent UpdateCallback=@LoadOrderCustomers></OrderCustomersComponent>
+                </SummaryTemplate>
             </RadzenPanel>
         
         <hr/>
@@ -73,8 +76,10 @@
                     </Columns>
                 </RadzenDataGrid>
                 }
-                <OrderVendorsComponent></OrderVendorsComponent>
                 </ChildContent>
+                <SummaryTemplate>
+                    <OrderVendorsComponent></OrderVendorsComponent>
+                </SummaryTemplate>
             </RadzenPanel>
         @*<OrderVendorsComponent OrderVendors="@OrderVendors" ItemOrderCollection=@ItemOrderCollection SelectedOrderVendors=@SelectedOrderVendors 
             SelectedOrder=@SelectedOrder></OrderVendorsComponent>*@
@@ -86,17 +91,28 @@
     </div>
 </div>
 
-<RadzenButton Click="TestEventConsole" Text="TestEventConsole" />
-    @* TODO:Add EventConsole <EventConsole @ref=@console Class="mt-4"/>*@
-    <EventConsole @ref=@console Class="mt-4" />
+
+<RadzenPanel AllowCollapse="true" Style="margin: 10px" Off>
+    <HeaderTemplate>
+        <h4 class="m-0 d-flex align-items-center">
+            <RadzenIcon Icon="terminal" Class="mr-1" /><b>Консоль</b>
+        </h4>
+    </HeaderTemplate>
+    <ChildContent>
+        <div class="row" style="margin:10px;">
+            <div class="col-md-8">
+                <EventConsole @ref=@console Class="mt-4" />
+            </div>
+            <div class="col-md-4">
+                <RadzenButton Click="TestEventConsole" Text="Проверка консоли" />
+            </div>
+        </div>   
+    </ChildContent>
+</RadzenPanel>
 
 @code {
-    private void TestEventConsole()
-    {
-        console.Log($"set SelectedOrderCustomers");
-    }
-
     EventConsole console = new EventConsole();
+    private void TestEventConsole() => console.Log($"Проверка консоли прошла успешно.");
 
     #region private Fields
     private IQueryable<OrderCustomer>? OrderCustomers { get; set; } 
@@ -114,6 +130,10 @@
             selectedOrderCustomers = value;
             ItemOrderCollection = selectedOrderCustomers?.FirstOrDefault()?.ItemOrders;
             SelectedOrder = selectedOrderCustomers?.FirstOrDefault();
+
+            var FirstOrderCustomer = value.First();
+            string? textForConsole= (FirstOrderCustomer!=null) ? $"Выбраны: Компания: {FirstOrderCustomer.Customer.Company}. Заказ {FirstOrderCustomer.OrderCustomerId}" : null;
+            //console.Log( textForConsole ?? "Заказ не найден.");
         }}
 
     private IList<OrderVendor> SelectedOrderVendors {

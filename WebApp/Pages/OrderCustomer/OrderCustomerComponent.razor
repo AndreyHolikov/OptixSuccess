@@ -38,8 +38,8 @@
                             @ViewItemOrdersUseCase.Execute().Where(x => x.OrderCustomerId == orderCustomer.OrderCustomerId).Sum(x => x.Quantity)
                         </td>
                         <td>
-                            <a href="@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId).FullPath">
-                                @GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId).Name
+                            <a href="@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId??0).FullPath">
+                                @GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId??0).Name
                             </a>
                         </td>
                         <td>@orderCustomer.Description</td>

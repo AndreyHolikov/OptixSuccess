@@ -1,6 +1,6 @@
 ﻿@*<ItemOrderCustomerWidgetComponent></ItemOrderCustomerWidgetComponent>*@
 @using WebApp.Model
-
+@using CoreBusiness.Models
 @*ItemOrder*@
 @inject IViewItemOrdersUseCase ViewItemOrdersUseCase
 @inject IDeleteItemOrderUseCase DeleteItemOrderUseCase
@@ -125,7 +125,7 @@
     #endregion
 
     #region private fields
-    private List<CoreBusiness.ItemOrder> itemOrders;
+    private List<ItemOrder> itemOrders;
     private MiniItemOrder miniItemOrder { get; set; }
     private int LastClickOnItemOrderId { get; set; }
 

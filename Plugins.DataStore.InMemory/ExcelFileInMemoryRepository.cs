@@ -10,7 +10,7 @@ namespace Plugins.DataStore.InMemory
 {
     public class ExcelFileInMemoryRepository : IExcelFileRepository
     {
-        private List<ExcelFile> excelFiles;
+        private readonly List<ExcelFile> excelFiles;
 
         public ExcelFileInMemoryRepository()
         {

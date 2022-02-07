@@ -1,0 +1,134 @@
+﻿@page "/edit-item-order"
+@layout MainLayout
+@inherits WebOptixSuccess.Pages.EditItemOrderComponent
+
+@using Radzen
+@using Radzen.Blazor
+@using CoreBusiness.Models
+@inject Microsoft.Extensions.Localization.IStringLocalizer<EditItemOrder> L
+<RadzenContent @ref="content1" Container="main">
+  <ChildContent>
+    <div style="" class="row">
+      <div class="col-md-9">
+        <RadzenLabel @ref="closeLabel" style="font-weight: bold" Text="@L["closeLabel.Text"]" Visible="@(!canEdit)">
+        </RadzenLabel>
+      </div>
+      <div class="col-md-3">
+        <RadzenButton @ref="closeButton" ButtonStyle="ButtonStyle.Secondary" style="margin-bottom: 20px" 
+            Text="@L["closeButton.Text"]" Visible="@(!canEdit)" Click="@CloseButtonClick">
+        </RadzenButton>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <RadzenTemplateForm @ref="form0" TItem="ItemOrder" Data="@(itemorder)" Visible="@(itemorder != null && canEdit)" 
+            Submit="@Form0Submit">
+          <ChildContent>
+            <div style="margin-bottom: 1rem" class="row">
+              <div class="col-md-3">
+                <RadzenLabel @ref="label2" Text="@L["label2.Text"]" Component="Description" style="width: 100%">
+                </RadzenLabel>
+              </div>
+              <div class="col-md-9">
+                <RadzenTextBox @ref="description" style="width: 100%" Value="@(itemorder.Description)" Name="Description">
+                </RadzenTextBox>
+              </div>
+            </div>
+            <div style="margin-bottom: 1rem" class="row">
+              <div class="col-md-3">
+                <RadzenLabel @ref="label3" Text="@L["label3.Text"]" Component="Quantity" style="width: 100%">
+                </RadzenLabel>
+              </div>
+              <div class="col-md-9">
+                <RadzenNumeric @ref="quantity" style="display: block; width: 100%" Value="@(itemorder.Quantity)" 
+                    Name="Quantity" TItem="int?">
+                </RadzenNumeric>
+                <RadzenRequiredValidator @ref="quantityRequiredValidator" Component="Quantity" 
+                    Text="@L["QuantityRequiredValidator.Text"]" style="position: absolute">
+                </RadzenRequiredValidator>
+              </div>
+            </div>
+            <div style="margin-bottom: 1rem" class="row">
+              <div class="col-md-3">
+                <RadzenLabel @ref="label4" Text="@L["label4.Text"]" Component="Price" style="width: 100%">
+                </RadzenLabel>
+              </div>
+              <div class="col-md-9">
+                <RadzenNumeric @ref="price" style="display: block; width: 100%" Value="@(itemorder.Price)" 
+                    Name="Price" TItem="double?">
+                </RadzenNumeric>
+                <RadzenRequiredValidator @ref="priceRequiredValidator" Component="Price" 
+                    Text="@L["PriceRequiredValidator.Text"]" style="position: absolute">
+                </RadzenRequiredValidator>
+              </div>
+            </div>
+            <div style="margin-bottom: 1rem" class="row">
+              <div class="col-md-3">
+                <RadzenLabel @ref="label5" Text="@L["label5.Text"]" Component="Edited" style="width: 100%">
+                </RadzenLabel>
+              </div>
+              <div class="col-md-9">
+                <RadzenDatePicker @ref="edited" DateFormat="dd/MM/yyyy" style="display: block; width: 100%" 
+                    Value="@(itemorder.Edited)" Name="Edited">
+                </RadzenDatePicker>
+                <RadzenRequiredValidator @ref="editedRequiredValidator" Component="Edited" 
+                    Text="@L["EditedRequiredValidator.Text"]" style="position: absolute">
+                </RadzenRequiredValidator>
+              </div>
+            </div>
+            <div style="margin-bottom: 1rem" class="row">
+              <div class="col-md-3">
+                <RadzenLabel @ref="label6" Text="@L["label6.Text"]" Component="ProductId" style="width: 100%">
+                </RadzenLabel>
+              </div>
+              <div class="col-md-9">
+                <RadzenDropDownDataGrid @ref="productId" Data="@(getProductsForProductIdResult)" 
+                    TextProperty="Name" ValueProperty="ProductId" Placeholder="@L["ProductId.Placeholder"]" 
+                        style="display: block; width: 100%" Value="@(itemorder.ProductId)" Name="ProductId">
+                </RadzenDropDownDataGrid>
+                <RadzenRequiredValidator @ref="productIdRequiredValidator" Component="ProductId" 
+                    Text="@L["ProductIdRequiredValidator.Text"]" style="position: absolute">
+                </RadzenRequiredValidator>
+              </div>
+            </div>
+            <div style="margin-bottom: 1rem" class="row">
+              <div class="col-md-3">
+                <RadzenLabel @ref="label7" Text="@L["label7.Text"]" Component="OrderCustomerId" style="width: 100%">
+                </RadzenLabel>
+              </div>
+              <div class="col-md-9">
+                <RadzenDropDownDataGrid @ref="orderCustomerId" Data="@(getOrderCustomersForOrderCustomerIdResult)" 
+                    TextProperty="Name" ValueProperty="OrderCustomerId" Placeholder="@L["OrderCustomerId.Placeholder"]" 
+                        style="display: block; width: 100%" Value="@(itemorder.OrderCustomerId)" Name="OrderCustomerId">
+                </RadzenDropDownDataGrid>
+                <RadzenRequiredValidator @ref="orderCustomerIdRequiredValidator" Component="OrderCustomerId" 
+                    Text="@L["OrderCustomerIdRequiredValidator.Text"]" style="position: absolute">
+                </RadzenRequiredValidator>
+              </div>
+            </div>
+            <div style="margin-bottom: 1rem" class="row">
+              <div class="col-md-3">
+                <RadzenLabel @ref="label8" Text="@L["label8.Text"]" Component="OrderVendorId" style="width: 100%">
+                </RadzenLabel>
+              </div>
+              <div class="col-md-9">
+                <RadzenDropDownDataGrid @ref="orderVendorId" Data="@(getOrderVendorsForOrderVendorIdResult)" 
+                    TextProperty="Name" ValueProperty="OrderVendorId" Placeholder="@L["OrderVendorId.Placeholder"]" 
+                        style="width: 100%" Value="@(itemorder.OrderVendorId)" Name="OrderVendorId">
+                </RadzenDropDownDataGrid>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col offset-sm-3">
+                <RadzenButton @ref="button2" ButtonType="ButtonType.Submit" Icon="save" Text="@L["button2.Text"]" ButtonStyle="ButtonStyle.Primary">
+                </RadzenButton>
+                <RadzenButton @ref="button3" ButtonStyle="ButtonStyle.Light" Text="@L["button3.Text"]" Click="@Button3Click">
+                </RadzenButton>
+              </div>
+            </div>
+          </ChildContent>
+        </RadzenTemplateForm>
+      </div>
+    </div>
+  </ChildContent>
+</RadzenContent>

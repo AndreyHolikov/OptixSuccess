@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Plugins.DataStore.SQL.Migrations
 {
-    public partial class Init7 : Migration
+    public partial class Init8 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -94,7 +94,7 @@ namespace Plugins.DataStore.SQL.Migrations
                     OrderCustomerId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    ExcelFileId = table.Column<int>(type: "int", nullable: false),
+                    ExcelFileId = table.Column<int>(type: "int", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Edited = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -201,14 +201,14 @@ namespace Plugins.DataStore.SQL.Migrations
                 values: new object[,]
                 {
                     { 1, "Поставщик № 501", "Описание p501", "mail-501@gmail.com", null, "Поставщик № 501", null, null },
-                    { 2, "Поставщик: 502", "Описание p502-6", "mail-502@gmail.com", null, "Поставщик: 502", null, null },
-                    { 3, "Поставщик: 503", "Описание p503-1", "mail-503@gmail.com", null, "Поставщик: 503", null, null },
-                    { 4, "Поставщик: 504", "Описание p504-8", "mail-504@gmail.com", null, "Поставщик: 504", null, null },
-                    { 5, "Поставщик: 505", "Описание p505-9", "mail-505@gmail.com", null, "Поставщик: 505", null, null },
-                    { 6, "Поставщик: 506", "Описание p506-7", "mail-506@gmail.com", null, "Поставщик: 506", null, null },
-                    { 7, "Поставщик: 507", "Описание p507-2", "mail-507@gmail.com", null, "Поставщик: 507", null, null },
-                    { 8, "Поставщик: 508", "Описание p508-7", "mail-508@gmail.com", null, "Поставщик: 508", null, null },
-                    { 9, "Поставщик: 509", "Описание p509-9", "mail-509@gmail.com", null, "Поставщик: 509", null, null }
+                    { 2, "Поставщик: 502", "Описание p502-1", "mail-502@gmail.com", null, "Поставщик: 502", null, null },
+                    { 3, "Поставщик: 503", "Описание p503-8", "mail-503@gmail.com", null, "Поставщик: 503", null, null },
+                    { 4, "Поставщик: 504", "Описание p504-9", "mail-504@gmail.com", null, "Поставщик: 504", null, null },
+                    { 5, "Поставщик: 505", "Описание p505-7", "mail-505@gmail.com", null, "Поставщик: 505", null, null },
+                    { 6, "Поставщик: 506", "Описание p506-3", "mail-506@gmail.com", null, "Поставщик: 506", null, null },
+                    { 7, "Поставщик: 507", "Описание p507-6", "mail-507@gmail.com", null, "Поставщик: 507", null, null },
+                    { 8, "Поставщик: 508", "Описание p508-4", "mail-508@gmail.com", null, "Поставщик: 508", null, null },
+                    { 9, "Поставщик: 509", "Описание p509-2", "mail-509@gmail.com", null, "Поставщик: 509", null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -216,15 +216,15 @@ namespace Plugins.DataStore.SQL.Migrations
                 columns: new[] { "OrderCustomerId", "CustomerId", "Description", "Edited", "ExcelFileId", "Name" },
                 values: new object[,]
                 {
-                    { 1, 1, "Описание oc201-c101", new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489), 1, null },
-                    { 2, 2, "Описание oc202-c102", new DateTime(2021, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null },
-                    { 3, 3, "Описание oc203-c103", new DateTime(2021, 9, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, null },
-                    { 4, 1, "Описание oc204-c101", new DateTime(2020, 12, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null },
-                    { 5, 1, "Описание ov205-c1", new DateTime(2021, 3, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "OrderVendor: 205" },
-                    { 6, 3, "Описание ov206-c3", new DateTime(2021, 1, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "OrderVendor: 206" },
-                    { 7, 4, "Описание ov207-c4", new DateTime(2021, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "OrderVendor: 207" },
-                    { 8, 3, "Описание ov208-c3", new DateTime(2021, 12, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "OrderVendor: 208" },
-                    { 9, 6, "Описание ov209-c6", new DateTime(2021, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "OrderVendor: 209" }
+                    { 1, 1, "Описание oc201-c101", new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4186), 1, null },
+                    { 2, 2, "Описание oc202-c102", new DateTime(2022, 1, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null },
+                    { 3, 3, "Описание oc203-c103", new DateTime(2021, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, null },
+                    { 4, 1, "Описание oc204-c101", new DateTime(2020, 10, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null },
+                    { 5, 9, "Описание ov205-c9", new DateTime(2020, 9, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "OrderVendor: 205" },
+                    { 6, 7, "Описание ov206-c7", new DateTime(2020, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "OrderVendor: 206" },
+                    { 7, 4, "Описание ov207-c4", new DateTime(2021, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "OrderVendor: 207" },
+                    { 8, 6, "Описание ov208-c6", new DateTime(2020, 12, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "OrderVendor: 208" },
+                    { 9, 8, "Описание ov209-c8", new DateTime(2021, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "OrderVendor: 209" }
                 });
 
             migrationBuilder.InsertData(
@@ -232,15 +232,15 @@ namespace Plugins.DataStore.SQL.Migrations
                 columns: new[] { "OrderVendorId", "Description", "Edited", "Name", "VendorId" },
                 values: new object[,]
                 {
-                    { 1, "Описание ov401", new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489), "OrderVendor-401", 1 },
-                    { 2, "Описание 402-4", new DateTime(2021, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 402", 4 },
-                    { 3, "Описание 403-7", new DateTime(2020, 12, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 403", 7 },
-                    { 4, "Описание 404-9", new DateTime(2020, 10, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 404", 9 },
-                    { 5, "Описание 405-3", new DateTime(2021, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 405", 3 },
-                    { 6, "Описание 406-8", new DateTime(2020, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 406", 8 },
-                    { 7, "Описание 407-9", new DateTime(2021, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 407", 9 },
-                    { 8, "Описание 408-3", new DateTime(2020, 9, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 408", 3 },
-                    { 9, "Описание 409-6", new DateTime(2020, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 409", 6 }
+                    { 1, "Описание ov401", new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4358), "OrderVendor-401", 1 },
+                    { 2, "Описание 402-7", new DateTime(2021, 4, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 402", 7 },
+                    { 3, "Описание 403-5", new DateTime(2021, 1, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 403", 5 },
+                    { 4, "Описание 404-9", new DateTime(2022, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 404", 9 },
+                    { 5, "Описание 405-4", new DateTime(2021, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 405", 4 },
+                    { 6, "Описание 406-3", new DateTime(2021, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 406", 3 },
+                    { 7, "Описание 407-2", new DateTime(2020, 1, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 407", 2 },
+                    { 8, "Описание 408-9", new DateTime(2021, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 408", 9 },
+                    { 9, "Описание 409-8", new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "OrderVendor: 409", 8 }
                 });
 
             migrationBuilder.InsertData(
@@ -374,15 +374,15 @@ namespace Plugins.DataStore.SQL.Migrations
                 columns: new[] { "ItemOrderId", "Description", "Edited", "OrderCustomerId", "OrderVendorId", "Price", "ProductId", "Quantity" },
                 values: new object[,]
                 {
-                    { 1, "Опиасние oc201-io301-ov401 p1001", new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489), 1, 1, 1.1100000000000001, 1, 22 },
-                    { 2, "Опиасние oc201-io302-ov401 p1002", new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489), 1, 1, 2.2200000000000002, 2, 33 },
-                    { 3, "Опиасние oc201-io303-ov401 p1003", new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489), 1, 1, 3.3300000000000001, 3, 44 },
-                    { 4, "Опиасние oc201-io304-ov401 p1004", new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489), 1, 1, 4.4400000000000004, 4, 55 },
-                    { 5, "Опиасние oc201-io305-ov403 p1005", new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489), 1, null, 6.4500000000000002, 5, 855 },
-                    { 6, "Опиасние oc201-io306-ov404 p1006", new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489), 1, null, 0.0, 6, 0 },
-                    { 7, "Опиасние oc206-io307-ov409 p1008", new DateTime(2022, 1, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), 6, 9, 0.0, 8, 0 },
-                    { 8, "Опиасние oc204-io308-ov408 p1005", new DateTime(2021, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 8, 0.0, 5, 0 },
-                    { 9, "Опиасние oc203-io309-ov403 p1003", new DateTime(2021, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 3, 0.0, 3, 0 }
+                    { 1, "Опиасние oc201-io301-ov401 p1001", new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4404), 1, 1, 1.1100000000000001, 1, 22 },
+                    { 2, "Опиасние oc201-io302-ov401 p1002", new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4407), 1, 1, 2.2200000000000002, 2, 33 },
+                    { 3, "Опиасние oc201-io303-ov401 p1003", new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4408), 1, 1, 3.3300000000000001, 3, 44 },
+                    { 4, "Опиасние oc201-io304-ov401 p1004", new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4410), 1, 1, 4.4400000000000004, 4, 55 },
+                    { 5, "Опиасние oc201-io305-ov403 p1005", new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4411), 1, null, 6.4500000000000002, 5, 855 },
+                    { 6, "Опиасние oc201-io306-ov404 p1006", new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4413), 1, null, 0.0, 6, 0 },
+                    { 7, "Опиасние oc205-io307-ov406 p1008", new DateTime(2022, 1, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, 6, 0.0, 8, 0 },
+                    { 8, "Опиасние oc209-io308-ov402 p1006", new DateTime(2021, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), 9, 2, 0.0, 6, 0 },
+                    { 9, "Опиасние oc201-io309-ov408 p1001", new DateTime(2020, 6, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 8, 0.0, 1, 0 }
                 });
 
             migrationBuilder.CreateIndex(

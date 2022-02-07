@@ -22,7 +22,7 @@ namespace Plugins.DataStore.SQL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("CoreBusiness.Category", b =>
+            modelBuilder.Entity("CoreBusiness.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
@@ -58,7 +58,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CoreBusiness.Customer", b =>
+            modelBuilder.Entity("CoreBusiness.Models.Customer", b =>
                 {
                     b.Property<int>("CustomerId")
                         .ValueGeneratedOnAdd()
@@ -191,7 +191,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CoreBusiness.ItemOrder", b =>
+            modelBuilder.Entity("CoreBusiness.Models.ItemOrder", b =>
                 {
                     b.Property<int>("ItemOrderId")
                         .ValueGeneratedOnAdd()
@@ -235,7 +235,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             ItemOrderId = 1,
                             Description = "Опиасние oc201-io301-ov401 p1001",
-                            Edited = new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489),
+                            Edited = new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4404),
                             OrderCustomerId = 1,
                             OrderVendorId = 1,
                             Price = 1.1100000000000001,
@@ -246,7 +246,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             ItemOrderId = 2,
                             Description = "Опиасние oc201-io302-ov401 p1002",
-                            Edited = new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489),
+                            Edited = new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4407),
                             OrderCustomerId = 1,
                             OrderVendorId = 1,
                             Price = 2.2200000000000002,
@@ -257,7 +257,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             ItemOrderId = 3,
                             Description = "Опиасние oc201-io303-ov401 p1003",
-                            Edited = new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489),
+                            Edited = new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4408),
                             OrderCustomerId = 1,
                             OrderVendorId = 1,
                             Price = 3.3300000000000001,
@@ -268,7 +268,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             ItemOrderId = 4,
                             Description = "Опиасние oc201-io304-ov401 p1004",
-                            Edited = new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489),
+                            Edited = new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4410),
                             OrderCustomerId = 1,
                             OrderVendorId = 1,
                             Price = 4.4400000000000004,
@@ -279,7 +279,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             ItemOrderId = 5,
                             Description = "Опиасние oc201-io305-ov403 p1005",
-                            Edited = new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489),
+                            Edited = new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4411),
                             OrderCustomerId = 1,
                             Price = 6.4500000000000002,
                             ProductId = 5,
@@ -289,7 +289,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             ItemOrderId = 6,
                             Description = "Опиасние oc201-io306-ov404 p1006",
-                            Edited = new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489),
+                            Edited = new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4413),
                             OrderCustomerId = 1,
                             Price = 0.0,
                             ProductId = 6,
@@ -298,10 +298,10 @@ namespace Plugins.DataStore.SQL.Migrations
                         new
                         {
                             ItemOrderId = 7,
-                            Description = "Опиасние oc206-io307-ov409 p1008",
-                            Edited = new DateTime(2022, 1, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderCustomerId = 6,
-                            OrderVendorId = 9,
+                            Description = "Опиасние oc205-io307-ov406 p1008",
+                            Edited = new DateTime(2022, 1, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderCustomerId = 5,
+                            OrderVendorId = 6,
                             Price = 0.0,
                             ProductId = 8,
                             Quantity = 0
@@ -309,28 +309,28 @@ namespace Plugins.DataStore.SQL.Migrations
                         new
                         {
                             ItemOrderId = 8,
-                            Description = "Опиасние oc204-io308-ov408 p1005",
-                            Edited = new DateTime(2021, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderCustomerId = 4,
-                            OrderVendorId = 8,
+                            Description = "Опиасние oc209-io308-ov402 p1006",
+                            Edited = new DateTime(2021, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderCustomerId = 9,
+                            OrderVendorId = 2,
                             Price = 0.0,
-                            ProductId = 5,
+                            ProductId = 6,
                             Quantity = 0
                         },
                         new
                         {
                             ItemOrderId = 9,
-                            Description = "Опиасние oc203-io309-ov403 p1003",
-                            Edited = new DateTime(2021, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderCustomerId = 3,
-                            OrderVendorId = 3,
+                            Description = "Опиасние oc201-io309-ov408 p1001",
+                            Edited = new DateTime(2020, 6, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderCustomerId = 1,
+                            OrderVendorId = 8,
                             Price = 0.0,
-                            ProductId = 3,
+                            ProductId = 1,
                             Quantity = 0
                         });
                 });
 
-            modelBuilder.Entity("CoreBusiness.OrderCustomer", b =>
+            modelBuilder.Entity("CoreBusiness.Models.OrderCustomer", b =>
                 {
                     b.Property<int>("OrderCustomerId")
                         .ValueGeneratedOnAdd()
@@ -347,7 +347,7 @@ namespace Plugins.DataStore.SQL.Migrations
                     b.Property<DateTime>("Edited")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ExcelFileId")
+                    b.Property<int?>("ExcelFileId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -365,7 +365,7 @@ namespace Plugins.DataStore.SQL.Migrations
                             OrderCustomerId = 1,
                             CustomerId = 1,
                             Description = "Описание oc201-c101",
-                            Edited = new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489),
+                            Edited = new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4186),
                             ExcelFileId = 1
                         },
                         new
@@ -373,7 +373,7 @@ namespace Plugins.DataStore.SQL.Migrations
                             OrderCustomerId = 2,
                             CustomerId = 2,
                             Description = "Описание oc202-c102",
-                            Edited = new DateTime(2021, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Edited = new DateTime(2022, 1, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ExcelFileId = 2
                         },
                         new
@@ -381,7 +381,7 @@ namespace Plugins.DataStore.SQL.Migrations
                             OrderCustomerId = 3,
                             CustomerId = 3,
                             Description = "Описание oc203-c103",
-                            Edited = new DateTime(2021, 9, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Edited = new DateTime(2021, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ExcelFileId = 3
                         },
                         new
@@ -389,25 +389,23 @@ namespace Plugins.DataStore.SQL.Migrations
                             OrderCustomerId = 4,
                             CustomerId = 1,
                             Description = "Описание oc204-c101",
-                            Edited = new DateTime(2020, 12, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Edited = new DateTime(2020, 10, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ExcelFileId = 1
                         },
                         new
                         {
                             OrderCustomerId = 5,
-                            CustomerId = 1,
-                            Description = "Описание ov205-c1",
-                            Edited = new DateTime(2021, 3, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExcelFileId = 0,
+                            CustomerId = 9,
+                            Description = "Описание ov205-c9",
+                            Edited = new DateTime(2020, 9, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "OrderVendor: 205"
                         },
                         new
                         {
                             OrderCustomerId = 6,
-                            CustomerId = 3,
-                            Description = "Описание ov206-c3",
-                            Edited = new DateTime(2021, 1, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExcelFileId = 0,
+                            CustomerId = 7,
+                            Description = "Описание ov206-c7",
+                            Edited = new DateTime(2020, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "OrderVendor: 206"
                         },
                         new
@@ -415,31 +413,28 @@ namespace Plugins.DataStore.SQL.Migrations
                             OrderCustomerId = 7,
                             CustomerId = 4,
                             Description = "Описание ov207-c4",
-                            Edited = new DateTime(2021, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExcelFileId = 0,
+                            Edited = new DateTime(2021, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "OrderVendor: 207"
                         },
                         new
                         {
                             OrderCustomerId = 8,
-                            CustomerId = 3,
-                            Description = "Описание ov208-c3",
-                            Edited = new DateTime(2021, 12, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExcelFileId = 0,
+                            CustomerId = 6,
+                            Description = "Описание ov208-c6",
+                            Edited = new DateTime(2020, 12, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "OrderVendor: 208"
                         },
                         new
                         {
                             OrderCustomerId = 9,
-                            CustomerId = 6,
-                            Description = "Описание ov209-c6",
-                            Edited = new DateTime(2021, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExcelFileId = 0,
+                            CustomerId = 8,
+                            Description = "Описание ov209-c8",
+                            Edited = new DateTime(2021, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "OrderVendor: 209"
                         });
                 });
 
-            modelBuilder.Entity("CoreBusiness.OrderVendor", b =>
+            modelBuilder.Entity("CoreBusiness.Models.OrderVendor", b =>
                 {
                     b.Property<int>("OrderVendorId")
                         .ValueGeneratedOnAdd()
@@ -470,77 +465,77 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             OrderVendorId = 1,
                             Description = "Описание ov401",
-                            Edited = new DateTime(2022, 2, 4, 15, 19, 32, 729, DateTimeKind.Local).AddTicks(4489),
+                            Edited = new DateTime(2022, 2, 6, 19, 13, 57, 721, DateTimeKind.Local).AddTicks(4358),
                             Name = "OrderVendor-401",
                             VendorId = 1
                         },
                         new
                         {
                             OrderVendorId = 2,
-                            Description = "Описание 402-4",
-                            Edited = new DateTime(2021, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Описание 402-7",
+                            Edited = new DateTime(2021, 4, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "OrderVendor: 402",
-                            VendorId = 4
+                            VendorId = 7
                         },
                         new
                         {
                             OrderVendorId = 3,
-                            Description = "Описание 403-7",
-                            Edited = new DateTime(2020, 12, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Описание 403-5",
+                            Edited = new DateTime(2021, 1, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "OrderVendor: 403",
-                            VendorId = 7
+                            VendorId = 5
                         },
                         new
                         {
                             OrderVendorId = 4,
                             Description = "Описание 404-9",
-                            Edited = new DateTime(2020, 10, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Edited = new DateTime(2022, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "OrderVendor: 404",
                             VendorId = 9
                         },
                         new
                         {
                             OrderVendorId = 5,
-                            Description = "Описание 405-3",
-                            Edited = new DateTime(2021, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Описание 405-4",
+                            Edited = new DateTime(2021, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "OrderVendor: 405",
-                            VendorId = 3
+                            VendorId = 4
                         },
                         new
                         {
                             OrderVendorId = 6,
-                            Description = "Описание 406-8",
-                            Edited = new DateTime(2020, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Описание 406-3",
+                            Edited = new DateTime(2021, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "OrderVendor: 406",
-                            VendorId = 8
-                        },
-                        new
-                        {
-                            OrderVendorId = 7,
-                            Description = "Описание 407-9",
-                            Edited = new DateTime(2021, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "OrderVendor: 407",
-                            VendorId = 9
-                        },
-                        new
-                        {
-                            OrderVendorId = 8,
-                            Description = "Описание 408-3",
-                            Edited = new DateTime(2020, 9, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "OrderVendor: 408",
                             VendorId = 3
                         },
                         new
                         {
+                            OrderVendorId = 7,
+                            Description = "Описание 407-2",
+                            Edited = new DateTime(2020, 1, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "OrderVendor: 407",
+                            VendorId = 2
+                        },
+                        new
+                        {
+                            OrderVendorId = 8,
+                            Description = "Описание 408-9",
+                            Edited = new DateTime(2021, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "OrderVendor: 408",
+                            VendorId = 9
+                        },
+                        new
+                        {
                             OrderVendorId = 9,
-                            Description = "Описание 409-6",
-                            Edited = new DateTime(2020, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Описание 409-8",
+                            Edited = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "OrderVendor: 409",
-                            VendorId = 6
+                            VendorId = 8
                         });
                 });
 
-            modelBuilder.Entity("CoreBusiness.Product", b =>
+            modelBuilder.Entity("CoreBusiness.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -1738,7 +1733,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CoreBusiness.Vendor", b =>
+            modelBuilder.Entity("CoreBusiness.Models.Vendor", b =>
                 {
                     b.Property<int>("VendorId")
                         .ValueGeneratedOnAdd()
@@ -1785,7 +1780,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             VendorId = 2,
                             Company = "Поставщик: 502",
-                            Description = "Описание p502-6",
+                            Description = "Описание p502-1",
                             Email = "mail-502@gmail.com",
                             Name = "Поставщик: 502"
                         },
@@ -1793,7 +1788,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             VendorId = 3,
                             Company = "Поставщик: 503",
-                            Description = "Описание p503-1",
+                            Description = "Описание p503-8",
                             Email = "mail-503@gmail.com",
                             Name = "Поставщик: 503"
                         },
@@ -1801,7 +1796,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             VendorId = 4,
                             Company = "Поставщик: 504",
-                            Description = "Описание p504-8",
+                            Description = "Описание p504-9",
                             Email = "mail-504@gmail.com",
                             Name = "Поставщик: 504"
                         },
@@ -1809,7 +1804,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             VendorId = 5,
                             Company = "Поставщик: 505",
-                            Description = "Описание p505-9",
+                            Description = "Описание p505-7",
                             Email = "mail-505@gmail.com",
                             Name = "Поставщик: 505"
                         },
@@ -1817,7 +1812,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             VendorId = 6,
                             Company = "Поставщик: 506",
-                            Description = "Описание p506-7",
+                            Description = "Описание p506-3",
                             Email = "mail-506@gmail.com",
                             Name = "Поставщик: 506"
                         },
@@ -1825,7 +1820,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             VendorId = 7,
                             Company = "Поставщик: 507",
-                            Description = "Описание p507-2",
+                            Description = "Описание p507-6",
                             Email = "mail-507@gmail.com",
                             Name = "Поставщик: 507"
                         },
@@ -1833,7 +1828,7 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             VendorId = 8,
                             Company = "Поставщик: 508",
-                            Description = "Описание p508-7",
+                            Description = "Описание p508-4",
                             Email = "mail-508@gmail.com",
                             Name = "Поставщик: 508"
                         },
@@ -1841,26 +1836,26 @@ namespace Plugins.DataStore.SQL.Migrations
                         {
                             VendorId = 9,
                             Company = "Поставщик: 509",
-                            Description = "Описание p509-9",
+                            Description = "Описание p509-2",
                             Email = "mail-509@gmail.com",
                             Name = "Поставщик: 509"
                         });
                 });
 
-            modelBuilder.Entity("CoreBusiness.ItemOrder", b =>
+            modelBuilder.Entity("CoreBusiness.Models.ItemOrder", b =>
                 {
-                    b.HasOne("CoreBusiness.OrderCustomer", "OrderCustomer")
+                    b.HasOne("CoreBusiness.Models.OrderCustomer", "OrderCustomer")
                         .WithMany("ItemOrders")
                         .HasForeignKey("OrderCustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CoreBusiness.OrderVendor", "OrderVendor")
+                    b.HasOne("CoreBusiness.Models.OrderVendor", "OrderVendor")
                         .WithMany("ItemOrders")
                         .HasForeignKey("OrderVendorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("CoreBusiness.Product", "Product")
+                    b.HasOne("CoreBusiness.Models.Product", "Product")
                         .WithMany("ItemOrders")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1873,9 +1868,9 @@ namespace Plugins.DataStore.SQL.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("CoreBusiness.OrderCustomer", b =>
+            modelBuilder.Entity("CoreBusiness.Models.OrderCustomer", b =>
                 {
-                    b.HasOne("CoreBusiness.Customer", "Customer")
+                    b.HasOne("CoreBusiness.Models.Customer", "Customer")
                         .WithMany("OrderCustomers")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1884,9 +1879,9 @@ namespace Plugins.DataStore.SQL.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("CoreBusiness.OrderVendor", b =>
+            modelBuilder.Entity("CoreBusiness.Models.OrderVendor", b =>
                 {
-                    b.HasOne("CoreBusiness.Vendor", "Vendor")
+                    b.HasOne("CoreBusiness.Models.Vendor", "Vendor")
                         .WithMany("OrderVendors")
                         .HasForeignKey("VendorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1895,9 +1890,9 @@ namespace Plugins.DataStore.SQL.Migrations
                     b.Navigation("Vendor");
                 });
 
-            modelBuilder.Entity("CoreBusiness.Product", b =>
+            modelBuilder.Entity("CoreBusiness.Models.Product", b =>
                 {
-                    b.HasOne("CoreBusiness.Category", "Category")
+                    b.HasOne("CoreBusiness.Models.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -1905,32 +1900,32 @@ namespace Plugins.DataStore.SQL.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("CoreBusiness.Category", b =>
+            modelBuilder.Entity("CoreBusiness.Models.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("CoreBusiness.Customer", b =>
+            modelBuilder.Entity("CoreBusiness.Models.Customer", b =>
                 {
                     b.Navigation("OrderCustomers");
                 });
 
-            modelBuilder.Entity("CoreBusiness.OrderCustomer", b =>
+            modelBuilder.Entity("CoreBusiness.Models.OrderCustomer", b =>
                 {
                     b.Navigation("ItemOrders");
                 });
 
-            modelBuilder.Entity("CoreBusiness.OrderVendor", b =>
+            modelBuilder.Entity("CoreBusiness.Models.OrderVendor", b =>
                 {
                     b.Navigation("ItemOrders");
                 });
 
-            modelBuilder.Entity("CoreBusiness.Product", b =>
+            modelBuilder.Entity("CoreBusiness.Models.Product", b =>
                 {
                     b.Navigation("ItemOrders");
                 });
 
-            modelBuilder.Entity("CoreBusiness.Vendor", b =>
+            modelBuilder.Entity("CoreBusiness.Models.Vendor", b =>
                 {
                     b.Navigation("OrderVendors");
                 });

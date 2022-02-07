@@ -1,0 +1,55 @@
+﻿@page "/item-orders"
+@layout MainLayout
+@inherits WebOptixSuccess.Pages.ItemOrdersComponent
+
+@using Radzen
+@using Radzen.Blazor
+@using CoreBusiness.Models
+@inject Microsoft.Extensions.Localization.IStringLocalizer<ItemOrders> L
+<RadzenContent @ref="content1" Container="main">
+  <ChildContent>
+    <RadzenHeading @ref="pageTitle" Size="H1" Text="@L["pageTitle.Text"]">
+    </RadzenHeading>
+    <div class="row">
+      <div class="col-md-12">
+        <RadzenButton @ref="button0" Icon="add_circle_outline" style="margin-bottom: 10px" Text="@L["button0.Text"]" Click="@Button0Click">
+        </RadzenButton>
+        <RadzenGrid @ref="grid0" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@(getItemOrdersResult)" TItem="ItemOrder" RowSelect="@Grid0RowSelect">
+          <Columns>
+            <RadzenGridColumn TItem="ItemOrder" Context="itemOrder" Property="ItemOrderId" Title="@L["grid0.ItemOrderId.Title"]" Type="integer">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="ItemOrder" Context="itemOrder" Property="Description" Title="@L["grid0.Description.Title"]" Type="string">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="ItemOrder" Context="itemOrder" Property="Quantity" Title="@L["grid0.Quantity.Title"]" Type="integer">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="ItemOrder" Context="itemOrder" Format="double" Property="Price" Title="@L["grid0.Price.Title"]" Type="number">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="ItemOrder" Context="itemOrder" Format="date-time" Property="Edited" FormatString="{0:dd/MM/yyyy}" Title="@L["grid0.Edited.Title"]" Type="string">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="ItemOrder" Context="itemOrder" Property="ProductId" SortProperty="Product.Name" FilterProperty="Product.Name" Title="@L["grid0.ProductId.Title"]" Type="string">
+              <Template Context="data">
+              @data.Product?.Name
+              </Template>
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="ItemOrder" Context="itemOrder" Property="OrderCustomerId" SortProperty="OrderCustomer.Name" FilterProperty="OrderCustomer.Name" Title="@L["grid0.OrderCustomerId.Title"]" Type="string">
+              <Template Context="data">
+              @data.OrderCustomer?.Name
+              </Template>
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="ItemOrder" Context="itemOrder" Property="OrderVendorId" SortProperty="OrderVendor.Name" FilterProperty="OrderVendor.Name" Title="@L["grid0.OrderVendorId.Title"]" Type="string">
+              <Template Context="data">
+              @data.OrderVendor?.Name
+              </Template>
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="ItemOrder" Context="itemOrder" Filterable="false" Sortable="false" Bubble="false" Width="70px">
+              <Template Context="itemOrder">
+                <RadzenButton @ref="gridDeleteButton" ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@((args) =>GridDeleteButtonClick(args, itemOrder))">
+                </RadzenButton>
+              </Template>
+            </RadzenGridColumn>
+          </Columns>
+        </RadzenGrid>
+      </div>
+    </div>
+  </ChildContent>
+</RadzenContent>

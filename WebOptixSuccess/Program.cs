@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Plugins.DataStore.InMemory;
 using Plugins.DataStore.SQL;
 //using Plugins.DataStore.InMemory;
 using UseCases;
+using UseCases.DataStorePluginInterfaces;
 using WebOptixSuccess.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,12 +25,12 @@ builder.Services.AddDbContext<AppDbContext>();
 //Dependency  Injection for In-Memory DataStore
 
 // DI InMemoryRepository
-//builder.Services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
 //builder.Services.AddScoped<IProductRepository, ProductInMemoryRepository>();
 
 //Dependency Injection fo Use Cases and Repositories
 #region Categories
-//builder.Services.AddTransient<IViewCategoriesUseCase, ViewCategoriesUseCase>();
+builder.Services.AddTransient<IViewCategoriesUseCase, ViewCategoriesUseCase>();
 //builder.Services.AddTransient<IAddCategoryUseCase, AddCategoryUseCase>();
 //builder.Services.AddTransient<IEditCategoryUseCase, EditCategoryUseCase>();
 //builder.Services.AddTransient<IGetCategoryByIdUseCase, GetCategoryByIdUseCase>();

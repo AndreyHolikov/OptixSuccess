@@ -1,4 +1,5 @@
 ﻿using CoreBusiness;
+using CoreBusiness.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,11 @@ namespace Plugins.DataStore.InMemory
 {
     public class OrderCustomerInMemoryRepository : IOrderCustomerRepository
     {
-        private List<OrderCustomer> orderCustomers;
+        private readonly List<OrderCustomer> orderCustomers;
 
-        private Random gen = new Random();
+        private readonly Random gen = new();
         private DateTime RandomDay() { 
-            DateTime start = new DateTime(2022, 1, 1); 
+            var start = new DateTime(2022, 1, 1); 
             int range = (DateTime.Today - start).Days; 
             return start.AddDays(gen.Next(range)); 
         }

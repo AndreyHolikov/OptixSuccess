@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoreBusiness
+namespace CoreBusiness.Models
 {
     public class Vendor
     {
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int VendorId { get; set; }
         [Required]
         public string Name { get; set; }

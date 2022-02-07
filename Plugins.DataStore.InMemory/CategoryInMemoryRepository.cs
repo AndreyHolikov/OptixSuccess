@@ -1,4 +1,5 @@
 ﻿using CoreBusiness;
+using CoreBusiness.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,12 @@ namespace Plugins.DataStore.InMemory
 {
     public class CategoryInMemoryRepository : ICategoryRepository
     {
-        private List<Category> categories;
+        private readonly List<Category> categories;
+
+        public CategoryInMemoryRepository(List<Category> categories)
+        {
+            this.categories = categories;
+        }
 
         public CategoryInMemoryRepository()
         {

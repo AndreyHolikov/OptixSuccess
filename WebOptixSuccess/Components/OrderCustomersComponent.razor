@@ -1,4 +1,4 @@
-﻿@using CoreBusiness
+﻿@using CoreBusiness.Models
 @using Microsoft.EntityFrameworkCore
 @using UseCases
 @*@inject IAddCustomerUseCase AddCustomerUseCase *@
@@ -19,8 +19,12 @@
             Change=@(args => OnChangeAddOrderCustomer(args)) Placeholder="Выберите покупателя" />
     </div>
 </div>
+
+
                                 
 @code {
+
+
     IEnumerable<Customer>? customers = null;
     int countCustomers;
 

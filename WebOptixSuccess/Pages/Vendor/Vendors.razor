@@ -1,0 +1,38 @@
+﻿@page "/vendors"
+@layout MainLayout
+@inherits WebOptixSuccess.Pages.VendorsComponent
+
+@using Radzen
+@using Radzen.Blazor
+@using CoreBusiness.Models
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Vendors> L
+<RadzenContent @ref="content1" Container="main">
+  <ChildContent>
+    <RadzenHeading @ref="pageTitle" Size="H1" Text="@L["pageTitle.Text"]">
+    </RadzenHeading>
+    <div class="row">
+      <div class="col-md-12">
+        <RadzenGrid @ref="grid0" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@(getVendorsResult)" TItem="Vendor">
+          <Columns>
+            <RadzenGridColumn TItem="Vendor" Context="vendor" Property="VendorId" Title="@L["grid0.VendorId.Title"]" Type="integer">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="Vendor" Context="vendor" Property="Name" Title="@L["grid0.Name.Title"]" Type="string">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="Vendor" Context="vendor" Property="Description" Title="@L["grid0.Description.Title"]" Type="string">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="Vendor" Context="vendor" Property="Password" Title="@L["grid0.Password.Title"]" Type="string">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="Vendor" Context="vendor" Property="Fullname" Title="@L["grid0.Fullname.Title"]" Type="string">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="Vendor" Context="vendor" Property="Email" Title="@L["grid0.Email.Title"]" Type="string">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="Vendor" Context="vendor" Property="Company" Title="@L["grid0.Company.Title"]" Type="string">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="Vendor" Context="vendor" Property="Phone" Title="@L["grid0.Phone.Title"]" Type="string">
+            </RadzenGridColumn>
+          </Columns>
+        </RadzenGrid>
+      </div>
+    </div>
+  </ChildContent>
+</RadzenContent>

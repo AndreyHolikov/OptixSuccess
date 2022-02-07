@@ -8,9 +8,29 @@
 
   <ItemGroup>
     <Compile Remove="Pages\Customer\**" />
+    <Compile Remove="Pages\ItemOrder\**" />
+    <Compile Remove="Pages\OrderCustomer\**" />
+    <Compile Remove="Pages\OrderVendor\**" />
+    <Compile Remove="Pages\Vendor\**" />
     <Content Remove="Pages\Customer\**" />
+    <Content Remove="Pages\ItemOrder\**" />
+    <Content Remove="Pages\OrderCustomer\**" />
+    <Content Remove="Pages\OrderVendor\**" />
+    <Content Remove="Pages\Vendor\**" />
     <EmbeddedResource Remove="Pages\Customer\**" />
+    <EmbeddedResource Remove="Pages\ItemOrder\**" />
+    <EmbeddedResource Remove="Pages\OrderCustomer\**" />
+    <EmbeddedResource Remove="Pages\OrderVendor\**" />
+    <EmbeddedResource Remove="Pages\Vendor\**" />
     <None Remove="Pages\Customer\**" />
+    <None Remove="Pages\ItemOrder\**" />
+    <None Remove="Pages\OrderCustomer\**" />
+    <None Remove="Pages\OrderVendor\**" />
+    <None Remove="Pages\Vendor\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\RadzenOptixSuccessContext.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,7 +44,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Radzen.Blazor" Version="3.14.9" />
+    <PackageReference Include="Radzen.Blazor" Version="3.14.12" />
   </ItemGroup>
 
   <ItemGroup>

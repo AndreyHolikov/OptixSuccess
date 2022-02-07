@@ -1,0 +1,42 @@
+﻿@page "/order-customers"
+@layout MainLayout
+@inherits WebOptixSuccess.Pages.OrderCustomersComponent
+
+@using Radzen
+@using Radzen.Blazor
+@using CoreBusiness.Models
+@inject Microsoft.Extensions.Localization.IStringLocalizer<OrderCustomers> L
+<RadzenContent @ref="content1" Container="main">
+  <ChildContent>
+    <RadzenHeading @ref="pageTitle" Size="H1" Text="@L["pageTitle.Text"]">
+    </RadzenHeading>
+    <div class="row">
+      <div class="col-md-12">
+        <RadzenButton @ref="button0" Icon="add_circle_outline" style="margin-bottom: 10px" Text="@L["button0.Text"]" Click="@Button0Click">
+        </RadzenButton>
+        <RadzenGrid @ref="grid0" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@(getOrderCustomersResult)" TItem="OrderCustomer" RowSelect="@Grid0RowSelect">
+          <Columns>
+            <RadzenGridColumn TItem="OrderCustomer" Context="orderCustomer" Property="OrderCustomerId" Title="@L["grid0.OrderCustomerId.Title"]" Type="integer">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="OrderCustomer" Context="orderCustomer" Property="CustomerId" Title="@L["grid0.CustomerId.Title"]" Type="integer">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="OrderCustomer" Context="orderCustomer" Property="ExcelFileId" Title="@L["grid0.ExcelFileId.Title"]" Type="integer">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="OrderCustomer" Context="orderCustomer" Property="Name" Title="@L["grid0.Name.Title"]" Type="string">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="OrderCustomer" Context="orderCustomer" Property="Description" Title="@L["grid0.Description.Title"]" Type="string">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="OrderCustomer" Context="orderCustomer" Format="date-time" Property="Edited" FormatString="{0:dd/MM/yyyy}" Title="@L["grid0.Edited.Title"]" Type="string">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="OrderCustomer" Context="orderCustomer" Filterable="false" Sortable="false" Bubble="false" Width="70px">
+              <Template Context="orderCustomer">
+                <RadzenButton @ref="gridDeleteButton" ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@((args) =>GridDeleteButtonClick(args, orderCustomer))">
+                </RadzenButton>
+              </Template>
+            </RadzenGridColumn>
+          </Columns>
+        </RadzenGrid>
+      </div>
+    </div>
+  </ChildContent>
+</RadzenContent>

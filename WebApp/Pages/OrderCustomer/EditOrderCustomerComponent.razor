@@ -1,7 +1,7 @@
 ﻿@page "/editordercustomer/{ordercustomerId}"
 @using System.IO
 @using ClosedXML.Excel
-@using UseCases
+
 @inject IJSRuntime JSRuntime
 
 @inject NavigationManager NavigationManager
@@ -30,7 +30,7 @@
 
         <div class="form-group">
             <label for="ExcelFile">Excel файл</label>
-            <a href="@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId).FullPath">@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId).Name</a>
+            <a href="@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId??0).FullPath">@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId??0).Name</a>
         </div>
 
         <button type="button" @onclick="@(() => DownloadExcelDocument())">Скачать Excel файл с товарами</button>

@@ -1,8 +1,8 @@
 ﻿@page "/customers"
 
-@using CoreBusiness
+
 @using Microsoft.EntityFrameworkCore
-@using Plugins.DataStore.SQL
+
 
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 @inject NavigationManager NavigationManager
@@ -11,7 +11,7 @@
 
 <RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
 
-    <RadzenDataGrid @ref="grid" IsLoading=@isLoading Count="@count" Data="@customers" LoadData="@LoadData" TItem="Customer"
+    <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@customers" LoadData="@LoadData" TItem="Customer"
         AllowSorting="true" AllowFiltering="true" 
         AllowPaging="true" PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
         AllowColumnResize="true"
@@ -27,7 +27,7 @@
              <RadzenDataGridColumn TItem="Customer" >
                  <Template Context="customer">
                      <RadzenButton Icon="delete_forever" ButtonStyle="ButtonStyle.Light"
-                            Click="@(() => OnClickDeleteCustomer(customer.CustomerId))">
+                            Click="@(() => OnClickDelete(customer.CustomerId))">
                      </RadzenButton>
                  </Template>
              </RadzenDataGridColumn>
@@ -35,18 +35,20 @@
     </RadzenDataGrid>
 
 @code {
-    RadzenDataGrid<Customer>? grid = null;
+    RadzenDataGrid<Customer>? gridRef = null;
     int count;
-    IEnumerable<int> pageSizeOptions = new int[] { 10, 20, 30, 100, 1000 };
     IEnumerable<Customer>? customers = null;
     bool isLoading = false;
 
+    [Parameter]
+    public IEnumerable<int> pageSizeOptions { get; set; } = new int[] { 10, 20, 30, 100, 1000 };
+
     async Task Reset()
     {
-        if (grid != null)
+        if (gridRef != null)
         {
-            grid.Reset(true);
-            await grid.FirstPage(true);
+            gridRef.Reset(true);
+            await gridRef.FirstPage(true);
         }
     }
 
@@ -76,24 +78,21 @@
         isLoading = false;
     }
 
-    protected void OnClickAddCustomer()
-    {
-        NavigationManager.NavigateTo("/addcustomer");
-    }
+    protected void OnClickAdd()
+        => NavigationManager.NavigateTo("/addcustomer");
 
-    protected void OnClickEditItemOrder(ItemOrder itemOrder)
-    {
-        NavigationManager.NavigateTo($"/editCustomer/{itemOrder.ItemOrderId}");
-    }
+    protected void OnClickEdit(Customer customer)
+        => NavigationManager.NavigateTo($"/editCustomer/{customer.CustomerId}");
 
-    protected void OnClickDeleteCustomer(int CustomerId)
+    protected void OnClickDelete(int CustomerId)
     {
         Customer? customer = dbContext.Customers.Find(CustomerId);
         if (customer != null)
         {
             dbContext.Customers.Remove(customer);
             dbContext.SaveChangesAsync();
-            Task task = Reset();
+            //Task task = Reset();
+            Task.Run(Reset);
         }
     }
 }

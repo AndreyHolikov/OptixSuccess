@@ -1,0 +1,126 @@
+﻿@page "/settings"
+@inject NavigationManager NavigationManager
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+
+<h3>Settings</h3>
+
+<RadzenButton Text="Очистить все таблицы" Click="@DeleteAllData"
+    ButtonStyle="ButtonStyle.Light" style="margin:10px;" />
+
+<RadzenButton Text="Заполнить все таблицы данными" Click="@FillDemoData"
+    ButtonStyle="ButtonStyle.Light" style="margin:10px;" />
+
+<RadzenPanel AllowCollapse="true" Style="margin: 10px" Off>
+    <HeaderTemplate>
+        <h4 class="m-0 d-flex align-items-center">
+            <RadzenIcon Icon="terminal" Class="mr-1" /><b>Консоль</b>
+        </h4>
+    </HeaderTemplate>
+    <ChildContent>
+        <div class="row" style="margin:10px;">
+            <div class="col-md-8">
+                <EventConsole @ref=@console Class="mt-4" />
+            </div>
+            <div class="col-md-4">
+                <RadzenButton Click="TestEventConsole" Text="Проверка консоли" />
+            </div>
+        </div>        
+    </ChildContent>
+</RadzenPanel>
+
+@code {
+    EventConsole console = new EventConsole();
+    private void TestEventConsole() => console.Log($"Проверка консоли прошла успешно.");
+
+    void DeleteAllData()
+    {
+        foreach (var x in dbContext.ItemOrders)         dbContext.ItemOrders.Remove(x);
+        foreach (var x in dbContext.OrderCustomers)     dbContext.OrderCustomers.Remove(x);
+        foreach (var x in dbContext.OrderVendors)       dbContext.OrderVendors.Remove(x);
+        foreach (var x in dbContext.Customers)          dbContext.Customers.Remove(x);
+        foreach (var x in dbContext.Vendors)            dbContext.Vendors.Remove(x);
+        dbContext.SaveChanges();
+        console.Log($"DeleteAllData");
+        //NavigationManager.NavigateTo("/", true);
+    }
+
+    void FillDemoData()
+    {
+        DemoData demoData = new();
+        Random random = new();
+
+        var demoCustomers = demoData.GetCustomers();
+        foreach (var item in demoCustomers)
+            dbContext.Customers.Add(
+                new CoreBusiness.Models.Customer(){
+                    Name =          item.Name,
+                    Fullname =      item.Fullname,
+                    Company =       item.Company,
+                    Email =         item.Email,
+                    Phone =         item.Phone,
+                    Description =   item.Description
+                });
+        dbContext.SaveChanges();
+        console.Log($"AddCustomers");
+
+        int minCustomerId = dbContext.Customers.Min(x => x.CustomerId);
+        var demoOrderCustomers = demoData.GetOrderCustomers();
+        foreach (var item in demoOrderCustomers)
+            dbContext.OrderCustomers.Add(
+                new OrderCustomer()
+                    {
+                        Description = item.Description,
+                        Edited = item.Edited,
+                        CustomerId = random.Next(minCustomerId, minCustomerId+demoData.limirRow-1),
+                        ExcelFileId = item.ExcelFileId
+                    });
+        dbContext.SaveChanges();
+        console.Log($"AddOrderCustomers");
+
+        var demoVendors = demoData.GetVendors();
+        foreach (var item in demoVendors)
+            dbContext.Vendors.Add(
+                new CoreBusiness.Models.Vendor(){
+                    Name =          item.Name,
+                    Fullname =      item.Fullname,
+                    Company =       item.Company,
+                    Email =         item.Email,
+                    Phone =         item.Phone,
+                    Description =   item.Description
+                });
+        dbContext.SaveChanges();
+        console.Log($"AddVendors");
+
+        int minVendorId = dbContext.Vendors.Min(x => x.VendorId);
+        var demoOrderVendors = demoData.GetOrderVendors();
+        foreach (var item in demoOrderVendors)
+            dbContext.OrderVendors.Add(
+                new OrderVendor()
+                    {
+                        Description = item.Description,
+                        Edited = item.Edited,
+                        VendorId = random.Next(minVendorId, minVendorId+demoData.limirRow-1)
+                    });
+        dbContext.SaveChanges();
+        console.Log($"AddOrderVendors");
+
+        int minOrderCustomerId = dbContext.OrderCustomers.Min(x => x.OrderCustomerId);
+        int minOrderVendorId = dbContext.OrderVendors.Min(x => x.OrderVendorId);
+        var demoItemOrders = demoData.GetItemOrders();
+        foreach (var item in demoItemOrders)
+            dbContext.ItemOrders.Add(
+                new ItemOrder()
+                    {
+                        ProductId = item.ProductId,
+                        OrderCustomerId = random.Next(minOrderCustomerId, minOrderCustomerId+demoData.limirRow-1),
+                        OrderVendorId = random.Next(minOrderVendorId, minOrderVendorId+demoData.limirRow-1),
+                        Description = item.Description,
+                        Edited = item.Edited
+                    });
+        dbContext.SaveChanges();
+        console.Log($"AddItemOrders");
+
+        NavigationManager.NavigateTo("/", true);
+    }
+}

@@ -1,4 +1,5 @@
 ﻿using CoreBusiness;
+using CoreBusiness.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Plugins.DataStore.InMemory
 {
     public class ProductInMemoryRepository : IProductRepository
     {
-        private List<Product> products;
+        private readonly List<Product> products;
 
         public ProductInMemoryRepository()
         {

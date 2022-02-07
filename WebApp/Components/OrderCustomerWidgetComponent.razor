@@ -1,5 +1,5 @@
 ﻿@* Example <OrderCustomerWidgetComponent> *@
-
+    @using CoreBusiness.Models
 @*Customer*@
 @inject IGetCustomerByIdUseCase GetCustomerByIdUseCase
 @*OrderCustomer*@
@@ -80,7 +80,7 @@
     #endregion
 
     #region private fields
-    private List<CoreBusiness.OrderCustomer> orderCustomers;
+    private List<OrderCustomer> orderCustomers;
     private int LastClickOnOrderСustomerId { get; set; }
 
     private IEnumerable<int> pageSizeOptions = new int[] { 10, 20, 30 };

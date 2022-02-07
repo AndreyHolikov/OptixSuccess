@@ -1,13 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CoreBusiness
+namespace CoreBusiness.Models
 {
     public class Product
     {
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProductId { get; set; }
         //[Required]
         public int? CategoryId { get; set; }
+
+        //[InverseProperty("Category")]
+        [ForeignKey("CategoryId")]
         public Category Category { get; set; }
 
         [Required]

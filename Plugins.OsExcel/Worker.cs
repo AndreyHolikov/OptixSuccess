@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using CoreBusiness;
+using CoreBusiness.Models;
 
 namespace Plugins.OsExcel
 {
@@ -7,7 +8,7 @@ namespace Plugins.OsExcel
     {
         public XLWorkbook GetProductsXLWorkbook()
         {
-            List<Product> products = new List<Product>()
+            List<Product> products = new()
             {
                 new Product { ProductId = 1, CategoryId = 1, Name = "SofLens 59 6 pk", BC = " 8.6", Sph = "-0.50", Cell = "C4", Quantity = 1, Price = 1.00},
                 new Product { ProductId = 2, CategoryId = 1, Name = "SofLens 59 6 pk", BC = " 8.6", Sph = "-0.75", Cell = "C5", Quantity = 1, Price = 1.00},

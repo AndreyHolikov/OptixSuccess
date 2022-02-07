@@ -1,4 +1,4 @@
-﻿using CoreBusiness;
+﻿using CoreBusiness.Models;
 
 namespace UseCases
 {
