@@ -1,4 +1,4 @@
-﻿@page "/customers"
+﻿@page "/order-Vendors"
 
 
 @using Microsoft.EntityFrameworkCore
@@ -11,23 +11,22 @@
 
 <RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
 
-    <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@customers" LoadData="@LoadData" TItem="Customer"
+    <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@orderVendors" LoadData="@LoadData" TItem="OrderVendor"
         AllowSorting="true" AllowFiltering="true" 
         AllowPaging="true" PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
         AllowColumnResize="true"
         ColumnWidth="200px"   >
         <Columns>
-            <RadzenDataGridColumn TItem="Customer" Property="CustomerId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
-            <RadzenDataGridColumn TItem="Customer" Property="Name" Title="Name" Frozen="true" Width="200px"/>
-            <RadzenDataGridColumn TItem="Customer" Property="Fullname" Title="Fullname" Width="100px"/>
-            <RadzenDataGridColumn TItem="Customer" Property="Email" Title="Email" Width="100px" />
-            <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Company" Width="100px" />
-            <RadzenDataGridColumn TItem="Customer" Property="Phone" Title="Phone" Width="100px" />
-            <RadzenDataGridColumn TItem="Customer" Property="Description" Title="Description" Width="100px" />
-             <RadzenDataGridColumn TItem="Customer" >
-                 <Template Context="customer">
+            <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
+            
+            <RadzenDataGridColumn TItem="OrderVendor" Property="Description" Title="Description" Width="100px"/>
+            
+
+
+             <RadzenDataGridColumn TItem="OrderVendor" >
+                 <Template Context="orderVendor">
                      <RadzenButton Icon="delete_forever" ButtonStyle="ButtonStyle.Light"
-                            Click="@(() => OnClickDelete(customer.CustomerId))">
+                            Click="@(() => OnClickDelete(orderVendor.OrderVendorId))">
                      </RadzenButton>
                  </Template>
              </RadzenDataGridColumn>
@@ -35,9 +34,9 @@
     </RadzenDataGrid>
 
 @code {
-    RadzenDataGrid<Customer>? gridRef = null;
+    RadzenDataGrid<OrderVendor>? gridRef = null;
     int count;
-    IEnumerable<Customer>? customers = null;
+    IEnumerable<OrderVendor>? orderVendors = null;
     bool isLoading = false;
 
     [Parameter]
@@ -59,7 +58,7 @@
         await Task.Yield();
 
         // This demo is using https://dynamic-linq.net
-        var query = dbContext.Customers.AsQueryable();
+        var query = dbContext.OrderVendors.AsQueryable();
 
         // Important!!! Make sure the Count property of RadzenDataGrid is set.
         count = query.Count();
@@ -70,26 +69,26 @@
             int counForSkip = args.Skip != null ? args.Skip.Value : default(int);
             int counForTake = args.Top != null ? args.Top.Value : default(int);
 
-            customers = query.Skip(counForSkip).Take(counForTake).ToList();
+            orderVendors = query.Skip(counForSkip).Take(counForTake).ToList();
         } else {
-            customers = query.ToList();
+            orderVendors = query.ToList();
         }
 
         isLoading = false;
     }
 
     protected void OnClickAdd()
-        => NavigationManager.NavigateTo("/addcustomer");
+        => NavigationManager.NavigateTo("/addorderVendor");
 
-    protected void OnClickEdit(Customer customer)
-        => NavigationManager.NavigateTo($"/editCustomer/{customer.CustomerId}");
+    protected void OnClickEdit(OrderVendor orderVendor)
+        => NavigationManager.NavigateTo($"/editOrderVendor/{orderVendor.OrderVendorId}");
 
-    protected void OnClickDelete(int CustomerId)
+    protected void OnClickDelete(int OrderVendorId)
     {
-        Customer? customer = dbContext.Customers.Find(CustomerId);
-        if (customer != null)
+        OrderVendor? orderVendor = dbContext.OrderVendors.Find(OrderVendorId);
+        if (orderVendor != null)
         {
-            dbContext.Customers.Remove(customer);
+            dbContext.OrderVendors.Remove(orderVendor);
             dbContext.SaveChangesAsync();
             //Task task = Reset();
             Task.Run(Reset);

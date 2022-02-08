@@ -5,7 +5,7 @@
 <RadzenPanel AllowCollapse="true" Style="margin: 10px" Off>
     <HeaderTemplate>
         <h4 class="m-0 d-flex align-items-center">
-            <RadzenIcon Icon="terminal" Class="mr-1" /><b>Управление зказом</b>
+            <RadzenIcon Icon="terminal" Class="mr-1" /><b>Управление заказом</b>
         </h4>
     </HeaderTemplate>
     <ChildContent>
@@ -15,24 +15,31 @@
     } else {
     <div class="row">
 
-        <div class="col-md-3">
+        <div class="col-md-4">
             <p>Компания: <wbr/><b>@Company</b></p>
-        </div>
-        <div class="col-md-3">
             <p>Заказ: <wbr/><span>@OrderId</span>-@selectedOrder?.Edited</p>
         </div>
-        <div class="col-md-6">
+
+        <div class="col-md-5">
+            <p>Позиций: <wbr/>@selectedOrder?.ItemOrders.Count()</p>
             <p><i>Дополнительная информация</i></p>
+        </div>
+        <div class="col-md-2">
+            <button type="button" @onclick="@DeleteOrder" class="btn btn-link">
+                <i class="far fa-trash-alt"></i> Удалить
+            </button>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-4">
             <ImportItemOrdersComponent></ImportItemOrdersComponent>
+        </div>
+        <div class="col-md-4">
             <ExportItemOrdersComponent SelectedOrder="@selectedOrder" Company="@Company" OrderId="@OrderId"></ExportItemOrdersComponent>
-            <button type="button" @onclick="@DeleteOrder" class="btn btn-link">
-                <i class="far fa-trash-alt"></i> Удалить заказ
-            </button>
+        </div>
+        <div class="col-md-4">
+            <RadzenButton Icon="email" Text="Отправить на почту" ButtonStyle="ButtonStyle.Secondary"/>
         </div>
      </div>
      }

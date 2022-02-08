@@ -7,11 +7,11 @@
 @inject NotificationService NotificationService
 
 <div class="row" style="margin:10px;">
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-12">
         Добавить покупателя
         <RadzenTextBox Placeholder="Введите имя покупателя" Change=@(args => OnChangeAddCustomer(args)) Class="w-100" />
     </div>
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-12">
          Добавить заказ
         <RadzenDropDown AllowClear="true" TValue="int" AllowVirtualization="true" Class="w-100" 
             LoadData=@LoadDataCustomers AllowFiltering="true" Count="@countCustomers"

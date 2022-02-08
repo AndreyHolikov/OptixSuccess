@@ -8,7 +8,7 @@
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 
 <div class="row">
-    <div class="col-12 col-lg-4 col-xl-4">
+    <div class="col-12 col-lg-5 col-xl-4">
         <RadzenPanel AllowCollapse="true" Style="margin: 10px" On>
             <HeaderTemplate>
                 <h4 class="m-0 d-flex align-items-center">
@@ -29,9 +29,9 @@
                         <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">Добавьте нового покупателя и заказ.</p>
                     </EmptyTemplate>
                     <Columns>
-                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId"  Title="Id"          Width="50px" Frozen="true"/>
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId"  Title="Id"          Width="50px" Frozen="true" TextAlign="TextAlign.Center"/>
                         <RadzenDataGridColumn TItem="OrderCustomer" Property="Customer.Company" Title="Компания"    Width="130px" />
-                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Edited"           Title="Дата"        Width="70px" FormatString="{0:d}" />
+                        <RadzenDataGridColumn TItem="OrderCustomer" Property="Edited"           Title="Дата"        Width="90px" FormatString="{0:d}" />
                         <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId"  Title="Позиций"     Width="70px" TextAlign="TextAlign.Center" >
                             <Template Context="detail">
                                 @detail.ItemOrders.Count()
@@ -84,14 +84,15 @@
             SelectedOrder=@SelectedOrder></OrderVendorsComponent>*@
     </div>
 
-    <div class="col-12 col-lg-8 col-xl-8">
+    <div class="col-12 col-lg-7 col-xl-8">
         <OrderManagerComponent SelectedOrder=@SelectedOrder UpdateCallback=@LoadOrderCustomers ></OrderManagerComponent>
+        <hr/>
         <ItemOrdersComponent ItemOrderCollection=@ItemOrderCollection UpdateCallback=@LoadOrderCustomers></ItemOrdersComponent>
     </div>
 </div>
 
 
-<RadzenPanel AllowCollapse="true" Style="margin: 10px" Off>
+@*<RadzenPanel AllowCollapse="true" Style="margin: 10px" Off>
     <HeaderTemplate>
         <h4 class="m-0 d-flex align-items-center">
             <RadzenIcon Icon="terminal" Class="mr-1" /><b>Консоль</b>
@@ -104,7 +105,7 @@
             </div>
         </div>   
     </ChildContent>
-</RadzenPanel>
+</RadzenPanel>*@
 
 @code {
     EventConsole console = new EventConsole();

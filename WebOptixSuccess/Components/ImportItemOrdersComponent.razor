@@ -5,21 +5,28 @@
 @inject ILogger<ImportItemOrdersComponent> Logger
 @inject IWebHostEnvironment Environment
 
-<InputFile OnChange="@LoadFiles" multiple class="custom-file-input" accept=".xls,.xlsx"/>
 
-@if (isLoading)
-{
-    <p>Uploading...</p>
-}
-else
-{
-    @foreach (var file in loadedFiles){
-        <p>Name: @file.Name</p>
-    }
-}
+        <RadzenUpload Url="upload/single" Progress=@(args => OnProgress(args)) 
+            ButtonStyle="ButtonStyle.Secondary"
+            ChooseText="Загрузить Excel" accept=".xls,.xlsx" />
+            <style>.rz-fileupload-buttonbar{padding:0!important;}</style>
+        <p>@info</p>
+       @* <InputFile OnChange="@LoadFiles" multiple class="custom-file-input" accept=".xls,.xlsx"/>*@
 
-<RadzenUpload Url="upload/single" Progress=@(args => OnProgress(args)) ChooseText="Загрузить Excel" />
-    <p>@info</p>
+        @if (isLoading)
+        {
+            <p>Uploading...</p>
+        }
+        else
+        {
+            @foreach (var file in loadedFiles){
+                <p>Name: @file.Name</p>
+            }
+        }
+
+
+
+
 
 @code {
     private List<IBrowserFile> loadedFiles = new();
@@ -65,7 +72,8 @@ else
     {
         if (args.Files.Count() > 0)
         {
-            this.info = $"% '{args.Files.First().Name}' / {args.Loaded} of {args.Total} bytes.";
+            this.info = $"{args.Files.First().Name}";
+            //this.info = $"% '{args.Files.First().Name}' / {args.Loaded} of {args.Total} bytes.";
             this.progress = args.Progress;
 
             if (args.Progress == 100)

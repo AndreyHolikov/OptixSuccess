@@ -1,0 +1,153 @@
+﻿@page "/item-Orders"
+
+
+@using Microsoft.EntityFrameworkCore
+
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+@inject NavigationManager NavigationManager
+
+<h3>Покупатели</h3>
+
+<RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
+
+    <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@itemOrders" LoadData="@LoadData" TItem="ItemOrder"
+        AllowSorting="true" AllowFiltering="true" 
+        AllowPaging="true" PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
+        AllowColumnResize="true"
+        ColumnWidth="200px"   >
+                    <EmptyTemplate>
+                            <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">В данном заказе еще нет товаров. Добавьте товары в заказ.</p>
+                        </EmptyTemplate>
+        <Columns>
+            <RadzenDataGridColumn TItem="ItemOrder" Property="ItemOrderId" Title="Id" Width="70px" TextAlign="TextAlign.Center" Frozen="true"/>
+            <RadzenDataGridColumn TItem="ItemOrder" Property="Product.ProductName" Title="Товар" Width="180px" >
+                <Template Context="detail">
+                    @String.Format("{0}, BC:{1}, Sph:{2}, (Id:{3})", detail?.Product?.Name, @detail?.Product?.BC, @detail?.Product?.Sph, @detail?.ProductId)
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ItemOrder" Property="OrderCustomerId" Title="№ закаказа покупателя" Width="230px" TextAlign="TextAlign.Center"/>
+
+            <RadzenDataGridColumn TItem="ItemOrder" Property="OrderVendorId" Title="№ заказа поставщика" Width="230px" TextAlign="TextAlign.Center">
+                <Template Context="detail">
+                    <RadzenNumeric TValue="int?" Change=@(() => OnChangeItemOrderVendor(detail.ItemOrderId, detail.OrderVendorId)) Class="w-100" @bind-Value=@detail.OrderVendorId/>
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="ItemOrder" Property="Price" Title="Цена" Width="100px" TextAlign="TextAlign.Center">
+                <Template Context="detail">
+                    @String.Format(new System.Globalization.CultureInfo("ru-ru"), "{0:C}", detail.Price)
+                </Template>
+            </RadzenDataGridColumn> 
+            <RadzenDataGridColumn TItem="ItemOrder" Property="Quantity" Title="Кол-во" Width="100px" TextAlign="TextAlign.Center"/>
+            <RadzenDataGridColumn TItem="ItemOrder" Property="Summ" Title="Сумма" Width="100px" TextAlign="TextAlign.Center">
+                <Template Context="itemOrder">
+                    @String.Format("{0} руб.", itemOrder.Price * itemOrder.Quantity)
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ItemOrder" Property="Description" Title="Description" Width="100px" />
+             <RadzenDataGridColumn TItem="ItemOrder" >
+                 <Template Context="itemOrder">
+                     <RadzenButton Icon="delete_forever" ButtonStyle="ButtonStyle.Light"
+                            Click="@(() => OnClickDelete(itemOrder.ItemOrderId))">
+                     </RadzenButton>
+                 </Template>
+             </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+@code {
+    RadzenDataGrid<ItemOrder>? gridRef = null;
+    int count;
+    IEnumerable<ItemOrder>? itemOrders = null;
+    bool isLoading = false;
+
+    [Parameter]
+    public IEnumerable<int> pageSizeOptions { get; set; } = new int[] { 10, 20, 30, 100, 1000 };
+
+    async Task Reset()
+    {
+        if (gridRef != null)
+        {
+            gridRef.Reset(true);
+            await gridRef.FirstPage(true);
+        }
+    }
+
+    async Task LoadData(LoadDataArgs args)
+    {
+        isLoading = true;
+
+        await Task.Yield();
+
+        // This demo is using https://dynamic-linq.net
+        var query = dbContext.ItemOrders.AsQueryable();
+
+        // Important!!! Make sure the Count property of RadzenDataGrid is set.
+        count = query.Count();
+
+        // Perform paginv via Skip and Take.
+        if(args!=null)
+        {
+            int counForSkip = args.Skip != null ? args.Skip.Value : default(int);
+            int counForTake = args.Top != null ? args.Top.Value : default(int);
+
+            itemOrders = query.Skip(counForSkip).Take(counForTake).ToList();
+        } else {
+            itemOrders = query.ToList();
+        }
+
+        isLoading = false;
+    }
+
+    protected void OnClickAdd()
+        => NavigationManager.NavigateTo("/additemOrder");
+
+    protected void OnClickEdit(ItemOrder itemOrder)
+        => NavigationManager.NavigateTo($"/editItemOrder/{itemOrder.ItemOrderId}");
+
+    protected void OnClickDelete(int ItemOrderId)
+    {
+        ItemOrder? itemOrder = dbContext.ItemOrders.Find(ItemOrderId);
+        if (itemOrder != null)
+        {
+            dbContext.ItemOrders.Remove(itemOrder);
+            dbContext.SaveChangesAsync();
+            //Task task = Reset();
+            Task.Run(Reset);
+        }
+    }
+
+     private void OnChangeItemOrderVendor(int ItemOrderId, int? OrderVendorId)
+    {
+        ItemOrder? itemOrder = dbContext.ItemOrders?.Find(ItemOrderId);
+        if (itemOrder != null)
+        {
+            if (OrderVendorId == null)
+            {
+                itemOrder.OrderVendorId = null;
+                dbContext.Update(itemOrder);
+                dbContext.SaveChanges();
+            }
+            else
+            {
+                OrderVendor? orderVendor = dbContext.OrderVendors?.Find(OrderVendorId);
+                if (orderVendor != null)
+                {
+                    itemOrder.OrderVendorId = OrderVendorId;
+                    dbContext.Update(itemOrder);
+                    dbContext.SaveChanges();
+                    //console.Log($"{name} value changed to {value}");
+                }
+                else
+                {
+                    itemOrder.OrderVendorId = null;
+                    dbContext.Update(itemOrder);
+                    dbContext.SaveChanges();
+                }
+            }
+        } else {
+            throw new Exception("ItemOrderId not found. Обратитесь к администратору.");
+        }
+    }
+}

@@ -92,7 +92,8 @@ namespace Plugins.DataStore.SQL
                     Name = $"Поставщик: 50{i}",
                     Company = $"Поставщик: 50{i}",
                     Description = $"Описание p50{i}-{random.Next(1, limirRow)}",
-                    Email = $"mail-50{i}@gmail.com"
+                    Email = $"mail-50{i}@gmail.com",
+                    Phone = "+375 29 123-12-14"
                 });
             #endregion Add Random Vendor
             return randomVendors;   

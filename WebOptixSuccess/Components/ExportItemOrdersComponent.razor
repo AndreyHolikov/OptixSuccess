@@ -3,8 +3,8 @@
 @using WebOptixSuccess.Services
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 
-<RadzenButton Icon="grid_on" Text="Сохранить в Excel" ButtonStyle="ButtonStyle.Light" Click="@(() => DownloadExcelDocument())"/>
-<button type="button" @onclick="@DownloadExcelFile">Сохранить в Excel 2</button>
+<RadzenButton Icon="grid_on" Text="Сохранить в Excel" ButtonStyle="ButtonStyle.Secondary" Click="@(() => DownloadExcelDocument())"/>
+@*<button type="button" @onclick="@DownloadExcelFile">Сохранить в Excel 2</button>*@
 
 @code {
     [Parameter]

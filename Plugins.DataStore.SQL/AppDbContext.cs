@@ -26,8 +26,8 @@ namespace Plugins.DataStore.SQL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=PC-631\SQLEXPRESS;Initial Catalog=WebOptixSuccess;Integrated Security=True;Pooling=False");
-            //optionsBuilder.UseSqlServer(@"Data Source=motiv-laptop\sqlexpress;Initial Catalog=WebOptixSuccess;Integrated Security=True;Pooling=False");
+            //optionsBuilder.UseSqlServer(@"Data Source=PC-631\SQLEXPRESS;Initial Catalog=WebOptixSuccess;Integrated Security=True;Pooling=False");
+            optionsBuilder.UseSqlServer(@"Data Source=motiv-laptop\sqlexpress;Initial Catalog=WebOptixSuccess;Integrated Security=True;Pooling=False");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

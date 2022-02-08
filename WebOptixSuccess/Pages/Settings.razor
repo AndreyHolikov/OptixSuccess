@@ -5,7 +5,9 @@
 
 <h3>Settings</h3>
 
-<RadzenButton Text="Очистить все таблицы" Click="@DeleteAllData"
+<div class="row">
+    <div class="col col-8">
+        <RadzenButton Text="Очистить все таблицы" Click="@DeleteAllData"
     ButtonStyle="ButtonStyle.Light" style="margin:10px;" />
 
 <RadzenButton Text="Заполнить все таблицы данными" Click="@FillDemoData"
@@ -28,6 +30,30 @@
         </div>        
     </ChildContent>
 </RadzenPanel>
+    </div>
+    <div class="col col-4">
+        <RadzenPanelMenu Style="width:100%">
+
+        <RadzenPanelMenuItem Text="File Upload" Icon="file_download">
+           <RadzenPanelMenuItem Text="file-upload-1" Path="file-upload-1" Icon="arrow_right_alt"></RadzenPanelMenuItem>
+           <RadzenPanelMenuItem Text="file-upload-2" Path="file-upload-2" Icon="arrow_right_alt"></RadzenPanelMenuItem>
+           <RadzenPanelMenuItem Text="RadzenUpload" Path="RadzenUpload" Icon="arrow_right_alt"></RadzenPanelMenuItem>
+        </RadzenPanelMenuItem>
+
+        <RadzenPanelMenuItem Text="Categories & Products" Icon="reorder">
+           <RadzenPanelMenuItem Text="Categories" Path="categories" Icon="arrow_right_alt"></RadzenPanelMenuItem>
+           <RadzenPanelMenuItem Text="Products" Path="products" Icon="arrow_right_alt"></RadzenPanelMenuItem>
+        </RadzenPanelMenuItem>
+
+        <RadzenPanelMenuItem Text="Counter & Fetch data" Icon="done_all">
+           <RadzenPanelMenuItem Text="Counter" Path="counter" Icon="arrow_right_alt"></RadzenPanelMenuItem>
+           <RadzenPanelMenuItem Text="Fetch data" Path="fetchdata" Icon="arrow_right_alt"></RadzenPanelMenuItem>
+        </RadzenPanelMenuItem>
+
+    </RadzenPanelMenu>
+    </div>
+</div>
+
 
 @code {
     EventConsole console = new EventConsole();

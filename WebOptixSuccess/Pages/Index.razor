@@ -6,18 +6,20 @@
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 <PageTitle>Optix Management System</PageTitle>
 
+
+
+<ErrorBoundary>
+    <RadzenMasterDetailComponent Refresh="@true"></RadzenMasterDetailComponent>
+</ErrorBoundary>
+
 <div class="row">
     <div class="col col-6">
-        <h1>Optix Management System @*(@startDate)*@</h1>
+
     </div>
     <div class="col col-6" style="text-align:right">
         <RadzenButton Icon="refresh" Click="@Refresh" ButtonStyle="ButtonStyle.Light" style="margin:10px;" />
     </div>
 </div>
-
-<ErrorBoundary>
-    <RadzenMasterDetailComponent Refresh="@true"></RadzenMasterDetailComponent>
-</ErrorBoundary>
 
 @code {
     //private DateTime? startDate;
