@@ -31,16 +31,22 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-4">
-            <ImportItemOrdersComponent></ImportItemOrdersComponent>
-        </div>
-        <div class="col-md-4">
-            <ExportItemOrdersComponent SelectedOrder="@selectedOrder" Company="@Company" OrderId="@OrderId"></ExportItemOrdersComponent>
-        </div>
-        <div class="col-md-4">
-            <RadzenButton Icon="email" Text="Отправить на почту" ButtonStyle="ButtonStyle.Secondary"/>
-        </div>
+        <div class="row">
+            @if (selectedOrder is OrderCustomer)
+                {
+                    <div class="col-md-4">
+                                <ImportItemOrdersComponent></ImportItemOrdersComponent>
+                    </div>
+                }
+            @if (selectedOrder is OrderVendor)
+                {
+                    <div class="col-md-4">
+                                <ExportItemOrdersComponent SelectedOrder="@selectedOrder" Company="@Company" OrderId="@OrderId"></ExportItemOrdersComponent>
+                    </div>
+                    <div class="col-md-4">
+                        <RadzenButton Icon="email" Text="Отправить на почту" ButtonStyle="ButtonStyle.Secondary"/>
+                    </div>
+                }
      </div>
      }
     </ChildContent>

@@ -2,16 +2,20 @@
 @using System.IO
 @using Microsoft.AspNetCore.Hosting
 @using Microsoft.Extensions.Logging
+@using WebOptixSuccess.Services
 @inject ILogger<ImportItemOrdersComponent> Logger
 @inject IWebHostEnvironment Environment
 
 
-        <RadzenUpload Url="upload/single" Progress=@(args => OnProgress(args)) 
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+
+@*        <RadzenUpload Url="upload/single" Progress=@(args => OnProgress(args)) 
             ButtonStyle="ButtonStyle.Secondary"
             ChooseText="Загрузить Excel" accept=".xls,.xlsx" />
             <style>.rz-fileupload-buttonbar{padding:0!important;}</style>
-        <p>@info</p>
-       @* <InputFile OnChange="@LoadFiles" multiple class="custom-file-input" accept=".xls,.xlsx"/>*@
+        <p>@info</p>*@
+        <InputFile OnChange="@LoadFiles" multiple class="custom-file-input" accept=".xls,.xlsx"/>
 
         @if (isLoading)
         {
@@ -24,20 +28,22 @@
             }
         }
 
-
-
-
-
 @code {
+    [Parameter]
+    public int OrederCustomerId { get; set; }
+
     private List<IBrowserFile> loadedFiles = new();
-    private long maxFileSize = 1024 * 1000;
+    private long maxFileSize = 1024 * 10000;
     private int maxAllowedFiles = 1;
     private bool isLoading;
 
+    //private void LoadFiles(InputFileChangeEventArgs e)
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
         isLoading = true;
         loadedFiles.Clear();
+        string path = "";
+        var trustedFileNameForFileStorage = "";
 
         foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
         {
@@ -45,10 +51,13 @@
             {
                 loadedFiles.Add(file);
 
-                var trustedFileNameForFileStorage = $"{DateTime.Now.Date}-{file.Name}";
-                //var trustedFileNameForFileStorage = Path.GetRandomFileName();
-                var path = Path.Combine(Environment.ContentRootPath,
+                trustedFileNameForFileStorage = $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}{file.Name}";
+                //trustedFileNameForFileStorage = Path.GetRandomFileName();
+                path = Path.Combine(Environment.ContentRootPath,
                         Environment.EnvironmentName, "unsafe_uploads",
+                        trustedFileNameForFileStorage);
+                
+                path = Path.Combine("unsafe_uploads",
                         trustedFileNameForFileStorage);
 
                 await using FileStream fs = new(path, FileMode.Create);
@@ -56,13 +65,18 @@
             }
             catch (Exception ex)
             {
-                Logger.LogError("File: {Filename} Error: {Error}", 
+                Logger.LogError($"File: {file.Name} Error: {ex.Message}", 
                     file.Name, ex.Message);
             }
         }
 
         isLoading = false;
+
+        ExcelClosedXml excelClosedXml = new(dbContext);
+        excelClosedXml.ParsingExcelFile(path, OrederCustomerId);
     }
+
+
 
     //Загрузка файла заказа
     int progress;
