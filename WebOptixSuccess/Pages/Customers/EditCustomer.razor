@@ -1,10 +1,14 @@
-﻿@page "/addcustomer"
-@using CoreBusiness
+﻿@page "/editcustomer/{customerId}"
+
+@using Microsoft.EntityFrameworkCore
+
+@using CoreBusiness.Models
+@using System.Globalization
 
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 @inject NavigationManager NavigationManager
 
-<h3>Редактирование клиента</h3>
+<h3>Редактирование покупателя</h3>
 
 @if (customer != null)
 {
@@ -53,26 +57,39 @@
 }
 
 @code {
-    #region private fields
-    private Customer customer = new Customer();
-    #endregion
+    [Parameter]
+    public string CustomerId { get; set; }
 
+    private Customer? customer { get; set; }
 
-    #region protected methods
-    protected override void OnInitialized() => base.OnInitialized();
-    #endregion
-
-
-    #region private methods
-    private void OnValidSubmit()
+    protected override void OnInitialized()
     {
-        dbContext.Customers.Add(customer);
-        //AddCustomerUseCase.Execute(customer);
-        GoToPageCustomers();
+        base.OnInitialized();
+        customer = new Customer();
     }
 
-    private void OnCansel() => GoToPageCustomers();
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
 
-    private void GoToPageCustomers() => NavigationManager.NavigateTo("/customers");
-    #endregion
+        //int iCustomerId = Convert.ToInt32(this.CustomerId);
+        //this.customer = dbContext.Customers.Find(iCustomerId);
+
+        if (int.TryParse(this.CustomerId, out int iCustomerId)) 
+        {
+            this.customer = dbContext.Customers.Find(iCustomerId);
+        }
+    }
+    private void OnValidSubmit()
+    {
+        dbContext.Customers.Update(this.customer);
+        dbContext.SaveChanges();
+
+        NavigationManager.NavigateTo("/customers");
+    }
+
+    private void OnCansel()
+    {
+        NavigationManager.NavigateTo("/customers");
+    }
 }

@@ -35,9 +35,11 @@
 
   <ItemGroup>
     <Content Remove="ExclideFilesFromProgect\CopyOrderManagerComponent.razor" />
+    <Content Remove="Pages\EditCustomer.razor" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Pages\Customers\AddCustomer.razor" />
     <Content Include="Pages\Customers\Customers.razor" />
   </ItemGroup>
 
@@ -64,6 +66,11 @@
     <Folder Include="ExclideFilesFromProgect\" />
     <Folder Include="unsafe_uploads\" />
     <Folder Include="wwwroot\files\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\Customers\AddCustomer.razor" />
+    <None Include="Pages\Customers\EditCustomer.razor" />
   </ItemGroup>
 
 </Project>

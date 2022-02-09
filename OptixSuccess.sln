@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugins.DataStore.SQL", "Pl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebOptixSuccess", "WebOptixSuccess\WebOptixSuccess.csproj", "{0A59593D-B576-4B0D-84A7-FEF25FDB2892}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebOptixSuccessAuth", "WebOptixSuccessAuth\WebOptixSuccessAuth.csproj", "{7591500C-93BE-4ED4-8F5F-83F2588C7F7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{0A59593D-B576-4B0D-84A7-FEF25FDB2892}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A59593D-B576-4B0D-84A7-FEF25FDB2892}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A59593D-B576-4B0D-84A7-FEF25FDB2892}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7591500C-93BE-4ED4-8F5F-83F2588C7F7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7591500C-93BE-4ED4-8F5F-83F2588C7F7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7591500C-93BE-4ED4-8F5F-83F2588C7F7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7591500C-93BE-4ED4-8F5F-83F2588C7F7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
