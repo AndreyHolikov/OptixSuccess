@@ -3,6 +3,8 @@
 @using WebOptixSuccess.Services
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 
+@using ClosedXML.Excel;
+
 <RadzenButton Icon="grid_on" Text="Сохранить в Excel" ButtonStyle="ButtonStyle.Secondary" Click="@(() => DownloadExcelDocument())"/>
 @*<button type="button" @onclick="@DownloadExcelFile">Сохранить в Excel 2</button>*@
 
@@ -23,8 +25,18 @@
 
     public async Task DownloadExcelDocument()
     {
-        ExcelWorker worker = new ExcelWorker();
-        var workbook = worker.GetProductsXLWorkbook(dbContext);
+        var workbook = new XLWorkbook("template.xlsx");
+
+        var worksheet1 = workbook.Worksheets.First();
+        //var worksheet = workbook.Worksheets.Add("WorkSheet");
+
+         var itemOrders = dbContext.ItemOrders.Where(x => x.OrderVendor == SelectedOrder).AsEnumerable();
+
+         foreach (var itemOrder in itemOrders)
+             worksheet1.Cell(itemOrder.Product.Cell).Value = itemOrder.Quantity;
+
+        //ExcelWorker worker = new ExcelWorker();
+        //var workbook = worker.GetProductsXLWorkbook(dbContext);
 
         using (var stream = new MemoryStream())
         {

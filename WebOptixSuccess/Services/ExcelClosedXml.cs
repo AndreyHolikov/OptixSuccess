@@ -25,24 +25,43 @@ namespace WebOptixSuccess.Services
 
             IEnumerable<Product> products = dbContext.Products.ToList();
             int productCount = products.Count();
+            List<ItemOrder> itemOrders = new List<ItemOrder>();
+
             foreach (var product in products)
             {
-                //var quantityCell = worksheet1.Cell(product.Cell)?.Value.ToString();
-                //if(!string.IsNullOrEmpty(quantityCell))
-                //    int quantity = int.Parse(quantityCell);
+                IXLCell? cell = worksheet1.Cell(product.Cell);
+                if (cell != null)
+                {
+                    #pragma warning disable 8600, 8602
 
-                //    worksheet.Cell(product.Cell).Value = quantity;
+                    string quantityCell = cell?.Value?.ToString();
+                    int quantity = 0;
+                    if (!string.IsNullOrEmpty(quantityCell))
+                    {
+                        quantity = cell.GetValue<int>();
+                    }
+                    //    int quantity = int.Parse(quantityCell);
 
-                //    List<ItemOrder> itemOrders = new List<ItemOrder>();
-                //    if (quantity > 0)
-                //    {
-                //        itemOrders.Add(new ItemOrder() { OrderCustomerId = OrederCustomerId, Edited = DateTime.Now, Product = product, Quantity = quantity });
-                //    }
+                    if (quantity > 0)
+                    {
+                        worksheet.Cell(product.Cell).Value = quantity;
+                        itemOrders.Add(new ItemOrder() { OrderCustomerId = OrederCustomerId, Edited = DateTime.Now, Product = product, Quantity = quantity });
+                        dbContext.ItemOrders.AddRange(itemOrders);
+                    }
 
-                //    dbContext.ItemOrders.AddRange(itemOrders);
+                    #pragma warning restore 8600, 8602
+                }
             }
-            dbContext.SaveChanges();
-
+            if (itemOrders.Count > 0)
+            {
+                dbContext.ItemOrders.AddRange(itemOrders);
+                var OrederCustomer = dbContext.OrderCustomers.Find(OrederCustomerId);
+                if (OrederCustomer != null) {
+                    OrederCustomer.Edited = DateTime.Now;
+                    dbContext.OrderCustomers.Update(OrederCustomer);
+                }                
+                dbContext.SaveChanges();
+            }
             workbook.SaveAs(path);
 
             //var workbook = new XLWorkbook(path);

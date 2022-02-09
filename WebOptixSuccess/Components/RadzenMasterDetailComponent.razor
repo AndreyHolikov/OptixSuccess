@@ -42,7 +42,7 @@
                 }
                 </ChildContent>
                 <SummaryTemplate>
-                    <OrderCustomersComponent UpdateCallback=@LoadOrderCustomers></OrderCustomersComponent>
+                    <OrderCustomersComponent UpdateCallback=@LoadOrderCustomers />
                 </SummaryTemplate>
             </RadzenPanel>
         
@@ -87,7 +87,7 @@
     <div class="col-12 col-lg-7 col-xl-8">
         <OrderManagerComponent SelectedOrder=@SelectedOrder UpdateCallback=@LoadOrderCustomers ></OrderManagerComponent>
         <hr/>
-        <ItemOrdersComponent ItemOrderCollection=@ItemOrderCollection UpdateCallback=@LoadOrderCustomers></ItemOrdersComponent>
+        <ItemOrdersComponent SelectedOrder="@SelectedOrder" ItemOrderCollection=@ItemOrderCollection UpdateCallback=@LoadOrderCustomers></ItemOrdersComponent>
     </div>
 </div>
 
@@ -125,10 +125,13 @@
         {
             selectedOrderCustomers = value;
             ItemOrderCollection = selectedOrderCustomers?.FirstOrDefault()?.ItemOrders;
+            
             SelectedOrder = selectedOrderCustomers?.FirstOrDefault();
 
             var FirstOrderCustomer = value.First();
-            string? textForConsole= (FirstOrderCustomer!=null) ? $"Выбраны: Компания: {FirstOrderCustomer.Customer.Company}. Заказ {FirstOrderCustomer.OrderCustomerId}" : null;
+            string? textForConsole = (FirstOrderCustomer != null) 
+                ? $"Выбраны: Компания: {FirstOrderCustomer.Customer.Company}. Заказ {FirstOrderCustomer.OrderCustomerId}" 
+                : null;
             //console.Log( textForConsole ?? "Заказ не найден.");
         }}
 
@@ -138,6 +141,14 @@
         {
             selectedOrderVendors = value;
             ItemOrderCollection = selectedOrderVendors?.FirstOrDefault()?.ItemOrders;
+
+            SelectedOrder = selectedOrderVendors?.FirstOrDefault();
+
+            var FirstOrderVendor = value.First();
+            string? textForConsole= (FirstOrderVendor != null) 
+                ? $"Выбраны: Компания: {FirstOrderVendor.Vendor.Company}. Заказ {FirstOrderVendor.OrderVendorId}" 
+                : null;
+            //console.Log( textForConsole ?? "Заказ не найден.");
         }}
     #endregion
 
@@ -178,6 +189,14 @@
             .Include("Vendor")
             .Include("ItemOrders")
             .Include("ItemOrders.Product");
+
+        if (OrderVendors != null)
+        {
+            if (OrderVendors.Count() > 0)
+            {
+                SelectedOrderVendors = new List<OrderVendor>() { OrderVendors.First() }; //.FirstOrDefault() };
+            }
+        }
     }
     private void OrderManagerUpdate()
     {

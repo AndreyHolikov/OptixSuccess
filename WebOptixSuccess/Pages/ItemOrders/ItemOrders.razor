@@ -11,6 +11,10 @@
 
 <RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
 
+<div class="alert @alertClass" role="alert">
+    @warningMessage1
+</div>
+
     <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@itemOrders" LoadData="@LoadData" TItem="ItemOrder"
         AllowSorting="true" AllowFiltering="true" 
         AllowPaging="true" PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
@@ -62,6 +66,9 @@
     IEnumerable<ItemOrder>? itemOrders = null;
     bool isLoading = false;
 
+    string? warningMessage1 { get; set; }
+    string? alertClass { get; set; }
+
     [Parameter]
     public IEnumerable<int> pageSizeOptions { get; set; } = new int[] { 10, 20, 30, 100, 1000 };
 
@@ -112,13 +119,16 @@
         if (itemOrder != null)
         {
             dbContext.ItemOrders.Remove(itemOrder);
-            dbContext.SaveChangesAsync();
+            dbContext.SaveChanges();
+            itemOrders = dbContext.ItemOrders.ToList();
+            gridRef.Reset(true);
+            gridRef.FirstPage(true);
             //Task task = Reset();
-            Task.Run(Reset);
+            //Task.Run(Reset);
         }
     }
 
-     private void OnChangeItemOrderVendor(int ItemOrderId, int? OrderVendorId)
+    private void OnChangeItemOrderVendor(int ItemOrderId, int? OrderVendorId)
     {
         ItemOrder? itemOrder = dbContext.ItemOrders?.Find(ItemOrderId);
         if (itemOrder != null)
@@ -128,6 +138,8 @@
                 itemOrder.OrderVendorId = null;
                 dbContext.Update(itemOrder);
                 dbContext.SaveChanges();
+                alertClass = "alert-success";
+                warningMessage1 = "Товар успешно удален из заказа";
             }
             else
             {
@@ -138,16 +150,20 @@
                     dbContext.Update(itemOrder);
                     dbContext.SaveChanges();
                     //console.Log($"{name} value changed to {value}");
+                    alertClass = "alert-success";
+                    warningMessage1 = $"Товар (id:{itemOrder.ItemOrderId}) успешно добавлен в заказ Id:{OrderVendorId}";
                 }
                 else
                 {
                     itemOrder.OrderVendorId = null;
                     dbContext.Update(itemOrder);
                     dbContext.SaveChanges();
+                    alertClass = "alert-danger";
+                    warningMessage1 = $"Заказ Id:{OrderVendorId ?? 0} не найден";
                 }
             }
         } else {
             throw new Exception("ItemOrderId not found. Обратитесь к администратору.");
         }
     }
-}
+}            

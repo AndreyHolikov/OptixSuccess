@@ -32,8 +32,11 @@
     [Parameter]
     public int OrederCustomerId { get; set; }
 
+    [Parameter]
+    public EventCallback UpdateCallback { get; set; }
+
     private List<IBrowserFile> loadedFiles = new();
-    private long maxFileSize = 1024 * 10000;
+    
     private int maxAllowedFiles = 1;
     private bool isLoading;
 
@@ -61,6 +64,7 @@
                         trustedFileNameForFileStorage);
 
                 await using FileStream fs = new(path, FileMode.Create);
+                long maxFileSize = 1024 * 1024 * 10;
                 await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
             }
             catch (Exception ex)
@@ -74,6 +78,7 @@
 
         ExcelClosedXml excelClosedXml = new(dbContext);
         excelClosedXml.ParsingExcelFile(path, OrederCustomerId);
+        UpdateCallback.InvokeAsync();
     }
 
 

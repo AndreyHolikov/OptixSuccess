@@ -1,0 +1,63 @@
+﻿@using CoreBusiness.Models
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+<RadzenPanel AllowCollapse="true" Style="margin: 10px" Off>
+    <HeaderTemplate>
+        <h4 class="m-0 d-flex align-items-center">
+            <RadzenIcon Icon="terminal" Class="mr-1" /><b>Управление заказом для поставщика</b>
+        </h4>
+    </HeaderTemplate>
+    <ChildContent>
+    @if(SelectedOrderVendor?.OrderVendorId == null) {
+        <p>loading SelectedOrderVendor ...</p>
+    } else {
+        <div class="row">
+            <div class="col-md-4">
+                <p>Компания: <wbr/><b>@SelectedOrderVendor.Vendor.Company</b></p>
+                <p>Заказ: <wbr/><span>@SelectedOrderVendor.OrderVendorId</span>-@SelectedOrderVendor?.Edited</p>
+            </div>
+
+            <div class="col-md-5">
+                <p>Позиций: <wbr/>@SelectedOrderVendor?.ItemOrders.Count()</p>
+                <p><i>Дополнительная информация</i></p>
+            </div>
+            <div class="col-md-2">
+                <button type="button" @onclick="@DeleteOrder" class="btn btn-link">
+                    <i class="far fa-trash-alt"></i> Удалить
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <ExportItemOrdersComponent SelectedOrder="@SelectedOrderVendor" Company="@SelectedOrderVendor?.Vendor?.Company" OrderId="@SelectedOrderVendor?.OrderVendorId" />
+            </div>
+            <div class="col-md-4">
+                <RadzenButton Icon="email" Text="Отправить на почту" ButtonStyle="ButtonStyle.Secondary" />
+            </div>
+        </div>
+    }
+    </ChildContent>
+</RadzenPanel>
+
+@code {
+    [Parameter]
+    public OrderVendor SelectedOrderVendor { get; set; } = new();
+
+    [Parameter]
+    public EventCallback UpdateCallback { get; set; }
+
+    protected void DeleteOrder()
+    {
+        if (SelectedOrderVendor != null)
+        {
+            OrderVendor? orderVendor = dbContext.OrderVendors.Find(SelectedOrderVendor.OrderVendorId);
+            if (orderVendor != null)
+            {
+                dbContext.OrderVendors.Remove(orderVendor);
+                dbContext.SaveChanges();
+            }
+            UpdateCallback.InvokeAsync();
+        }
+    }
+}

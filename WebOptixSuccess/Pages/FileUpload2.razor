@@ -27,18 +27,27 @@
                     <li>
                         File: @file.Name
                         <br>
-                        @if (FileUpload(uploadResults, file.Name, Logger,
-                           out var result))
+                        @if (string.IsNullOrEmpty(file.Name))
                         {
-                            <span>
-                                Stored File Name: @result.StoredFileName
-                            </span>
-                        }
-                        else
+                            @if (FileUpload(uploadResults, file?.Name ?? "", Logger,
+                                                     out var result))
+                            {
+                                <span>
+                                    Stored File Name: @result.StoredFileName
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    There was an error uploading the file
+                                    (Error: @result.ErrorCode).
+                                </span>
+                            }
+                        } else
                         {
                             <span>
                                 There was an error uploading the file
-                                (Error: @result.ErrorCode).
+                                (Error: FileName in empty).
                             </span>
                         }
                     </li>
@@ -52,9 +61,14 @@
     public class UploadResult
     {
         public bool Uploaded { get; set; }
-        public string FileName { get; set; }
-        public string StoredFileName { get; set; }
+        public string? FileName { get; set; }
+        public string? StoredFileName { get; set; }
         public int ErrorCode { get; set; }
+    }
+
+    private class File
+    {
+        public string? Name { get; set; }
     }
 
     private List<File> files = new();
@@ -143,7 +157,9 @@
     }
 
     private static bool FileUpload(IList<UploadResult> uploadResults,
-        string fileName, ILogger<FileUpload2> logger, out UploadResult result)
+        string fileName, 
+        ILogger<FileUpload2> logger, 
+        out UploadResult result)
     {
         result = uploadResults.SingleOrDefault(f => f.FileName == fileName) ?? new();
 
@@ -154,10 +170,5 @@
         }
 
         return result.Uploaded;
-    }
-
-    private class File
-    {
-        public string Name { get; set; }
     }
 }

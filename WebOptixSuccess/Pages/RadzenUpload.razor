@@ -81,7 +81,7 @@ Upload with additional parameter
 
 @code {
     int progress;
-    string info;
+    string info = "";
 
     void OnProgress(UploadProgressArgs args, string name)
     {
@@ -89,11 +89,11 @@ Upload with additional parameter
         this.progress = args.Progress;
     }
 
-    EventConsole console;
+    EventConsole console = new();
 
-    RadzenUpload upload;
+    //RadzenUpload upload = new();
 
-    int customParameter = 1;
+    //int customParameter = 1;
 
     void OnChange(UploadChangeEventArgs args, string name)
     {

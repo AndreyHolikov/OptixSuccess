@@ -4,6 +4,10 @@
 
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 
+<div class="alert @alertClass" role="alert">
+    @warningMessage1
+</div>
+
 <div class="row" style="margin:10px;">
     <div class="col-md-6">
         Добавить поставщика
@@ -26,6 +30,8 @@
     [Parameter]
     public EventCallback UpdateCallback { get; set; }
 
+    private string? alertClass { get; set; }
+    private string? warningMessage1 { get; set; }
 
     protected override void OnInitialized()
     {

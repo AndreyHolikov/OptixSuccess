@@ -6,6 +6,10 @@
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 @inject NotificationService NotificationService
 
+<div class="alert @alertClass" role="alert">
+    @warningMessage1
+</div>
+
 <div class="row" style="margin:10px;">
     <div class="col-12 col-md-12">
         Добавить покупателя
@@ -24,13 +28,14 @@
                                 
 @code {
 
-
     IEnumerable<Customer>? customers = null;
     int countCustomers;
 
     [Parameter]
     public EventCallback UpdateCallback { get; set; }
 
+    string? alertClass { get; set; }
+    string? warningMessage1 { get; set; }
 
     protected override void OnInitialized()
     {
@@ -56,6 +61,10 @@
         dbContext.SaveChanges();
 
         LoadCustomers();
+
+        alertClass = "alert-success";
+        warningMessage1 = $"Покупатель ({value}) успешно добавлен.";
+
         var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Покупатель успешно добавлен.", Detail = "Покупатель успешно добавлен!", Duration = 4000 };
         NotificationService.Notify(message);
     }
@@ -67,18 +76,25 @@
 
         //console.Log($"{name} value changed to {str}");
 
+        DateTime tempDateTime = DateTime.Now;
+        int tempCustomerId = (int)args;
+
         if ( args != null && (int)args > 0 )
         {
             dbContext.OrderCustomers.Add(
                 new OrderCustomer()
                     {
-                        CustomerId = (int)args,
-                        Edited = DateTime.Now
+                        CustomerId = tempCustomerId,
+                        Edited = tempDateTime
                     }
             );
             dbContext.SaveChanges();
             UpdateCallback.InvokeAsync();
         }
+
+       alertClass = "alert-success";
+       warningMessage1 = $"Заказ ({tempDateTime})успешно добавлен для покупателя (id:{tempCustomerId}).";
+
         var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Заказ успешно добавлен.", Detail = "Заказ успешно добавлен!", Duration = 4000 };
         NotificationService.Notify(message);
     }
