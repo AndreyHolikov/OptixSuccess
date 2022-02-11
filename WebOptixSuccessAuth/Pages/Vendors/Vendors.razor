@@ -1,0 +1,108 @@
+﻿@page "/vendors"
+
+
+@using Microsoft.EntityFrameworkCore
+
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+@inject NavigationManager NavigationManager
+
+<h3>Поставщики</h3>
+
+<RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
+
+    <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@vendors" LoadData="@LoadData" TItem="Vendor"
+        AllowSorting="true" AllowFiltering="true" 
+        AllowPaging="true" PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
+        AllowColumnResize="true"
+        ColumnWidth="200px"   >
+        <Columns>
+            <RadzenDataGridColumn TItem="Vendor" Property="VendorId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" Filterable="false" Sortable="false"/>
+            
+            <RadzenDataGridColumn TItem="Vendor" Property="Company" Title="Company" Width="200px" Frozen="true" Filterable="false" Sortable="false"/>
+            
+            <RadzenDataGridColumn TItem="Vendor" Property="Name" Title="Name" Width="100px" Filterable="false" Sortable="false"/>
+            <RadzenDataGridColumn TItem="Vendor" Property="Fullname" Title="Fullname" Width="100px" Filterable="false" Sortable="false"/>
+            <RadzenDataGridColumn TItem="Vendor" Property="Email" Title="Email" Width="100px" Filterable="false" Sortable="false" >
+                <Template Context="vendor">
+                    <a href="mailto: @vendor.Email">@vendor.Email</a>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Vendor" Property="Phone" Title="Phone" Width="100px" Filterable="false" Sortable="false">
+               <Template Context="vendor">
+                    <a href="tel: @vendor.Phone">@vendor.Phone</a>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Vendor" Property="Description" Title="Description" Width="100px" Filterable="false" Sortable="false"/>
+             <RadzenDataGridColumn TItem="Vendor" >
+                 <Template Context="vendor">
+                     <RadzenButton Icon="delete_forever" ButtonStyle="ButtonStyle.Light"
+                            Click="@(() => OnClickDelete(vendor.VendorId))">
+                     </RadzenButton>
+                 </Template>
+             </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+@code {
+    RadzenDataGrid<Vendor>? gridRef = null;
+    int count;
+    IEnumerable<Vendor>? vendors = null;
+    bool isLoading = false;
+
+    [Parameter]
+    public IEnumerable<int> pageSizeOptions { get; set; } = new int[] { 10, 20, 30, 100, 1000 };
+
+    async Task Reset()
+    {
+        if (gridRef != null)
+        {
+            gridRef.Reset(true);
+            await gridRef.FirstPage(true);
+        }
+    }
+
+    async Task LoadData(LoadDataArgs args)
+    {
+        isLoading = true;
+
+        await Task.Yield();
+
+        // This demo is using https://dynamic-linq.net
+        var query = dbContext.Vendors.AsQueryable();
+
+        // Important!!! Make sure the Count property of RadzenDataGrid is set.
+        count = query.Count();
+
+        // Perform paginv via Skip and Take.
+        if(args!=null)
+        {
+            int counForSkip = args.Skip != null ? args.Skip.Value : default(int);
+            int counForTake = args.Top != null ? args.Top.Value : default(int);
+
+            vendors = query.Skip(counForSkip).Take(counForTake).ToList();
+        } else {
+            vendors = query.ToList();
+        }
+
+        isLoading = false;
+    }
+
+    protected void OnClickAdd()
+        => NavigationManager.NavigateTo("/addvendor");
+
+    protected void OnClickEdit(Vendor vendor)
+        => NavigationManager.NavigateTo($"/editVendor/{vendor.VendorId}");
+
+    protected void OnClickDelete(int VendorId)
+    {
+        Vendor? vendor = dbContext.Vendors.Find(VendorId);
+        if (vendor != null)
+        {
+            dbContext.Vendors.Remove(vendor);
+            dbContext.SaveChangesAsync();
+            //Task task = Reset();
+            Task.Run(Reset);
+        }
+    }
+}

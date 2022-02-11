@@ -12,6 +12,8 @@ WebOptixSuccess
 HelloEFSecond-1
 BsaEfThird
 
+Install-Package Radzen.Blazor
+Install-Package ClosedXML
 Install-Package Microsoft.EntityFrameworkCore 
 Install-Package Microsoft.EntityFrameworkCore.Tools 
 Install-Package Microsoft.EntityFrameworkCore.SqlServer

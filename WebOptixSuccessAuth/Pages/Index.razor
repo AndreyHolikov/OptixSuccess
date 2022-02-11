@@ -1,25 +1,32 @@
 ﻿@page "/"
+@using Microsoft.EntityFrameworkCore
+@using WebOptixSuccessAuth.Components
+@inject NavigationManager NavigationManager
 
-<PageTitle>Index</PageTitle>
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
 
-<h1>Hello, world!</h1>
+<PageTitle>Optix Management System</PageTitle>
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
 
 <AuthorizeView>
-    <Authorized>
-        asdas
-    </Authorized>
     <NotAuthorized>
-    <ul>
-        <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" href="/Identity/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" href="/Identity/Account/Login">Login</a>
-    </li>
-    </ul>
+        <NotAuthorizedComponent />
     </NotAuthorized>
+    <Authorized>
+        <ErrorBoundary>
+            <RadzenMasterDetailComponent Refresh="@true"></RadzenMasterDetailComponent>
+        </ErrorBoundary>
+        <div class="row">
+            <div class="col col-12" style="text-align:right">
+                <RadzenButton Icon="refresh" Click="@Refresh" ButtonStyle="ButtonStyle.Light" style="margin:10px;" />
+            </div>
+        </div>
+    </Authorized>
 </AuthorizeView>
+
+@code {
+    void Refresh()
+    {
+        NavigationManager.NavigateTo("/", true);
+    }
+}

@@ -1,0 +1,56 @@
+﻿@using CoreBusiness.Models
+@inject IJSRuntime js
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+@using ClosedXML.Excel;
+
+<RadzenButton Icon="grid_on" Text="Сохранить в Excel" ButtonStyle="ButtonStyle.Secondary" Click="@(() => DownloadExcelDocument())"/>
+@*<button type="button" @onclick="@DownloadExcelFile">Сохранить в Excel 2</button>*@
+
+@code {
+    [Parameter]
+    public Order? SelectedOrder { get; set; }
+    [Parameter]
+    public string? Company { get; set; }
+    [Parameter]
+    public int? OrderId { get; set; }  
+
+    public void Export(string type)
+    {
+        //service.Export("OrderDetails", type, new Query() { OrderBy = grid.Query.OrderBy, Filter = grid.Query.Filter });
+    }
+
+    @inject IJSRuntime JSRuntime
+
+    public async Task DownloadExcelDocument()
+    {
+        var workbook = new XLWorkbook("template.xlsx");
+
+        var worksheet1 = workbook.Worksheets.First();
+        //var worksheet = workbook.Worksheets.Add("WorkSheet");
+
+         var itemOrders = dbContext.ItemOrders.Where(x => x.OrderVendor == SelectedOrder).AsEnumerable();
+
+         foreach (var itemOrder in itemOrders)
+             worksheet1.Cell(itemOrder.Product.Cell).Value = itemOrder.Quantity;
+
+        //ExcelWorker worker = new ExcelWorker();
+        //var workbook = worker.GetProductsXLWorkbook(dbContext);
+
+        using (var stream = new MemoryStream())
+        {
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+ 
+            //var fileName = "Products.xlsx";
+            var fileName = $"{OrderId}-{@SelectedOrder?.Edited}-{Company}.xlsx";
+            await JSRuntime.InvokeAsync<object>("saveAsFile", fileName, Convert.ToBase64String(content));
+        }
+    }
+
+    //private void DownloadExcelFile()
+    //{
+    //    var excelBytes = ExcelService.GenerateExcelWorkbook(dbContext);
+    //    js.InvokeVoidAsync("saveAsFile", $"test_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.xlsx", Convert.ToBase64String(excelBytes));
+    //}
+}

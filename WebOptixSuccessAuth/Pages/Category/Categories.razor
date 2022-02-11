@@ -1,0 +1,96 @@
+﻿@page "/categories"
+@using UseCases
+@*@layout MainLayout*@
+
+@inject NavigationManager NavigationManager
+
+@inject DialogService DialogService
+@inject NotificationService NotificationService 
+@inject ViewCategoriesUseCase ViewCategoriesUseCase 
+
+@using Microsoft.EntityFrameworkCore
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+<h3>Покупатели</h3>
+
+<RadzenButton Text="Обновить" Icon="refresh" Click="@Reset" Style="margin-bottom: 20px;" />
+
+<RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@gridData" 
+    LoadData="@LoadData" TItem="Category"
+    AllowSorting="true" AllowFiltering="true" 
+    AllowPaging="true" PageSize="10" 
+    PagerHorizontalAlign="HorizontalAlign.Center" 
+    PageSizeOptions="@pageSizeOptions"
+    AllowColumnResize="true"
+    ColumnWidth="200px"   >
+        <Columns>
+            <RadzenGridColumn TItem="Category" Context="category" 
+                Property="CategoryId" Title="Id" Type="integer" />
+            <RadzenGridColumn TItem="Category" Context="category" 
+                Property="Name" Title="Name" Type="string" />
+            <RadzenGridColumn TItem="Category" Context="category" 
+                Property="Description" Title="Description" Type="string"  />
+        </Columns>
+</RadzenDataGrid>
+
+
+@code {
+    const string AddUri = "/addcategory";
+    const string EditUri = "/editcategory/";
+
+    RadzenDataGrid<Category>? gridRef = null;
+    int count;
+    
+    IEnumerable<Category>? gridData = null;
+    bool isLoading = false;
+
+    [Parameter]
+    public IEnumerable<int> pageSizeOptions { get; set; } = new int[] { 10, 20, 30, 100, 1000 };
+
+    async Task Reset()
+    {
+        if (gridRef != null)
+        {
+            gridRef.Reset(true);
+            await gridRef.FirstPage(true);
+        }
+    }
+
+    async Task LoadData(LoadDataArgs args)
+    {
+        isLoading = true;
+        await Task.Yield();
+        // This demo is using https://dynamic-linq.net
+        var query = dbContext.Categories.AsQueryable();
+        // Important!!! Make sure the Count property of RadzenDataGrid is set.
+        count = query.Count();
+        // Perform paginv via Skip and Take.
+        if(args!=null)
+        {
+            int counForSkip = args.Skip != null ? args.Skip.Value : default(int);
+            int counForTake = args.Top != null ? args.Top.Value : default(int);
+            gridData = query.Skip(counForSkip).Take(counForTake).ToList();
+        } else {
+            gridData = query.ToList();
+        }
+        isLoading = false;
+    }
+
+    protected void OnClickAdd()
+        => NavigationManager.NavigateTo(AddUri);
+
+    protected void OnClickEdit(Category category)
+        => NavigationManager.NavigateTo( $"{EditUri}{category.CategoryId}");
+
+    protected void OnClickDelete(int CategoryId)
+    {
+        Category? category = dbContext.Categories.Find(CategoryId);
+        if (category != null)
+        {
+            dbContext.Categories.Remove(category);
+            dbContext.SaveChangesAsync();
+            //Task task = Reset();
+            Task.Run(Reset);
+        }
+    }
+}

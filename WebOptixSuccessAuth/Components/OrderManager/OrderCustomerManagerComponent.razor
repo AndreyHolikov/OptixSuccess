@@ -1,0 +1,60 @@
+﻿@using CoreBusiness.Models
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+<RadzenPanel AllowCollapse="true" Style="margin: 10px" Off>
+    <HeaderTemplate>
+        <h4 class="m-0 d-flex align-items-center">
+            <RadzenIcon Icon="terminal" Class="mr-1" /><b>Управление заказом от покупателя</b>
+        </h4>
+    </HeaderTemplate>
+    <ChildContent>
+    @if(SelectedOrderCustomer == null) {
+        <p>loading SelectedOrderCustomer ...</p>
+    } else {
+        <div class="row">
+            <div class="col-md-4">
+                <p>Компания: <wbr/><b>@SelectedOrderCustomer.Customer.Company</b></p>
+                <p>Заказ: <wbr/><span>@SelectedOrderCustomer.OrderCustomerId</span>-@SelectedOrderCustomer?.Edited</p>
+            </div>
+
+            <div class="col-md-5">
+                <p>Позиций: <wbr/>@SelectedOrderCustomer?.ItemOrders.Count()</p>
+                <p><i>Дополнительная информация</i></p>
+            </div>
+            <div class="col-md-2">
+                <button type="button" @onclick="@DeleteOrder" class="btn btn-link">
+                    <i class="far fa-trash-alt"></i> Удалить
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <ImportItemOrdersComponent OrederCustomerId="@(SelectedOrderCustomer?.OrderCustomerId ?? 0)" UpdateCallback="@UpdateCallback" />
+            </div>
+        </div>
+    }
+    </ChildContent>
+</RadzenPanel>
+
+@code {
+    [Parameter]
+    public OrderCustomer SelectedOrderCustomer { get; set; } = new();
+
+    [Parameter]
+    public EventCallback UpdateCallback { get; set; }
+
+    protected void DeleteOrder()
+    {
+        if (SelectedOrderCustomer != null)
+        {
+            OrderCustomer? orderCustomer = dbContext.OrderCustomers.Find(SelectedOrderCustomer.OrderCustomerId);
+            if (orderCustomer != null)
+            {
+                dbContext.OrderCustomers.Remove(orderCustomer);
+                dbContext.SaveChanges();
+            }
+            UpdateCallback.InvokeAsync();
+        }
+    }
+}

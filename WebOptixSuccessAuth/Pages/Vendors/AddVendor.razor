@@ -1,0 +1,94 @@
+﻿@page "/addvendor"
+
+@using Microsoft.EntityFrameworkCore
+
+@using CoreBusiness.Models
+@using Microsoft.EntityFrameworkCore
+@using System.Globalization
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+@inject NavigationManager NavigationManager
+
+<h3>Добавить клиента</h3>
+
+@if (vendor != null)
+{
+    <EditForm Model="vendor"  OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="form-group">
+            <label for="name">Login</label>
+            <InputText id="name" @bind-Value="vendor.Name" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="fullname">ФИО</label>
+            <InputText id="fullname" @bind-Value="vendor.Fullname" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <InputText id="password" @bind-Value="vendor.Password" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <InputText id="email" @bind-Value="vendor.Email" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="company">Организация</label>
+            <InputText id="company" @bind-Value="vendor.Company" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Телефон</label>
+            <InputText id="phone" @bind-Value="vendor.Phone" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Описание</label>
+            <InputTextArea id="description" @bind-Value="vendor.Description" class="form-control"></InputTextArea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCansel">Отменить</button>
+    </EditForm>
+}
+
+@code {
+    private Vendor? vendor { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        vendor = new Vendor();
+    }
+    private void OnValidSubmit()
+    {
+        //console.Log($"{name} value changed to {value}");
+        Vendor newVendor = new Vendor(){ 
+            Name = vendor.Name, 
+            Company = vendor.Company,
+            Fullname = vendor.Fullname,
+            Password = vendor.Password,
+            Email = vendor.Email,
+            Phone = vendor.Phone,
+            Description = vendor.Description
+        };
+
+        //AddVendorUseCase.Execute(newVendor);
+
+        dbContext.Vendors.Add(newVendor);
+        dbContext.SaveChanges();
+
+        NavigationManager.NavigateTo("/vendors");
+    }
+
+    private void OnCansel()
+    {
+        NavigationManager.NavigateTo("/vendors");
+    }
+}

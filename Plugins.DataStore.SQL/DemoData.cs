@@ -141,7 +141,7 @@ namespace Plugins.DataStore.SQL
             #region Add Random ItemOrders
             for (int i = 7; i < limirRow; i++)
             {
-                int randomProductId = random.Next(2, 550);
+                int randomProductId = random.Next(2, 500);
                 randomProductId = (Products.Find(x => x.ProductId == randomProductId) == null) ? randomProductId + 1 : randomProductId;
 
                 int randomOrderCustomerId = random.Next(1, limirRow);

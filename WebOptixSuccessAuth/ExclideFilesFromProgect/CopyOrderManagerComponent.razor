@@ -1,0 +1,137 @@
+﻿@using CoreBusiness.Models
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+@*<RadzenPanel AllowCollapse="true" Style="margin: 10px" Off>
+    <HeaderTemplate>
+        <h4 class="m-0 d-flex align-items-center">
+            <RadzenIcon Icon="terminal" Class="mr-1" /><b>Управление заказом</b>
+        </h4>
+    </HeaderTemplate>
+    <ChildContent>
+    @if(SelectedOrder == null)
+    {
+        <p>loading...</p>
+    } else {
+    <div class="row">
+
+        <div class="col-md-4">
+            <p>Компания: <wbr/><b>@Company</b></p>
+            <p>Заказ: <wbr/><span>@OrderId</span>-@selectedOrder?.Edited</p>
+        </div>
+
+        <div class="col-md-5">
+            <p>Позиций: <wbr/>@selectedOrder?.ItemOrders.Count()</p>
+            <p><i>Дополнительная информация</i></p>
+        </div>
+        <div class="col-md-2">
+            <button type="button" @onclick="@DeleteOrder" class="btn btn-link">
+                <i class="far fa-trash-alt"></i> Удалить
+            </button>
+        </div>
+    </div>
+
+        <div class="row">
+            @if (selectedOrder is OrderCustomer)
+                {
+                    <div class="col-md-4">
+                                <ImportItemOrdersComponent OrederCustomerId="@OrderId"></ImportItemOrdersComponent>
+                    </div>
+                }
+            @if (selectedOrder is OrderVendor)
+                {
+                    <div class="col-md-4">
+                                <ExportItemOrdersComponent SelectedOrder="@selectedOrder" Company="@Company" OrderId="@OrderId"></ExportItemOrdersComponent>
+                    </div>
+                    <div class="col-md-4">
+                        <RadzenButton Icon="email" Text="Отправить на почту" ButtonStyle="ButtonStyle.Secondary"/>
+                    </div>
+                }
+     </div>
+     }
+    </ChildContent>
+</RadzenPanel>*@
+
+@code {
+    //private Order? selectedOrder { get; set; }
+    //private string? Company { get; set; }
+    //private int orderId;
+    //private int OrderId {
+    //    get
+    //    {
+    //        if (SelectedOrder != null)
+    //        {
+    //            if (SelectedOrder.GetType() == typeof(OrderCustomer)) return ((OrderCustomer)SelectedOrder).OrderCustomerId;
+    //            else if (SelectedOrder.GetType() == typeof(OrderVendor)) return ((OrderVendor)SelectedOrder).OrderVendorId;
+    //        } 
+    //        throw new Exception("Type SelectedOrder not found!");
+    //    }
+    //    set { orderId = value; } 
+    //}   
+
+    //[Parameter]
+    //public Order? SelectedOrder
+    //{
+    //    get => selectedOrder;
+    //    set
+    //    {
+    //        selectedOrder = value;
+    //        if (selectedOrder != null)
+    //        {
+    //            Company = GetCompany();
+    //            OrderId = (SelectedOrder.GetType() == typeof(OrderCustomer)) 
+    //                ? return ((OrderCustomer)SelectedOrder).OrderCustomerId
+    //                : ((SelectedOrder.GetType() == typeof(OrderVendor)) ? ((OrderVendor)SelectedOrder).OrderVendorId : 0);
+    //        }
+    //    }
+    //} 
+    //[Parameter]
+    //public EventCallback UpdateCallback { get; set; }
+
+    //private string GetCompany()
+    //{
+    //    if (SelectedOrder != null)
+    //    {
+    //        if (SelectedOrder is OrderCustomer) 
+    //            return ((OrderCustomer)SelectedOrder).Customer.Company;
+
+    //        else if (SelectedOrder.GetType() == typeof(OrderVendor)) 
+    //            return ((OrderVendor)SelectedOrder).Vendor.Company;
+    //    } 
+    //    throw new Exception("Type SelectedOrder not found!");
+    //}
+
+    //protected void DeleteOrder()
+    //{
+    //    if (SelectedOrder?.GetType() == typeof(OrderCustomer)) DeleteOrderCustomer();
+    //    else if (SelectedOrder?.GetType() == typeof(OrderVendor)) DeleteOrderVendor();
+
+    //    UpdateCallback.InvokeAsync();
+    //}
+    //protected void DeleteOrderCustomer()
+    //{
+    //    int ocId = SelectedOrder != null ? ((OrderCustomer)SelectedOrder).OrderCustomerId: -1;
+    //    if( ocId > 0 )
+    //    {
+    //        OrderCustomer? orderCustomer = dbContext.OrderCustomers.Find(ocId);
+    //        if (orderCustomer != null)
+    //        {
+    //            dbContext.OrderCustomers.Remove(orderCustomer);
+    //            dbContext.SaveChanges();
+    //        }
+    //    }
+    //}
+    //protected void DeleteOrderVendor()
+    //{
+    //    int ovId = SelectedOrder != null ? ((OrderVendor)SelectedOrder).OrderVendorId: -1;
+    //    if( ovId > 0 )
+    //    {
+    //        OrderVendor? orderVendor = dbContext.OrderVendors.Find(ovId);
+    //        if (orderVendor != null)
+    //        {
+    //            dbContext.OrderVendors.Remove(orderVendor);
+    //            dbContext.SaveChanges();
+    //        }
+    //    }
+    //}    
+}

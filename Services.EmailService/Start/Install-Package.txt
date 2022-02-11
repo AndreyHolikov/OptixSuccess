@@ -1,0 +1,2 @@
+Не использовался
+Install-Package MailKit -Version 3.1.1

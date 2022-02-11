@@ -1,0 +1,254 @@
+﻿@using CoreBusiness.Models
+@using Microsoft.EntityFrameworkCore
+@inject NavigationManager NavigationManager
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+<RadzenPanel AllowCollapse="true" Style="margin: 10px" Off>
+    <HeaderTemplate>
+        <h4 class="m-0 d-flex align-items-center">
+            <RadzenIcon Icon="format_list_bulleted" Class="mr-1" /><b>Детали заказа</b>
+        </h4>
+    </HeaderTemplate>
+    <ChildContent>
+@if (ItemOrderCollection == null){
+        <p><em>Loading...</em></p>
+} else {
+        <RadzenTabs>
+            <Tabs>
+                <RadzenTabsItem Text="Список товаров">
+
+                    <div class="alert @alertClass" role="alert">
+                        @warningMessage1
+                    </div>
+
+                    <RadzenDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" Data="@(ItemOrderCollection)" TItem="ItemOrder"
+                        AllowPaging="true" PageSize="3" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
+                        AllowColumnResize="true" >
+                        <EmptyTemplate>
+                            <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">В данном заказе еще нет товаров. Добавьте товары в заказ.</p>
+                        </EmptyTemplate>
+                        <Columns>
+                            <RadzenDataGridColumn TItem="ItemOrder" Property="ItemOrderId" Title="Id" Width="70px" TextAlign="TextAlign.Center" Frozen="true"/>
+                            <RadzenDataGridColumn TItem="ItemOrder" Property="Product.ProductName" Title="Товар" Width="180px" Filterable="false" Sortable="false">
+                                <Template Context="detail">
+                                    @String.Format("{0}, BC:{1}, Sph:{2}, (Id:{3})", detail?.Product?.Name, @detail?.Product?.BC, @detail?.Product?.Sph, @detail?.ProductId)
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="ItemOrder" Property="OrderCustomerId" Title="№ зак.пок*" Width="130px" TextAlign="TextAlign.Center"/>
+
+                            <RadzenDataGridColumn TItem="ItemOrder" Property="OrderVendorId" Title="№ зак. пост*" Width="130px" TextAlign="TextAlign.Center"
+                                Filterable="false" Sortable="false">
+                                <Template Context="detail">
+                                    <RadzenNumeric TValue="int?" Change=@(() => OnChangeItemOrderVendor(detail.ItemOrderId, detail.OrderVendorId)) Class="w-100" @bind-Value=@detail.OrderVendorId/>
+                                </Template>
+                            </RadzenDataGridColumn>
+
+                            <RadzenDataGridColumn TItem="ItemOrder" Property="Price" Title="Цена" Width="100px" TextAlign="TextAlign.Center">
+                                <Template Context="detail">
+                                    @String.Format(new System.Globalization.CultureInfo("ru-ru"), "{0:C}", detail.Price)
+                                </Template>
+                            </RadzenDataGridColumn> 
+                            <RadzenDataGridColumn TItem="ItemOrder" Property="Quantity" Title="Кол-во" Width="100px" TextAlign="TextAlign.Center"/>
+                            <RadzenDataGridColumn TItem="ItemOrder" Property="Summ" Title="Сумма" Width="100px" TextAlign="TextAlign.Center">
+                                <Template Context="itemOrder">
+                                    @String.Format("{0} руб.", itemOrder.Price * itemOrder.Quantity)
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="ItemOrder" TextAlign="TextAlign.Center" Width="100px" Filterable="false" Sortable="false">
+                                <Template Context="detail">
+                                    <RadzenButton Icon="delete_forever" Click="@(() => DeleteItemOrder(detail.ItemOrderId))"
+                                        Class="mb-4" ButtonStyle="ButtonStyle.Light" />  
+                                </Template>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+                    <br/>
+                    <div class="row" >
+                        <div class="col-md-6">
+                           @if (SelectedOrder is OrderCustomer)
+                           {
+                               <RadzenButton Icon="control_point" Text="Добавить любой товар" Click="@(() => AddRandomItemOrder())"
+                                    Class="mb-4" ButtonStyle="ButtonStyle.Light"  Style="margin: 10px;" />
+                           }
+                           <RadzenButton Icon="refresh" Text="Обновить Таблицу" Click="@Reset"  
+                           ButtonStyle="ButtonStyle.Light" Style="margin: 10px;"/>
+                        </div>
+                        <div class="col-md-6" >
+                            <p><b>1* (№ зак.пок)</b> - № Заказа от покупателя</p>
+                            <p><b>2* (№ зак.пост)</b> - № Заказа для поставщика</p>
+                        </div>
+                    </div>                        
+                    
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Товары">
+                    <RadzenDataList WrapItems="true" AllowPaging="true" Data="@(ItemOrderCollection)" TItem="ItemOrder" PageSize="10">
+                        <Template Context="detail">
+                            <RadzenCard >
+                                <b>@detail?.Product?.Name</b>
+                                @String.Format(" BC:{0}, Sph:{1}, Cell:{2}",  @detail?.Product?.BC, @detail?.Product?.Sph, @detail?.Product?.Cell)
+                            </RadzenCard>
+                        </Template>
+                    </RadzenDataList>
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    }
+    </ChildContent>
+</RadzenPanel>
+
+@code {
+    RadzenDataGrid<ItemOrder>? grid = null;
+    IEnumerable<int> pageSizeOptions = new int[] { 10, 20, 30 };
+    [Parameter]
+    public Order SelectedOrder { get; set; } = new();
+    [Parameter]
+    public IList<ItemOrder> ItemOrderCollection { get; set; } = new List<ItemOrder>();
+
+    [Parameter]
+    public EventCallback UpdateCallback { get; set; }
+
+    string? warningMessage1 { get; set; }
+    string? alertClass { get; set; }
+
+    async Task Reset()
+    {
+        if (grid != null)
+        {
+            grid.Reset(true);
+            await grid.FirstPage(true);
+        }
+    }
+    // Добавить товар в заказ поставщика
+    private void OnChangeItemOrderVendor(int ItemOrderId, int? OrderVendorId)
+    {
+        ItemOrder? itemOrder = dbContext.ItemOrders?.Find(ItemOrderId);
+        if (itemOrder != null)
+        {
+            if (OrderVendorId == null)
+            {
+                itemOrder.OrderVendorId = null;
+                itemOrder.OrderVendor.Edited = DateTime.Now;
+                dbContext.Update(itemOrder);
+                dbContext.SaveChanges();
+                alertClass = "alert-success";
+                warningMessage1 = "Товар успешно удален из заказа";
+                UpdateCallback.InvokeAsync();
+            }
+            else
+            {
+                OrderVendor? orderVendor = dbContext.OrderVendors?.Find(OrderVendorId);
+
+                if (orderVendor != null)
+                {
+                    if (itemOrder.OrderVendor != null)
+                    {
+                        itemOrder.OrderVendor.Edited = DateTime.Now;
+                        dbContext.OrderVendors?.Update(itemOrder.OrderVendor);
+                    }
+
+                    itemOrder.OrderVendorId = OrderVendorId;
+                    dbContext.OrderVendors?.Update(orderVendor);
+
+                    orderVendor.Edited = DateTime.Now;
+                    dbContext.Update(itemOrder);
+
+                    dbContext.SaveChanges();
+
+                    alertClass = "alert-success";
+                    warningMessage1 = $"Товар (id:{itemOrder.ItemOrderId}) успешно добавлен в заказ (id:{OrderVendorId}) для поставщика ";
+                    //console.Log($"{name} value changed to {value}");
+                    UpdateCallback.InvokeAsync();
+                }
+                else
+                {
+                    //itemOrder.OrderVendorId = null;
+                    //itemOrder.OrderVendor.Edited = DateTime.Now;
+                    //dbContext.Update(itemOrder);
+                    //dbContext.SaveChanges();
+                    alertClass = "alert-danger";
+                    warningMessage1 = $"Заказ для поставщика Id:{OrderVendorId ?? 0} не найден";
+                }
+            }
+        } else {
+            //throw new Exception("");
+            alertClass = "alert-danger";
+            warningMessage1 = $"ItemOrderId not found. Обратитесь к администратору.";
+        }
+
+    }
+    // Удалить товар из заказа покупателя
+    protected void DeleteItemOrder(int ItemOrderId)
+    {
+        ItemOrder? itemOrder = dbContext.ItemOrders.Find(ItemOrderId);
+        if(itemOrder != null)
+        {
+            itemOrder.OrderCustomer.Edited = DateTime.Now;
+            dbContext.ItemOrders.Remove(itemOrder);
+            dbContext.SaveChanges();
+            // UpdateCallback.InvokeAsync();
+            //ItemOrderCollection.Remove(itemOrder);
+            Task delayTask = Reset(); // https://docs.microsoft.com/ru-ru/dotnet/csharp/language-reference/compiler-messages/cs4014
+        }
+        UpdateCallback.InvokeAsync();
+    }
+    // Добавить рандомный товар в выбранный заказ
+    protected void AddRandomItemOrder()
+    {
+        var random = new Random();
+        ItemOrder itemOrder = new ItemOrder();
+        //int? tempOrderCustomerId;
+        //if(ItemOrderCollection?.Count == 0)
+        //{
+        //    tempOrderCustomerId =dbContext.OrderCustomers.FirstOrDefault()?.OrderCustomerId;
+        //}else
+        //{
+        //    tempOrderCustomerId = (ItemOrderCollection?.First()?.OrderCustomerId) ?? (dbContext.OrderCustomers.FirstOrDefault()?.OrderCustomerId);
+        //}
+
+        //if ( tempOrderCustomerId != null )
+        if ( SelectedOrder != null )
+        {
+            itemOrder.OrderCustomerId = ((OrderCustomer)SelectedOrder).OrderCustomerId;
+            itemOrder.ProductId = random.Next(1, 10);
+            itemOrder.Quantity = random.Next(1, 1000);
+            
+            var updateOrderCustomer = dbContext.OrderCustomers.Find(itemOrder.OrderCustomerId);
+            if (updateOrderCustomer != null)
+            {
+                #pragma warning disable 8600, 8602
+                updateOrderCustomer.Edited = DateTime.Now;
+                dbContext.OrderCustomers.Update(updateOrderCustomer);
+                #pragma warning restore 8600, 8602
+            }
+
+            dbContext.ItemOrders.Add(itemOrder);
+            //dbContext.SaveChangesAsync();
+            dbContext.SaveChanges();
+            //ItemOrderCollection.Add(itemOrder);
+            
+            //ItemOrderCollection.Add(itemOrder);
+
+            //ItemOrderCollection = dbContext.ItemOrders.Where(x => x.OrderCustomerId == ((OrderCustomer)SelectedOrder).OrderCustomerId).ToList();
+
+            #pragma warning disable 4014
+            Reset();  //https://docs.microsoft.com/ru-ru/dotnet/csharp/language-reference/compiler-messages/cs4014
+                      // https://www.stackfinder.ru/questions/22629951/suppressing-warning-cs4014-because-this-call-is-not-awaited-execution-of-the
+            #pragma warning restore 4014 
+            
+            UpdateCallback.InvokeAsync();
+        }
+    }
+
+    public void Export(string type)
+    {
+        if (grid != null)
+        {
+            serviceExport("OrderDetails", type, new Query() { OrderBy = grid.Query.OrderBy, Filter = grid.Query.Filter });
+        }
+    }
+
+    public void serviceExport(string table, string type, Query? query = null)
+    {
+        NavigationManager.NavigateTo(query != null ? query.ToUrl($"/export/northwind/{table}/{type}") : $"/export/northwind/{table}/{type}", true);
+    }
+}

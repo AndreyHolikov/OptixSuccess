@@ -1,0 +1,37 @@
+﻿@page "/editcustomer/{ErrorId}"
+
+<h3>Error! @ErrorId</h3>
+<p>@(ErrorList[ErrorId])</p>
+
+
+@code {
+    #region private fields
+    private Dictionary<int, string> ErrorList = new Dictionary<int, string>();
+    #endregion
+
+    #region public parameter
+    [Parameter]
+    public int ErrorId { get; set; } = 0;
+    #endregion
+
+    #region protected methods
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ErrorList.Add( 101, "Customer not found");
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        //if (int.TryParse(this.ErrorId, out int iErrorId)) 
+        //{
+        //    // Проверить входные данные
+        //} 
+        //else
+        //{
+        //    NavigationManager.NavigateTo("/errors/101");
+        //}
+    }
+    #endregion
+}

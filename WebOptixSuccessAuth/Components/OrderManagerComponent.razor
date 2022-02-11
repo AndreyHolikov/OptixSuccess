@@ -1,0 +1,20 @@
+﻿@using CoreBusiness.Models
+@using WebOptixSuccessAuth.Components.OrderManager
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+@if (SelectedOrder is OrderCustomer)
+    {
+        <OrderCustomerManagerComponent SelectedOrderCustomer="@((OrderCustomer)SelectedOrder)" UpdateCallback="@UpdateCallback"/>
+    }
+@if (SelectedOrder is OrderVendor)
+    {
+        <OrderVendorManagerComponent SelectedOrderVendor="@((OrderVendor)SelectedOrder)" UpdateCallback="@UpdateCallback"/>
+    }
+
+@code {
+    [Parameter]
+    public Order? SelectedOrder { get; set; }
+    [Parameter]
+    public EventCallback UpdateCallback { get; set; }
+}

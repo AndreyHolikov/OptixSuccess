@@ -1,0 +1,124 @@
+﻿@using CoreBusiness.Models
+@using Microsoft.EntityFrameworkCore
+@using UseCases
+@*@inject IAddCustomerUseCase AddCustomerUseCase *@
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+@inject NotificationService NotificationService
+
+<div class="alert @alertClass" role="alert">
+    @warningMessage1
+</div>
+
+<div class="row" style="margin:10px;">
+    <div class="col-12 col-md-12">
+        Добавить покупателя
+        <RadzenTextBox Placeholder="Введите имя покупателя" Change=@(args => OnChangeAddCustomer(args)) Class="w-100" />
+    </div>
+    <div class="col-12 col-md-12">
+         Добавить заказ
+        <RadzenDropDown AllowClear="true" TValue="int" AllowVirtualization="true" Class="w-100" 
+            LoadData=@LoadDataCustomers AllowFiltering="true" Count="@countCustomers"
+            Data=@customers TextProperty="Company" ValueProperty="CustomerId"
+            Change=@(args => OnChangeAddOrderCustomer(args)) Placeholder="Выберите покупателя" />
+    </div>
+</div>
+
+
+                                
+@code {
+
+    IEnumerable<Customer>? customers = null;
+    int countCustomers;
+
+    [Parameter]
+    public EventCallback UpdateCallback { get; set; }
+
+    string? alertClass { get; set; }
+    string? warningMessage1 { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadCustomers();
+    }
+
+    void LoadCustomers()
+    {
+        customers = dbContext.Customers.ToList();
+    }
+
+    //EventConsole console;
+
+    void OnChangeAddCustomer(string value)
+    {
+        //console.Log($"{name} value changed to {value}");
+        Customer newCustomer = new Customer(){ Name = value, Company = value };
+
+        //AddCustomerUseCase.Execute(newCustomer);
+
+        dbContext.Customers.Add(newCustomer);
+        dbContext.SaveChanges();
+
+        LoadCustomers();
+
+        alertClass = "alert-success";
+        warningMessage1 = $"Покупатель ({value}) успешно добавлен.";
+
+        var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Покупатель успешно добавлен.", Detail = "Покупатель успешно добавлен!", Duration = 4000 };
+        NotificationService.Notify(message);
+    }
+
+    //Выбор покупателя при добавлении заказа
+    void OnChangeAddOrderCustomer(object args)
+    {
+        //var str = value;
+
+        //console.Log($"{name} value changed to {str}");
+
+        DateTime tempDateTime = DateTime.Now;
+        int tempCustomerId = (int)args;
+
+        if ( args != null && (int)args > 0 )
+        {
+            dbContext.OrderCustomers.Add(
+                new OrderCustomer()
+                    {
+                        CustomerId = tempCustomerId,
+                        Edited = tempDateTime
+                    }
+            );
+            dbContext.SaveChanges();
+            UpdateCallback.InvokeAsync();
+        }
+
+       alertClass = "alert-success";
+       warningMessage1 = $"Заказ ({tempDateTime})успешно добавлен для покупателя (id:{tempCustomerId}).";
+
+        var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Заказ успешно добавлен.", Detail = "Заказ успешно добавлен!", Duration = 4000 };
+        NotificationService.Notify(message);
+    }
+
+    public void OnClick(string text)
+    {
+
+    }
+
+    void LoadDataCustomers(LoadDataArgs args)
+    {
+        //var query = dbContext.Customers.AsQueryable();
+
+        if (!string.IsNullOrEmpty(args.Filter))
+        {
+            customers = dbContext.Customers.Where(c => c.Company.Contains(args.Filter)).ToList();
+        } else
+        {
+            customers = dbContext.Customers.ToList();
+        }
+        countCustomers = customers.Count();
+
+        //console.Log($"LoadData with filter: {args.Filter}");
+
+        InvokeAsync(StateHasChanged);
+    }
+}

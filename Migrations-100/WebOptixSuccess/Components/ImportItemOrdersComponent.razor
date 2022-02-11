@@ -1,0 +1,114 @@
+﻿@using System 
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Logging
+@using WebOptixSuccess.Services
+@inject ILogger<ImportItemOrdersComponent> Logger
+@inject IWebHostEnvironment Environment
+
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+
+@*        <RadzenUpload Url="upload/single" Progress=@(args => OnProgress(args)) 
+            ButtonStyle="ButtonStyle.Secondary"
+            ChooseText="Загрузить Excel" accept=".xls,.xlsx" />
+            <style>.rz-fileupload-buttonbar{padding:0!important;}</style>
+        <p>@info</p>*@
+        <InputFile OnChange="@LoadFiles" multiple class="custom-file-input" accept=".xls,.xlsx"/>
+
+        @if (isLoading)
+        {
+            <p>Uploading...</p>
+        }
+        else
+        {
+            @foreach (var file in loadedFiles){
+                <p>Name: @file.Name</p>
+            }
+        }
+
+@code {
+    [Parameter]
+    public int OrederCustomerId { get; set; }
+
+    [Parameter]
+    public EventCallback UpdateCallback { get; set; }
+
+    private List<IBrowserFile> loadedFiles = new();
+    
+    private int maxAllowedFiles = 1;
+    private bool isLoading;
+
+    //private void LoadFiles(InputFileChangeEventArgs e)
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+        loadedFiles.Clear();
+        string path = "";
+        var trustedFileNameForFileStorage = "";
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            try
+            {
+                loadedFiles.Add(file);
+
+                trustedFileNameForFileStorage = $"{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}{file.Name}";
+                //trustedFileNameForFileStorage = Path.GetRandomFileName();
+                path = Path.Combine(Environment.ContentRootPath,
+                        Environment.EnvironmentName, "unsafe_uploads",
+                        trustedFileNameForFileStorage);
+                
+                path = Path.Combine("unsafe_uploads",
+                        trustedFileNameForFileStorage);
+
+                await using FileStream fs = new(path, FileMode.Create);
+                long maxFileSize = 1024 * 1024 * 10;
+                await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"File: {file.Name} Error: {ex.Message}", 
+                    file.Name, ex.Message);
+            }
+        }
+
+        isLoading = false;
+
+        ExcelClosedXml excelClosedXml = new(dbContext);
+        excelClosedXml.ParsingExcelFile(path, OrederCustomerId);
+        UpdateCallback.InvokeAsync();
+    }
+
+
+
+    //Загрузка файла заказа
+    int progress;
+    string info = "";
+
+    void OnProgress(UploadProgressArgs args)
+    {
+        if (args.Files.Count() > 0)
+        {
+            this.info = $"{args.Files.First().Name}";
+            //this.info = $"% '{args.Files.First().Name}' / {args.Loaded} of {args.Total} bytes.";
+            this.progress = args.Progress;
+
+            if (args.Progress == 100)
+            {
+                //console.Clear();
+
+                foreach (var file in args.Files)
+                {
+                    //console.Log($"Uploaded: {file.Name} / {file.Size} bytes");
+                }
+            }
+        }
+    }
+
+    void OnError(UploadErrorEventArgs args, string name)
+    {
+        //console.Log($"{args.Message}");
+    }
+}

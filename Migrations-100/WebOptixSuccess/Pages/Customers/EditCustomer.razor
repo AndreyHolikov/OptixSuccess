@@ -1,0 +1,95 @@
+﻿@page "/editcustomer/{customerId}"
+
+@using Microsoft.EntityFrameworkCore
+
+@using CoreBusiness.Models
+@using System.Globalization
+
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+@inject NavigationManager NavigationManager
+
+<h3>Редактирование покупателя</h3>
+
+@if (customer != null)
+{
+    <EditForm Model="customer"  OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="form-group">
+            <label for="name">Login</label>
+            <InputText id="name" @bind-Value="customer.Name" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="fullname">ФИО</label>
+            <InputText id="fullname" @bind-Value="customer.Fullname" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <InputText id="password" @bind-Value="customer.Password" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <InputText id="email" @bind-Value="customer.Email" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="company">Организация</label>
+            <InputText id="company" @bind-Value="customer.Company" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Телефон</label>
+            <InputText id="phone" @bind-Value="customer.Phone" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Описание</label>
+            <InputTextArea id="description" @bind-Value="customer.Description" class="form-control"></InputTextArea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCansel">Отменить</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string CustomerId { get; set; }
+
+    private Customer? customer { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        customer = new Customer();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        //int iCustomerId = Convert.ToInt32(this.CustomerId);
+        //this.customer = dbContext.Customers.Find(iCustomerId);
+
+        if (int.TryParse(this.CustomerId, out int iCustomerId)) 
+        {
+            this.customer = dbContext.Customers.Find(iCustomerId);
+        }
+    }
+    private void OnValidSubmit()
+    {
+        dbContext.Customers.Update(this.customer);
+        dbContext.SaveChanges();
+
+        NavigationManager.NavigateTo("/customers");
+    }
+
+    private void OnCansel()
+    {
+        NavigationManager.NavigateTo("/customers");
+    }
+}
