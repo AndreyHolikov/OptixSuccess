@@ -1,0 +1,11 @@
+﻿@if (!string.IsNullOrWhiteSpace(@AlertClass) && string.IsNullOrWhiteSpace(@WarningMessage))
+{
+    <div class="alert @AlertClass" role="alert">
+        @WarningMessage
+    </div>
+}
+
+@code {
+    [Parameter] public string AlertClass { get; set; } = "";
+    [Parameter] public string WarningMessage { get; set; } = "";
+}

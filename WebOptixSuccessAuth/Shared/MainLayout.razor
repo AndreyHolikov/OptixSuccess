@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@using WebOptixSuccessAuth.Components
+@inject NavigationManager NavigationManager
 
 <PageTitle>WebOptixSuccess</PageTitle>
 
@@ -13,14 +15,34 @@
                 <div class="col col-6">
                     <b>Optix Management System @*(@startDate)*@</b>
                 </div>
-                <div class="col col-6">
-                    <LoginDisplay />
-                </div> 
             </div>
         </div>
 
         <article class="content px-4">
-            @Body
+            <AuthorizeView>
+                <NotAuthorized>
+                    <NotAuthorizedComponent />
+                </NotAuthorized>
+                <Authorized>
+                    @*<ErrorBoundary>*@
+
+                        @Body
+
+                  @*  </ErrorBoundary>*@
+                    <div class="row">
+                        <div class="col col-12" style="text-align:right">
+                            <RadzenButton Icon="refresh" Click="@Refresh" ButtonStyle="ButtonStyle.Light" style="margin:10px;" />
+                        </div>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
         </article>
     </main>
 </div>
+
+@code {
+    void Refresh()
+    {
+        NavigationManager.NavigateTo("/", true);
+    }
+}

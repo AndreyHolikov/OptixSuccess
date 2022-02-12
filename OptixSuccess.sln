@@ -25,9 +25,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{AB4E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{EE2CC5AD-4E70-4D8A-A667-87143431A733}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.EmailService", "Services.EmailService\Services.EmailService.csproj", "{EF997082-BDBA-4995-8E31-DCE23F07D170}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.EmailService", "Services.EmailService\Services.EmailService.csproj", "{EF997082-BDBA-4995-8E31-DCE23F07D170}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Excel", "Services.Excel\Services.Excel.csproj", "{28023097-3514-49DC-B21D-B7777E376F6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Excel", "Services.Excel\Services.Excel.csproj", "{28023097-3514-49DC-B21D-B7777E376F6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

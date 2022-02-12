@@ -3,7 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 
-<RadzenPanel AllowCollapse="true" Style="margin: 10px" Off>
+<RadzenPanel AllowCollapse="true" Style="margin: 10px" class="@classRadzenPanel" Off>
     <HeaderTemplate>
         <h4 class="m-0 d-flex align-items-center">
             <RadzenIcon Icon="format_list_bulleted" Class="mr-1" /><b>Детали заказа</b>
@@ -17,9 +17,7 @@
             <Tabs>
                 <RadzenTabsItem Text="Список товаров">
 
-                    <div class="alert @alertClass" role="alert">
-                        @warningMessage1
-                    </div>
+                    <AlertMessageComponent AlertClass="@alertClass" WarningMessage="@warningMessage1"/>
 
                     <RadzenDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" Data="@(ItemOrderCollection)" TItem="ItemOrder"
                         AllowPaging="true" PageSize="3" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
@@ -34,16 +32,18 @@
                                     @String.Format("{0}, BC:{1}, Sph:{2}, (Id:{3})", detail?.Product?.Name, @detail?.Product?.BC, @detail?.Product?.Sph, @detail?.ProductId)
                                 </Template>
                             </RadzenDataGridColumn>
-                            <RadzenDataGridColumn TItem="ItemOrder" Property="OrderCustomerId" Title="№ зак.пок*" Width="130px" TextAlign="TextAlign.Center"/>
+                            <RadzenDataGridColumn TItem="ItemOrder" Property="OrderCustomerId" Title="№ зак.пок*" Width="130px" 
+                                TextAlign="TextAlign.Center"/>
 
-                            <RadzenDataGridColumn TItem="ItemOrder" Property="OrderVendorId" Title="№ зак. пост*" Width="130px" TextAlign="TextAlign.Center"
-                                Filterable="false" Sortable="false">
+                            <RadzenDataGridColumn TItem="ItemOrder" Property="OrderVendorId" Title="№ зак. пост*" Width="130px" 
+                                TextAlign="TextAlign.Center" Filterable="false" Sortable="false" >
                                 <Template Context="detail">
                                     <RadzenNumeric TValue="int?" Change=@(() => OnChangeItemOrderVendor(detail.ItemOrderId, detail.OrderVendorId)) Class="w-100" @bind-Value=@detail.OrderVendorId/>
                                 </Template>
                             </RadzenDataGridColumn>
 
-                            <RadzenDataGridColumn TItem="ItemOrder" Property="Price" Title="Цена" Width="100px" TextAlign="TextAlign.Center">
+                            <RadzenDataGridColumn TItem="ItemOrder" Property="Price" Title="Цена" Width="100px" 
+                                TextAlign="TextAlign.Center">
                                 <Template Context="detail">
                                     @String.Format(new System.Globalization.CultureInfo("ru-ru"), "{0:C}", detail.Price)
                                 </Template>
@@ -97,18 +97,29 @@
 </RadzenPanel>
 
 @code {
+    private Order selectedOrder { get; set; } = new();
+
     RadzenDataGrid<ItemOrder>? grid = null;
     IEnumerable<int> pageSizeOptions = new int[] { 10, 20, 30 };
     [Parameter]
-    public Order SelectedOrder { get; set; } = new();
-    [Parameter]
-    public IList<ItemOrder> ItemOrderCollection { get; set; } = new List<ItemOrder>();
+    public Order SelectedOrder
+    {
+        get => selectedOrder;
+        set
+        {
+            selectedOrder = value;
+            classRadzenPanel = (selectedOrder is OrderCustomer) ? "order-customer border-customer"
+                : ((selectedOrder is OrderVendor) ? "order-vendor border-vendor" : "");
+        }
+    }
+    [Parameter] public IList<ItemOrder> ItemOrderCollection { get; set; } = new List<ItemOrder>();
 
     [Parameter]
     public EventCallback UpdateCallback { get; set; }
 
     string? warningMessage1 { get; set; }
     string? alertClass { get; set; }
+    string? classRadzenPanel { get; set; }
 
     async Task Reset()
     {

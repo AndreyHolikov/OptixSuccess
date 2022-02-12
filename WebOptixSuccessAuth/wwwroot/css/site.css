@@ -62,3 +62,27 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+    .color-white {
+        color: white;
+    }
+
+    .rz-pagesize-text{
+        display:none;
+    }
+
+.order-vendor .rz-panel-titlebar i {
+    color: #26b050;
+}
+
+.order-customer .rz-panel-titlebar i {
+    color: #0071c1;
+}
+
+.rz-panel.order-customer{
+    border: #4582ec 1px solid;
+}
+
+.rz-panel.order-vendor {
+    border: #5dbf74 1px solid;
+}

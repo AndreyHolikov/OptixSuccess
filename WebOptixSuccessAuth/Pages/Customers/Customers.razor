@@ -3,6 +3,7 @@
 
 
 @using Microsoft.EntityFrameworkCore
+@using WebOptixSuccessAuth.Components
 
 
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
@@ -14,23 +15,28 @@
 <RadzenButton Text="Добавить" Click="@OnClickAdd" Style="margin-bottom: 20px;" />
 
     <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@customers" LoadData="@LoadData" TItem="Customer"
-        AllowSorting="true" AllowFiltering="true" 
+        AllowSorting="false" AllowFiltering="false" 
         AllowPaging="true" PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
         AllowColumnResize="true"
         ColumnWidth="200px"   >
         <Columns >
-            <RadzenDataGridColumn TItem="Customer" Property="CustomerId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center"  Filterable="false" Sortable="false"/>
+            <RadzenDataGridColumn TItem="Customer" Property="CustomerId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center"  
+                Filterable="false" Sortable="false"/>
             
-            <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Company" Width="200px" Frozen="true" Filterable="false" Sortable="false"/>
+            <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Company" Width="200px" Frozen="true" 
+                Filterable="false" Sortable="false"/>
             
-            <RadzenDataGridColumn TItem="Customer" Property="Name" Title="Name" Width="100px" Filterable="false" Sortable="false"/>
-            <RadzenDataGridColumn TItem="Customer" Property="Fullname" Title="Fullname" Width="100px" Filterable="false" Sortable="false"/>
+            <RadzenDataGridColumn TItem="Customer" Property="Name" Title="Name" Width="100px" 
+                Filterable="false" Sortable="false"/>
+            <RadzenDataGridColumn TItem="Customer" Property="Fullname" Title="Fullname" Width="100px" 
+                Filterable="false" Sortable="false"/>
             <RadzenDataGridColumn TItem="Customer" Property="Email" Title="Email" Width="100px" Filterable="false" Sortable="false">
                 <Template Context="customer">
                     <a href="mailto: @customer.Email">@customer.Email</a>
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Customer" Property="Phone" Title="Phone" Width="100px" Filterable="false" Sortable="false">
+            <RadzenDataGridColumn TItem="Customer" Property="Phone" Title="Phone" Width="100px" 
+                Filterable="false" Sortable="false">
                <Template Context="customer">
                     <a href="tel: @customer.Phone">@customer.Phone</a>
                 </Template>
@@ -45,8 +51,7 @@
                      <RadzenButton Icon="delete_forever" ButtonStyle="ButtonStyle.Light"
                             Click="@(() => OnClickDelete(customer.CustomerId))">
                      </RadzenButton>
-                     <ButtonEditComponent TypeName="customer" Id="@customer.CustomerId.ToString()" Text="Редактировать" 
-                        Icon="edit" ButtonStyle="ButtonStyle.Light"></ButtonEditComponent>
+                     <ButtonEditComponent TypeName="customer" Id="@(Convert.ToInt32(customer.CustomerId))"></ButtonEditComponent>
                  </Template>
              </RadzenDataGridColumn>
         </Columns>
@@ -101,10 +106,10 @@
     }
 
     protected void OnClickAdd()
-        => NavigationManager.NavigateTo("/addcustomer");
+        => NavigationManager.NavigateTo("/add-customer");
 
     protected void OnClickEdit(Customer customer)
-        => NavigationManager.NavigateTo($"/editCustomer/{customer.CustomerId}");
+        => NavigationManager.NavigateTo($"/edit-order-customer/{customer.CustomerId}");
 
     protected void OnClickDelete(int CustomerId)
     {

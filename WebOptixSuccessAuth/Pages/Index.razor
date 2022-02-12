@@ -1,32 +1,9 @@
 ﻿@page "/"
-@using Microsoft.EntityFrameworkCore
 @using WebOptixSuccessAuth.Components
-@inject NavigationManager NavigationManager
 
-@inject Plugins.DataStore.SQL.AppDbContext dbContext
+@*@using Microsoft.EntityFrameworkCore
+@inject Plugins.DataStore.SQL.AppDbContext dbContext*@
 
 <PageTitle>Optix Management System</PageTitle>
 
-
-<AuthorizeView>
-    <NotAuthorized>
-        <NotAuthorizedComponent />
-    </NotAuthorized>
-    <Authorized>
-        <ErrorBoundary>
-            <RadzenMasterDetailComponent Refresh="@true"></RadzenMasterDetailComponent>
-        </ErrorBoundary>
-        <div class="row">
-            <div class="col col-12" style="text-align:right">
-                <RadzenButton Icon="refresh" Click="@Refresh" ButtonStyle="ButtonStyle.Light" style="margin:10px;" />
-            </div>
-        </div>
-    </Authorized>
-</AuthorizeView>
-
-@code {
-    void Refresh()
-    {
-        NavigationManager.NavigateTo("/", true);
-    }
-}
+<RadzenMasterDetailComponent Refresh="@true"></RadzenMasterDetailComponent>

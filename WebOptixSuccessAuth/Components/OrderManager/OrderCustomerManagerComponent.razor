@@ -1,8 +1,9 @@
 ﻿@using CoreBusiness.Models
+@inject NavigationManager NavigationManager
 
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 
-<RadzenPanel AllowCollapse="true" Style="margin: 10px" Off>
+<RadzenPanel AllowCollapse="true" Style="margin: 10px" class="order-customer" Off>
     <HeaderTemplate>
         <h4 class="m-0 d-flex align-items-center">
             <RadzenIcon Icon="terminal" Class="mr-1" /><b>Управление заказом от покупателя</b>
@@ -19,11 +20,15 @@
             </div>
 
             <div class="col-md-5">
-                <p>Позиций: <wbr/>@SelectedOrderCustomer?.ItemOrders.Count()</p>
-                <p><i>Дополнительная информация</i></p>
+                <p>Количество позиций в заказе: <wbr/>@SelectedOrderCustomer?.ItemOrders.Count()</p>
+                <p>Количество товаров: <wbr/>@SelectedOrderCustomer?.ItemOrders.Sum( x => x.Quantity )</p>
             </div>
             <div class="col-md-2">
                 <button type="button" @onclick="@DeleteOrder" class="btn btn-link">
+                    <i class="far fa-trash-alt"></i> Удалить
+                </button>
+                 class="col-md-2">
+                <button type="button" @onclick="@EditOrder" class="btn btn-link">
                     <i class="far fa-trash-alt"></i> Удалить
                 </button>
             </div>
@@ -56,5 +61,10 @@
             }
             UpdateCallback.InvokeAsync();
         }
+    }
+
+    protected void EditOrder()
+    {
+        NavigationManager.NavigateTo($"/edit-oredr-customer/{SelectedOrderCustomer.OrderCustomerId}");
     }
 }
