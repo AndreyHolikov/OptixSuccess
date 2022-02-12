@@ -18,6 +18,5 @@ namespace CoreBusiness.Models
         [ForeignKey("CustomerId")]
         public Customer Customer { get; set; }
         public int? ExcelFileId { get; set; }
-        
     }
 }

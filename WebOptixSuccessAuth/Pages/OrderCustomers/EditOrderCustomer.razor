@@ -1,6 +1,116 @@
-﻿@page "/editordercustomer"
-<h3>EditOrderCustomer</h3>
+﻿@page "/edit-order-customer/{ordercustomerId}"
+@using Microsoft.EntityFrameworkCore
+@using CoreBusiness.Models
+@using System.Globalization
+@using Microsoft.JSInterop
+@using WebOptixSuccessAuth.Components
+
+@inject IJSRuntime JSRuntime
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+@inject NavigationManager NavigationManager
+
+<h3>Редактирование заказа (id: @(Convert.ToString(orderCustomer?.OrderCustomerId) ))</h3>
+
+@if(orderCustomer != null)
+{
+    <EditForm Model="orderCustomer"  OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="form-group">
+            <label for="description">Id: @orderCustomer.OrderCustomerId</label>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Описание</label>
+            <InputTextArea id="description" @bind-Value="orderCustomer.Description" class="form-control"></InputTextArea>
+        </div>
+
+        @*<div class="form-group">
+            <label for="ExcelFile">Excel файл</label>
+            <a href="@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId??0).FullPath">@GetExcelFileByIdUseCase.Execute(orderCustomer.ExcelFileId??0).Name</a>
+        </div>*@
+
+        @*<button type="button" @onclick="@(() => DownloadExcelDocument())">Скачать Excel файл с товарами</button>*@
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCansel">Отменить</button>
+    </EditForm>
+}
 
 @code {
+    [Parameter]
+    public string OrderCustomerId { get; set; }
 
+    private OrderCustomer? orderCustomer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        orderCustomer = new OrderCustomer();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (int.TryParse(this.OrderCustomerId, out int iOrderCustomerId)) 
+        {
+
+            this.orderCustomer = dbContext.OrderCustomers.Find(iOrderCustomerId);
+            //this.orderCustomer = GetOrderCustomerByIdUseCase.Execute(iOrderCustomerId);
+        }
+    }
+
+    private void OnValidSubmit()
+    {
+        //EditOrderCustomerUseCase.Execute(orderCustomer);
+        NavigationManager.NavigateTo("/ordercustomers");
+    }
+
+    private void OnCansel()
+    {
+        NavigationManager.NavigateTo("/ordercustomers");
+    }
+
+    //public async Task DownloadExcelDocument()
+    //{
+
+    //    //string apiUriJson = "OrderCustomersJson";
+    //    if (int.TryParse(this.OrderCustomerId, out int iOrderCustomerId))
+    //    {
+    //        List<OrderCustomer> orderCustomers = (List<OrderCustomer>)ViewItemOrdersUseCase.Execute().Where(x => x.OrderCustomerId == iOrderCustomerId);
+    //            // = await httpClient.GetJsonAsync<List<OrderCustomer>>(apiUriJson);
+
+    //        using (var workbook = new XLWorkbook())
+    //        {
+    //            IXLWorksheet worksheet =
+    //            workbook.Worksheets.Add("OrderCustomers");
+    //            worksheet.Cell(1, 1).Value = "№";
+    //            worksheet.Cell(1, 2).Value = "Edited";
+
+    //            for (int i = 1; i <= 2; i++)
+    //            {
+    //                worksheet.Cell(1, i).Style.Font.Bold = true;
+    //            }
+
+    //            int index = 1;
+    //            foreach (var orderCustomer in orderCustomers)
+    //            {
+    //                worksheet.Cell(index + 1, 1).Value = orderCustomer.OrderCustomerId;
+    //                worksheet.Cell(index + 1, 2).Value = orderCustomer.Edited;
+
+    //                index++;
+    //            }
+
+    //            using (var stream = new MemoryStream())
+    //            {
+    //                workbook.SaveAs(stream);
+    //                var content = stream.ToArray();
+
+    //                var fileName = "OrderCustomers.xlsx";
+    //                await JSRuntime.InvokeAsync<object>("saveAsFile", fileName, Convert.ToBase64String(content));
+    //            }
+    //        }
+    //    }
+    //}
 }

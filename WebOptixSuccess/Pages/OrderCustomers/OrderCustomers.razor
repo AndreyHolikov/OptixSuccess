@@ -7,7 +7,7 @@
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 @inject NavigationManager NavigationManager
 
-<h3>Покупатели</h3>
+<h3>Покупатели +</h3>
 
 <RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
 
@@ -19,16 +19,31 @@
         <Columns>
             <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
             
-
+            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomer.Customer.Name" Title="Покупатель" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
 
             <RadzenDataGridColumn TItem="OrderCustomer" Property="Description" Title="Description" Width="100px" />
-             <RadzenDataGridColumn TItem="OrderCustomer" >
+
+            <RadzenDataGridColumn TItem="OrderCustomer" >
                  <Template Context="orderCustomers">
                      <RadzenButton Icon="delete_forever" ButtonStyle="ButtonStyle.Light"
                             Click="@(() => OnClickDelete(orderCustomers.OrderCustomerId))">
                      </RadzenButton>
                  </Template>
-             </RadzenDataGridColumn>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomer" Title="Кол-во позиций" Frozen="true" Width="70px" TextAlign="TextAlign.Center" >
+                 <Template Context="orderCustomer">
+                     @dbContext.ItemOrders.Where(x => x.OrderCustomerId == orderCustomer.CustomerId).Count()
+                 </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomer" Title="Кол-во товаров" Frozen="true" Width="70px" TextAlign="TextAlign.Center" >
+                 <Template Context="orderCustomer">
+                     @dbContext.ItemOrders.Sum(x => x.Quantity)
+                 </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomer.Customer.Name" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
         </Columns>
     </RadzenDataGrid>
 

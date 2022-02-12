@@ -15,34 +15,30 @@
 <RadzenButton Text="Добавить" Click="@OnClickAdd" Style="margin-bottom: 20px;" />
 
     <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@customers" LoadData="@LoadData" TItem="Customer"
-        AllowSorting="false" AllowFiltering="false" 
+        AllowSorting="false" AllowFiltering="false"  
         AllowPaging="true" PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
         AllowColumnResize="true"
         ColumnWidth="200px"   >
         <Columns >
-            <RadzenDataGridColumn TItem="Customer" Property="CustomerId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center"  
-                Filterable="false" Sortable="false"/>
-            
-            <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Company" Width="200px" Frozen="true" 
-                Filterable="false" Sortable="false"/>
-            
-            <RadzenDataGridColumn TItem="Customer" Property="Name" Title="Name" Width="100px" 
-                Filterable="false" Sortable="false"/>
-            <RadzenDataGridColumn TItem="Customer" Property="Fullname" Title="Fullname" Width="100px" 
-                Filterable="false" Sortable="false"/>
-            <RadzenDataGridColumn TItem="Customer" Property="Email" Title="Email" Width="100px" Filterable="false" Sortable="false">
+            <RadzenDataGridColumn TItem="Customer" Property="CustomerId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Company" Width="150px" Frozen="true" />
+            <RadzenDataGridColumn TItem="Customer" Property="Name" Title="Name" Width="100px" />
+            <RadzenDataGridColumn TItem="Customer" Property="Fullname" Title="Fullname" Width="100px" />
+
+            <RadzenDataGridColumn TItem="Customer" Property="Email" Title="Email" Width="100px" >
                 <Template Context="customer">
                     <a href="mailto: @customer.Email">@customer.Email</a>
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Customer" Property="Phone" Title="Phone" Width="100px" 
-                Filterable="false" Sortable="false">
+
+            <RadzenDataGridColumn TItem="Customer" Property="Phone" Title="Phone" Width="100px" >
                <Template Context="customer">
                     <a href="tel: @customer.Phone">@customer.Phone</a>
-                </Template>
+               </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Customer" Property="Description" Title="Description" Width="100px" Filterable="false" Sortable="false"/>
-             <RadzenDataGridColumn TItem="Customer" Filterable="false" Sortable="false">
+            
+            <RadzenDataGridColumn TItem="Customer" Property="Description" Title="Description" Width="100px" />
+            <RadzenDataGridColumn TItem="Customer" Filterable="false" Sortable="false">
                  <Template Context="customer">
                      @*<RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light"
                             Click="@(() => OnClickEdit(customer))">
@@ -53,12 +49,12 @@
                      </RadzenButton>
 
                     <button type="button" @onclick="@(() => OnClickEdit(customer))" class="btn btn-link">
-                        edit-order-customer
+                        <i class="far fa-edit"></i>
                     </button>
 
                      @*<ButtonEditComponent Url="edit-customer" Id="@(Convert.ToInt32(customer.CustomerId))"></ButtonEditComponent>*@
                  </Template>
-             </RadzenDataGridColumn>
+            </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
 

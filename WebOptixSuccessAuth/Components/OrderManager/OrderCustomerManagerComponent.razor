@@ -27,8 +27,9 @@
                 <button type="button" @onclick="@DeleteOrder" class="btn btn-link">
                     <i class="far fa-trash-alt"></i> Удалить
                 </button><br/>
-                <ButtonEditComponent Id="@(SelectedOrderCustomer?.OrderCustomerId ?? default(int))" 
-                    Text="Редактировать" Url="edit-order-customer" Icon="far fa-edit" />
+                <button type="button" @onclick="@OnClickEditOrderCustomer" class="btn btn-link">
+                    <i class="far fa-edit"></i> Редактировать
+                </button>
             </div>
         </div>
         <div class="row">
@@ -46,6 +47,9 @@
 
     [Parameter]
     public EventCallback UpdateCallback { get; set; }
+
+    protected void OnClickEditOrderCustomer()
+        => NavigationManager.NavigateTo($"/edit-order-customer/{SelectedOrderCustomer.OrderCustomerId}");
 
     protected void DeleteOrder()
     {

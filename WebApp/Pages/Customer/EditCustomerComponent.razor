@@ -13,6 +13,11 @@
         <ValidationSummary></ValidationSummary>
 
         <div class="form-group">
+            <label for="company">Организация</label>
+            <InputText id="company" @bind-Value="customer.Company" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
             <label for="name">Login</label>
             <InputText id="name" @bind-Value="customer.Name" class="form-control"></InputText>
         </div>
@@ -23,18 +28,8 @@
         </div>
 
         <div class="form-group">
-            <label for="password">Пароль</label>
-            <InputText id="password" @bind-Value="customer.Password" class="form-control"></InputText>
-        </div>
-
-        <div class="form-group">
             <label for="email">Email</label>
             <InputText id="email" @bind-Value="customer.Email" class="form-control"></InputText>
-        </div>
-
-        <div class="form-group">
-            <label for="company">Организация</label>
-            <InputText id="company" @bind-Value="customer.Company" class="form-control"></InputText>
         </div>
 
         <div class="form-group">
@@ -45,6 +40,11 @@
         <div class="form-group">
             <label for="description">Описание</label>
             <InputTextArea id="description" @bind-Value="customer.Description" class="form-control"></InputTextArea>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <InputText id="password" @bind-Value="customer.Password" class="form-control"></InputText>
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>
