@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Pages\Customers\EditCustomer.razor" />
+    <Content Remove="Pages\OrderCustomers\EditOrderCustomer.razor" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Pages\Customers\EditCustomer.razor" />
+    <None Include="Pages\OrderCustomers\EditOrderCustomer.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +49,14 @@
     <Content Update="Shared\SurveyPrompt.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\OrderCustomers\EditOrderCustomer.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\OrderCustomers\EditOrderCustomer.razor" />
   </ItemGroup>
 
 </Project>

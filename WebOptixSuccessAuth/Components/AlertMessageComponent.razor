@@ -1,4 +1,6 @@
-﻿@if (!string.IsNullOrWhiteSpace(@AlertClass) && string.IsNullOrWhiteSpace(@WarningMessage))
+﻿@*https://getbootstrap.com/docs/4.0/components/alerts/*@
+
+@if (!string.IsNullOrWhiteSpace(@AlertClass) && string.IsNullOrWhiteSpace(@WarningMessage))
 {
     <div class="alert @AlertClass" role="alert">
         @WarningMessage

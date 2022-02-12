@@ -19,14 +19,16 @@
                 <p>Заказ: <wbr/><span>@SelectedOrderVendor.OrderVendorId</span>-@SelectedOrderVendor?.Edited</p>
             </div>
 
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <p>Позиций: <wbr/>@SelectedOrderVendor?.ItemOrders.Count()</p>
                 <p>Количество товаров: <wbr/>@SelectedOrderVendor?.ItemOrders.Sum( x => x.Quantity )</p>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-4">
                 <button type="button" @onclick="@DeleteOrder" class="btn btn-link">
                     <i class="far fa-trash-alt"></i> Удалить
-                </button>
+                </button><br/>
+                <ButtonEditComponent Id="@(SelectedOrderVendor?.OrderVendorId ?? default(int))" 
+                    Text="Редактировать" Url="edit-order-vendor" Icon="far fa-edit" />
             </div>
         </div>
         <div class="row">

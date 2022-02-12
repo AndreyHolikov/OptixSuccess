@@ -33,3 +33,6 @@ For technical information, type: get-help Add-Migration -full.
 https://coding.abel.nu/2012/03/ef-migrations-command-reference/
 
 https://blazor.radzen.com/get-started
+
+@onclick="@(() => OnClickEdit())
+@onclick="@OnClickEdit"

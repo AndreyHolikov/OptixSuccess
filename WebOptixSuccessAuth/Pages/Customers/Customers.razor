@@ -9,7 +9,7 @@
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 @inject NavigationManager NavigationManager
 
-<h3>Покупатели</h3>
+<h3>Покупатели +</h3>
 
 <RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
 <RadzenButton Text="Добавить" Click="@OnClickAdd" Style="margin-bottom: 20px;" />
@@ -51,7 +51,12 @@
                      <RadzenButton Icon="delete_forever" ButtonStyle="ButtonStyle.Light"
                             Click="@(() => OnClickDelete(customer.CustomerId))">
                      </RadzenButton>
-                     <ButtonEditComponent TypeName="customer" Id="@(Convert.ToInt32(customer.CustomerId))"></ButtonEditComponent>
+
+                    <button type="button" @onclick="@(() => OnClickEdit(customer))" class="btn btn-link">
+                        edit-order-customer
+                    </button>
+
+                     @*<ButtonEditComponent Url="edit-customer" Id="@(Convert.ToInt32(customer.CustomerId))"></ButtonEditComponent>*@
                  </Template>
              </RadzenDataGridColumn>
         </Columns>
@@ -109,10 +114,13 @@
         => NavigationManager.NavigateTo("/add-customer");
 
     protected void OnClickEdit(Customer customer)
-        => NavigationManager.NavigateTo($"/edit-order-customer/{customer.CustomerId}");
+        => NavigationManager.NavigateTo($"/edit-customer/{customer.CustomerId}");
+    
+    protected void OnClickEditQ(Customer customer)
+        => NavigationManager.NavigateTo($"/editordercustomer");
 
     protected void OnClickDelete(int CustomerId)
-    {
+    { 
         Customer? customer = dbContext.Customers.Find(CustomerId);
         if (customer != null)
         {

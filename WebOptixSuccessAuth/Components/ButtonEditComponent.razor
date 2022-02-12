@@ -1,19 +1,17 @@
 ﻿@inject NavigationManager NavigationManager
 
-@if (Id > 0 || !string.IsNullOrWhiteSpace(Text) || !string.IsNullOrWhiteSpace(TypeName))
+@if (Id > 0 || !string.IsNullOrWhiteSpace(Url))
 {
-    <button tupe="button" @onclick="@(() => OnClickEdit())" class="btn btn-link">
-        <i class="fas fa-edit"></i> @Text
-    </button>
+
+
 }
 
 @code {
-    [Parameter] public int Id { get; set; } = 0;
+    [Parameter] public string Icon { get; set; } = "fas fa-edit";
     [Parameter] public string Text { get; set; } = "";
-    [Parameter] public string TypeName { get; set; } = "";
+    
+    [Parameter] public string Url { get; set; } = "";
+    [Parameter] public int Id { get; set; } = 0;
 
-    protected void OnClickEdit()
-    {
-        NavigationManager.NavigateTo($"/edit{TypeName}/{Id.ToString()}");
-    }
+
 }

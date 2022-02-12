@@ -1,16 +1,19 @@
-﻿@page "/editcustomer/{customerId}"
+﻿@page "/edit-customer/{customerId}"
 
 @using Microsoft.EntityFrameworkCore
 @using CoreBusiness.Models
 @using System.Globalization
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 @inject NavigationManager NavigationManager
+@using WebOptixSuccessAuth.Components
 
 
-<h3>Редактирование клиента</h3>
+<h3>Редактирование клиента +</h3>
 
-@if(customer != null)
+@if(customer == null)
 {
+     <AlertMessageComponent AlertClass="alert alert-danger" WarningMessage="@($"Покупатель (id: {CustomerId}) не найден.")" > </AlertMessageComponent>
+} else {
     <EditForm Model="customer"  OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>
@@ -69,10 +72,10 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        //if (int.TryParse(this.CustomerId, out int iCustomerId)) 
-        //{
-        //    this.customer = dbContext.Customers.Find(iCustomerId);
-        //}
+        if (int.tryparse(this.customerid, out int icustomerid)) 
+        {
+            this.customer = dbcontext.customers.find(icustomerid);
+        }
     }
 
     private void OnValidSubmit()
@@ -87,6 +90,3 @@
         NavigationManager.NavigateTo("/customers");
     }
 }
-
-
-
