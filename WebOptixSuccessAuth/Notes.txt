@@ -21,8 +21,13 @@ Install-Package Microsoft.EntityFrameworkCore.SqlServer
 'Install-Package Microsoft.EntityFrameworkCore.SqlServer -v 1.1.1'
 
 add-migration Init-1
-add-migration Init-1 -Project Plugins.DataStore.SQL -Context AppDbContext
-update-database
+
+add-migration Init-1302.1 -Project WebOptixSuccessAuth -Context AppDbContext
+
+add-migration Init-1302.1 -Project Plugins.DataStore.SQL -Context AppDbContext
+add-migration Init-1302.2 -Project WebOptixSuccessAuth -Context ApplicationDbContext
+update-database -Project Plugins.DataStore.SQL -Context AppDbContext
+update-database -Project WebOptixSuccessAuth -Context ApplicationDbContext
 
 Remarks
 

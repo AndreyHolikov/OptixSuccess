@@ -55,4 +55,8 @@
     <_ContentIncludedByDefault Remove="Pages\OrderCustomers\EditOrderCustomer.razor" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
+  </ItemGroup>
+
 </Project>
