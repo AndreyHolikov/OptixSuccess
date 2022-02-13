@@ -179,6 +179,7 @@
 
         if (OrderCustomers != null)
         {
+            // Если появляется исключение в этом месте, то нужно проверить строку подключения и наличие миграций в БД
             if (OrderCustomers?.Count() > 0)
             {
                 SelectedOrderCustomers = new List<OrderCustomer>() { OrderCustomers.First() }; //.FirstOrDefault() };
