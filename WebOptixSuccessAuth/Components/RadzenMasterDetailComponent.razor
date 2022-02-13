@@ -67,8 +67,9 @@
                     <Columns>
                         <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId"  Title="Id"          Width="50px" Frozen="true"/>
                         <RadzenDataGridColumn TItem="OrderVendor" Property="Vendor.Company" Title="Компания"    Width="130px" />
-                        <RadzenDataGridColumn TItem="OrderVendor" Property="Edited"         Title="Дата"        Width="70px" FormatString="{0:d}"/>
-                        <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId"  Title="Позиций"     Width="100px" TextAlign="TextAlign.Center" >
+                        <RadzenDataGridColumn TItem="OrderVendor" Property="Edited"         Title="Дата"        Width="90px" FormatString="{0:d}"/>
+                        <RadzenDataGridColumn TItem="OrderVendor" Property="OrderVendorId"  Title="Позиций"     Width="70px" TextAlign="TextAlign.Center" 
+                            Sortable="false" Filterable="false">
                             <Template Context="detail">
                                 @detail.ItemOrders.Count()
                             </Template>
@@ -178,7 +179,7 @@
 
         if (OrderCustomers != null)
         {
-            if (OrderCustomers.Count() > 0)
+            if (OrderCustomers?.Count() > 0)
             {
                 SelectedOrderCustomers = new List<OrderCustomer>() { OrderCustomers.First() }; //.FirstOrDefault() };
             }

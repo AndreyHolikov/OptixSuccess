@@ -138,14 +138,14 @@ namespace Plugins.DataStore.SQL
                 #endregion
              });
 
-            #region Add Random ItemOrders
-            for (int i = 7; i < limirRow; i++)
+            for (int i = 7; i < 20; i++)
             {
                 int randomProductId = random.Next(2, 500);
                 randomProductId = (Products.Find(x => x.ProductId == randomProductId) == null) ? randomProductId + 1 : randomProductId;
 
-                int randomOrderCustomerId = random.Next(1, limirRow);
-                int randomOrderVendorId = random.Next(1, limirRow);
+                int randomOrderCustomerId = random.Next(1, 10);
+                int randomOrderVendorId = random.Next(1, 10);
+                int randomQuantity = random.Next(1, 10);
                 itemOrders.Add(new ItemOrder()
                 {
                     ItemOrderId = i,
@@ -153,7 +153,30 @@ namespace Plugins.DataStore.SQL
                     OrderCustomerId = randomOrderCustomerId,
                     OrderVendorId = randomOrderVendorId,
                     Description = $"Опиасние oc20{randomOrderCustomerId}-io30{i}-ov40{randomOrderVendorId} p100{randomProductId}",
-                    Edited = RandomDay()
+                    Edited = RandomDay(),
+                    Quantity = randomQuantity
+                });
+            }
+
+            #region Add Random ItemOrders
+            int ItemOrderNewLimirRow = limirRow * 20;
+            for (int i = 21; i < ItemOrderNewLimirRow; i++)
+            {
+                int randomProductId = random.Next(2, 500);
+                randomProductId = (Products.Find(x => x.ProductId == randomProductId) == null) ? randomProductId + 1 : randomProductId;
+
+                int randomOrderCustomerId = random.Next(1, limirRow);
+                int randomOrderVendorId = random.Next(1, limirRow);
+                int randomQuantity = random.Next(100, 500);
+                itemOrders.Add(new ItemOrder()
+                {
+                    ItemOrderId = i,
+                    ProductId = randomProductId,
+                    OrderCustomerId = randomOrderCustomerId,
+                    OrderVendorId = randomOrderVendorId,
+                    Description = $"Опиасние oc20{randomOrderCustomerId}-io30{i}-ov40{randomOrderVendorId} p100{randomProductId}",
+                    Edited = RandomDay(),
+                    Quantity = randomQuantity
                 });
             }
             #endregion Add Random ItemOrders
