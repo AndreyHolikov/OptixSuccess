@@ -8,17 +8,15 @@
 @using WebOptixSuccessAuth
 @using WebOptixSuccessAuth.Components
 
-
-
+<PageTitle>Редактирование покупателя. (Id: @CustomerId) - OptixSM</PageTitle>
+<h3>Редактирование покупателя. (Id: @CustomerId)</h3>
 
 @if (customer == null)
 {
-    <h3>Редактирование покупателя</h3>
-    <AlertMessageComponent AlertClass="@AlertClass" Message="@AlertMessage" />
+    <AlertMessageComponent AlertClass="alert alert-danger" Message="@alertMessage" />
 } 
 else 
 {
-    <h3>Редактирование покупателя (id: @(Convert.ToString(customer?.CustomerId) ))</h3>
     <EditForm Model="customer"  OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>
@@ -67,10 +65,9 @@ else
     [Parameter]
     public int CustomerId { get; set; }
     //public string CustomerId { get; set; }
-
     private Customer? customer { get; set; }
-    private string AlertClass { get; set; } = "alert alert-danger";
-    private string AlertMessage { get; set; } = $"Покупатель не найден.";
+
+    private string alertMessage { get; set; }   = $"Покупатель не найден.";
 
     protected override void OnInitialized()
     {
@@ -85,8 +82,7 @@ else
         //{
         //    this.customer = dbContext.Customers.Find(iCustomerid);
         //}
-
-        AlertMessage += $" (id: {CustomerId})";
+        alertMessage = $" (id: {CustomerId})";
     }
 
     private void OnValidSubmit()

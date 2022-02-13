@@ -8,10 +8,10 @@
 @inject NavigationManager NavigationManager
 
 <PageTitle>Заказы покупателей (@count) - OptixSM</PageTitle>
-
 <h3>Заказы покупателей (@count)</h3>
 
 <RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
+<RadzenButton Text="Добавить" Click="@OnClickAdd" Style="margin-bottom: 20px;" />
 
     <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@orderCustomers" LoadData="@LoadData" TItem="OrderCustomer"
         AllowSorting="false" AllowFiltering="false" 
@@ -19,27 +19,39 @@
         AllowColumnResize="true"
         ColumnWidth="200px"   >
         <Columns>
-            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" 
+                Sortable="false" Filterable="false" />
             
-            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomer.Customer.Name" Title="Покупатель" Width="70px" />
+            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomer" Title="Покупатель" Width="70px" 
+                Sortable="false" Filterable="false" >
+                 <Template Context="orderCustomer">
+                     @orderCustomer.Customer.Company (Id: @orderCustomer.CustomerId)
+                     @*@dbContext.Customers.Find(orderCustomer.CustomerId).Company *@
+                 </Template>
+            </RadzenDataGridColumn>
 
-            <RadzenDataGridColumn TItem="OrderCustomer" Property="Edited" Title="Дата редактирования"  Width="70px" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="OrderCustomer" Property="Edited" Title="Дата редактирования"  Width="70px" TextAlign="TextAlign.Center" 
+                Sortable="false" Filterable="false" />
 
-            <RadzenDataGridColumn TItem="OrderCustomer" Property="Description" Title="Description" Width="100px" />
+            <RadzenDataGridColumn TItem="OrderCustomer" Property="Description" Title="Description" Width="100px" 
+                Sortable="false" Filterable="false" />
 
-            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomer" Title="Кол-во позиций" Width="70px" TextAlign="TextAlign.Center" >
+            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomer" Title="Кол-во позиций" Width="70px" TextAlign="TextAlign.Center" 
+                Sortable="false" Filterable="false" >
                  <Template Context="orderCustomer">
                      @dbContext.ItemOrders.Where(x => x.OrderCustomerId == orderCustomer.CustomerId).Count()
                  </Template>
             </RadzenDataGridColumn>
 
-            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomer" Title="Кол-во товаров" Width="70px" TextAlign="TextAlign.Center" >
+            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomer" Title="Кол-во товаров" Width="70px" TextAlign="TextAlign.Center" 
+                Sortable="false" Filterable="false" >
                  <Template Context="orderCustomer">
-                     @dbContext.ItemOrders.Sum(x => x.Quantity)
+                     @orderCustomer.ItemOrders.Sum(x => x.Quantity)
                  </Template>
             </RadzenDataGridColumn>
 
-            <RadzenDataGridColumn TItem="OrderCustomer" >
+            <RadzenDataGridColumn TItem="OrderCustomer" 
+                Sortable="false" Filterable="false" >
                  <Template Context="orderCustomers">
                      <RadzenButton Icon="delete_forever" ButtonStyle="ButtonStyle.Light"
                             Click="@(() => OnClickDelete(orderCustomers.OrderCustomerId))">
@@ -50,6 +62,7 @@
     </RadzenDataGrid>
 
 @code {
+
     RadzenDataGrid<OrderCustomer>? gridRef = null;
     int count;
     IEnumerable<OrderCustomer>? orderCustomers = null;
@@ -58,8 +71,12 @@
     [Parameter]
     public IEnumerable<int> pageSizeOptions { get; set; } = new int[] { 10, 20, 30, 100, 1000 };
 
-    async Task Reset()
+    protected override void OnParametersSet()
     {
+        base.OnParametersSet();
+    }
+
+    protected async Task Reset() {
         if (gridRef != null)
         {
             gridRef.Reset(true);
@@ -67,8 +84,7 @@
         }
     }
 
-    async Task LoadData(LoadDataArgs args)
-    {
+    protected async Task LoadData(LoadDataArgs args) {
         isLoading = true;
 
         await Task.Yield();
@@ -94,13 +110,12 @@
     }
 
     protected void OnClickAdd()
-        => NavigationManager.NavigateTo("/addorderCustomers");
+        => NavigationManager.NavigateTo("/add-order-customer");
 
     protected void OnClickEdit(OrderCustomer orderCustomers)
-        => NavigationManager.NavigateTo($"/editOrderCustomer/{orderCustomers.OrderCustomerId}");
+        => NavigationManager.NavigateTo($"/edit-order-customer/{orderCustomers.OrderCustomerId}");
 
-    protected void OnClickDelete(int OrderCustomerId)
-    {
+    protected void OnClickDelete(int OrderCustomerId) {
         OrderCustomer? orderCustomers = dbContext.OrderCustomers.Find(OrderCustomerId);
         if (orderCustomers != null)
         {

@@ -1,0 +1,217 @@
+﻿@page "/addordercustomer"
+@using UseCases
+
+@using System 
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Logging
+@inject ILogger<AddOrderCustomer> Logger
+@inject IWebHostEnvironment Environment
+
+@inject NavigationManager NavigationManager
+@*@inject IAddOrderCustomerUseCase AddOrderCustomerUseCase 
+@inject IViewCustomersUseCase ViewCustomersUseCase*@
+
+
+@using ClosedXML.Excel;
+@using WebOptixSuccessAuth.Components
+@inject Plugins.DataStore.SQL.AppDbContext dbContext
+
+<h3>@osTitlePage</h3>
+
+@if (customers == null || customers.Count() == 0)
+{
+    <AlertMessageComponent AlertClass="alert alert-danger" Message="@BuyersNotFoundInTheSystem" />
+} else if (orderCustomer == null)
+{
+    <AlertMessageComponent AlertClass="alert alert-danger" Message="@AnErrorOccurredWhileCreatingAnOrderInstance" />
+} 
+else 
+{
+    <EditForm Model="orderCustomer"  OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <RadzenCard>
+            <h4 class="mb-4">Binding to simple collection</h4>
+            <RadzenDropDown AllowClear="true" TValue="string" Class="w-100" 
+                            Data=@(customers.Select(c => c.Company).Distinct())
+                            Change=@(args => OnChange(args, "DropDown")) />
+        </RadzenCard>
+
+        <select id="customer" @bind="orderCustomer.CustomerId" class="form-control">
+            <option selected></option>
+            @foreach(Customer customer in customers)
+            {
+                <option value="@customer.CustomerId">@customer.Name</option>
+            }
+        </select>
+
+        <div class="form-group">
+            <label for="description">Описание</label>
+            <InputTextArea id="description" @bind-Value="orderCustomer.Description" class="form-control"></InputTextArea>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Excel файл</label>
+            <br/>
+            <InputFile OnChange="@SingleUpload" />
+            <InputFile OnChange="@LoadFiles" multiple />
+            @if (isLoading)
+            {
+                <p>Uploading...</p>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var file in loadedFiles)
+                    {
+                        <li>
+                            <ul>
+                                <li>Name: @file.Name</li>
+                                <li>Last modified: @file.LastModified.ToString()</li>
+                                <li>Size (bytes): @file.Size</li>
+                                <li>Content type: @file.ContentType</li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+
+        <RadzenFileInput @bind-Value=@orderCustomer.Name TValue="string" Change=@OnChange />
+        <RadzenCard>
+            <h4 class="mb-4">Employee: <b>@(orderCustomer.Name)</b></h4>
+            <RadzenFileInput @bind-Value=@orderCustomer.Name TValue="string" Class="w-100" 
+                Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) />
+        </RadzenCard>
+
+        @*<RadzenFileInput @bind-Value="TextAlign" TValue="string" Class="w-100" 
+            Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) />
+        </RadzenCard>*@
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <button type="button" class="btn btn-primary" @onclick="OnCansel">Оменить</button>
+    </EditForm>
+}
+
+@code {
+    private OrderCustomer? orderCustomer;
+
+    public IEnumerable<Customer>? customers { get; set; }
+
+    private string osTitlePage { get; set; }    = "Добавить заказа покупателя.";
+    private string BuyersNotFoundInTheSystem { get; set; } = "Покупатели не найдены в системе.";
+    private string AnErrorOccurredWhileCreatingAnOrderInstance { get; set; } = "Произошла ошибка в процессе созания экмепляра заказа";
+
+    #region Fields for loadingFiles
+    private List<IBrowserFile> loadedFiles = new();
+    private long maxFileSize = 1024 * 15;
+    private int maxAllowedFiles = 1;
+    private bool isLoading;
+
+    @*Employee firstEmployee;
+        EventConsole console;*@
+    #endregion
+    
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        orderCustomer = new OrderCustomer();
+        customers = dbContext.Customers.ToList();
+        //customers = ViewCustomersUseCase.Execute();
+    }
+
+    void OnChange(string value)
+    {
+        //Console.WriteLine($"Value changed to {value}");
+    }
+
+    void OnChange(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+    }
+
+    void OnError(UploadErrorEventArgs args, string name)
+    {
+        //console.Log($"{args.Message}");
+    }
+
+
+    private void OnValidSubmit()
+    {
+        orderCustomer.Edited = DateTime.Now;
+        orderCustomer.ExcelFileId = 1;
+        orderCustomer.CustomerId = 1;
+
+        // TODO: AddFile To DB
+
+        orderCustomer.Description = $"Файл:{loadedFiles[0].Name}";
+
+        dbContext.OrderCustomers.Add(orderCustomer);
+        // AddOrderCustomerUseCase.Execute(orderCustomer);
+        NavigationManager.NavigateTo("/ordercustomers");
+    }
+
+    private void OnCansel()
+    {
+        NavigationManager.NavigateTo("/ordercustomers");
+    }
+
+    #region UploadFile
+
+    @*private readonly IWebHostEnvironment _environment;
+    public async Task UploadAsync(IFileListEntry fileEntry)
+    {
+        var path = Path.Combine(_environment.ContentRootPath, "excelfiles", fileEntry.Name);
+        var ms = new MemoryStream();
+        await fileEntry.Data.CopyToAsync(ms);
+        using(FileStrim file = new FileStrim(path,  FileMode.Create, FileAccess.Write))
+        {
+            ms.WriteTo(file);
+        }
+        }*@
+
+    #endregion
+
+    private async Task SingleUpload(InputFileChangeEventArgs e)
+    {
+        var ms = new MemoryStream();
+        await e.File.OpenReadStream().CopyToAsync(ms);
+        var bytes = ms.ToArray();
+
+    }
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+        loadedFiles.Clear();
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            try
+            {
+                loadedFiles.Add(file);
+
+                var trustedFileNameForFileStorage = Path.GetRandomFileName();
+                var path = Path.Combine(Environment.ContentRootPath,
+                        Environment.EnvironmentName, "unsafe_uploads",
+                        trustedFileNameForFileStorage);
+
+                await using FileStream fs = new(path, FileMode.Create);
+                await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("File: {Filename} Error: {Error}", 
+                    file.Name, ex.Message);
+            }
+        }
+
+        isLoading = false;
+    }
+
+    
+}

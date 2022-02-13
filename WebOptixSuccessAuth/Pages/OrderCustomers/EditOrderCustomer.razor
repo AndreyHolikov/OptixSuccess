@@ -1,4 +1,4 @@
-﻿@page "/edit-order-customer/{ordercustomerId}"
+﻿@page "/edit-order-customer/{OrderCustomerId:int}"
 @using Microsoft.EntityFrameworkCore
 @using CoreBusiness.Models
 @using System.Globalization
@@ -9,7 +9,8 @@
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 @inject NavigationManager NavigationManager
 
-<h3>Редактирование заказа (id: @(Convert.ToString(orderCustomer?.OrderCustomerId) ))</h3>
+<PageTitle>Редактирование покупателя. (Id: @OrderCustomerId) - OptixSM</PageTitle>
+<h3>Редактирование заказа (id: @OrderCustomerId)</h3>
 
 @if(orderCustomer != null)
 {
@@ -40,25 +41,29 @@
 
 @code {
     [Parameter]
-    public string OrderCustomerId { get; set; }
+    public int OrderCustomerId { get; set; }
 
-    private OrderCustomer? orderCustomer;
+    private OrderCustomer orderCustomer = new OrderCustomer();
+
+    private string alertMessage { get; set; }   = $"Заказ покупателя не найден.";
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        orderCustomer = new OrderCustomer();
     }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (int.TryParse(this.OrderCustomerId, out int iOrderCustomerId)) 
-        {
+        this.orderCustomer = dbContext.OrderCustomers.Find(OrderCustomerId);
+        //if (int.TryParse(this.OrderCustomerId, out int iOrderCustomerId)) 
+        //{
 
-            this.orderCustomer = dbContext.OrderCustomers.Find(iOrderCustomerId);
-            //this.orderCustomer = GetOrderCustomerByIdUseCase.Execute(iOrderCustomerId);
-        }
+        //    this.orderCustomer = dbContext.OrderCustomers.Find(iOrderCustomerId);
+        //    //this.orderCustomer = GetOrderCustomerByIdUseCase.Execute(iOrderCustomerId);
+        //}
+
+        alertMessage = $" (id: {OrderCustomerId})";
     }
 
     private void OnValidSubmit()

@@ -16,7 +16,7 @@
 </div>
 
     <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@itemOrders" LoadData="@LoadData" TItem="ItemOrder"
-        AllowSorting="true" AllowFiltering="true" 
+        AllowSorting="false" AllowFiltering="false"
         AllowPaging="true" PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
         AllowColumnResize="true"
         ColumnWidth="200px"   >

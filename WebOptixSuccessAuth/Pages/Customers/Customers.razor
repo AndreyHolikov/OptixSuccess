@@ -1,7 +1,6 @@
 ﻿@page "/customers"
 
 
-
 @using Microsoft.EntityFrameworkCore
 @using WebOptixSuccessAuth.Components
 
@@ -9,24 +8,26 @@
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 @inject NavigationManager NavigationManager
 
+<PageTitle>Покупатели (@count) - OptixSM</PageTitle>
 <h3>Покупатели (@count)</h3>
 
 <RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
 <RadzenButton Text="Добавить" Click="@OnClickAdd" Style="margin-bottom: 20px;" />
 
-    <RadzenDataGrid  Count="@count" Data="@customers"  TItem="Customer"
-        AllowSorting="true" AllowFiltering="true"
+    <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@customers" LoadData="@LoadData" TItem="Customer"
+        AllowSorting="false" AllowFiltering="false"
         AllowPaging="true" PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
         AllowColumnResize="true"
         ColumnWidth="200px"   >
         <Columns >
             <RadzenDataGridColumn TItem="Customer" Property="CustomerId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" 
-                Sortable="true" Filterable="true" />
+                Sortable="false" Filterable="false" />
             <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Company" Width="150px" Frozen="true" 
-                Sortable="true" Filterable="true" />
-            <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Позиций" Width="150px" >
-                <Template Context="detail">
-                    @detail?.OrderCustomers?.Count()
+                Sortable="false" Filterable="false" />
+            <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Позиций" Width="150px" TextAlign="TextAlign.Center" 
+                Sortable="false" Filterable="false" >
+                <Template Context="customer">
+                    @dbContext.OrderCustomers.Where(x => x.CustomerId == customer.CustomerId).Count()
                 </Template>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Customer" Property="Name" Title="Name" Width="100px" 
@@ -71,37 +72,41 @@
 
 @code {
     RadzenDataGrid<Customer>? gridRef = null;
-    int count = 0;
+    int count;
     IEnumerable<Customer>? customers = null;
     bool isLoading = false;
 
     [Parameter]
     public IEnumerable<int> pageSizeOptions { get; set; } = new int[] { 10, 20, 30, 100, 1000 };
 
-        #region protected Methods
-    protected override void OnInitialized()
+    #region protected Methods
+    //protected override void OnInitialized()
+    //{
+    //    LoadCustomers();
+    //}
+
+    protected override void OnParametersSet()
     {
-        LoadCustomers();
+        base.OnParametersSet();
     }
     #endregion    
 
     private void LoadCustomers()
     {
         customers = dbContext.Customers
-        .Include("OrderCustomers");
+            .Include("OrderCustomers");
     }
 
-    async Task Reset()
-    {
-        customers = dbContext.Customers.ToArray();
-        //if (gridRef != null)
-        //{
-        //    gridRef.Reset(true);
-            await gridRef.FirstPage(true);
-        //}
+    protected async Task Reset() {
+        //customers = dbContext.Customers.ToArray();
+        if (gridRef != null)
+        {
+            gridRef.Reset(true);
+        await gridRef.FirstPage(true);
+        }
 
-        customers = dbContext.Customers.ToArray();
-        gridRef.FirstPage(true);
+        //customers = dbContext.Customers.ToArray();
+        //gridRef.FirstPage(true);
     }
 
     async Task LoadData(LoadDataArgs args)
@@ -122,9 +127,13 @@
             int counForSkip = args.Skip != null ? args.Skip.Value : default(int);
             int counForTake = args.Top != null ? args.Top.Value : default(int);
 
-            customers = query.Skip(counForSkip).Take(counForTake).ToList();
+            customers = query.Skip(counForSkip).Take(counForTake)
+                .Include("OrderCustomers")
+                .ToList();
         } else {
-            customers = query.ToList();
+            customers = query
+                .Include("OrderCustomers")
+                .ToList();
         }
 
         isLoading = false;
@@ -136,9 +145,6 @@
     protected void OnClickEdit(Customer customer)
         => NavigationManager.NavigateTo($"/edit-customer/{customer.CustomerId}");
     
-    protected void OnClickEditQ(Customer customer)
-        => NavigationManager.NavigateTo($"/editordercustomer");
-
     protected void OnClickDelete(int CustomerId)
     { 
         Customer? customer = dbContext.Customers.Find(CustomerId);

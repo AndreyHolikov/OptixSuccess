@@ -12,7 +12,7 @@
 <RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
 
     <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@orderVendors" LoadData="@LoadData" TItem="OrderVendor"
-        AllowSorting="true" AllowFiltering="true" 
+        AllowSorting="false" AllowFiltering="false"
         AllowPaging="true" PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
         AllowColumnResize="true"
         ColumnWidth="200px"   >
