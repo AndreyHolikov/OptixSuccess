@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionStringAuth = builder.Configuration.GetConnectionString("ConnectionAuth-pc");
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionStringAuth));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -34,7 +36,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<Radzen.NotificationService>();
 builder.Services.AddScoped<Radzen.TooltipService>();
 
-builder.Services.AddHttpClient(); // для загрузки файлов на сервер
+builder.Services.AddHttpClient(); // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
 //builder.Services.AddDbContext<AppDbContext>();
 ;
