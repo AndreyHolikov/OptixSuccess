@@ -1,13 +1,22 @@
 ﻿@*https://getbootstrap.com/docs/4.0/components/alerts/*@
+@using WebOptixSuccessAuth
 
-@if (!string.IsNullOrWhiteSpace(@AlertClass) && string.IsNullOrWhiteSpace(@WarningMessage))
+@if (!string.IsNullOrWhiteSpace(@AlertClass) && string.IsNullOrWhiteSpace(@Message))
 {
     <div class="alert @AlertClass" role="alert">
-        @WarningMessage
+        @Message
     </div>
 }
 
 @code {
     [Parameter] public string AlertClass { get; set; } = "";
-    [Parameter] public string WarningMessage { get; set; } = "";
+    [Parameter] public string Message { get; set; } = "";
+
+    //private string Data = "";    
+    
+    //protected override async Task OnInitializedAsync()    
+    //{        
+    //    Data = await Service.GetDataAsync();       
+    //    StateHasChanged();    
+    //}
 }

@@ -1,19 +1,24 @@
-﻿@page "/edit-customer/{customerId}"
+﻿@page "/edit-customer/{CustomerId:int}"
 
 @using Microsoft.EntityFrameworkCore
 @using CoreBusiness.Models
 @using System.Globalization
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 @inject NavigationManager NavigationManager
+@using WebOptixSuccessAuth
 @using WebOptixSuccessAuth.Components
 
 
-<h3>Редактирование клиента (id: @(Convert.ToString(customer?.CustomerId) ))</h3>
 
-@if(customer == null)
+
+@if (customer == null)
 {
-     <AlertMessageComponent AlertClass="alert alert-danger" WarningMessage="@($"Покупатель (id: {CustomerId}) не найден.")" > </AlertMessageComponent>
-} else {
+    <h3>Редактирование покупателя</h3>
+    <AlertMessageComponent AlertClass="@AlertClass" Message="@AlertMessage" />
+} 
+else 
+{
+    <h3>Редактирование покупателя (id: @(Convert.ToString(customer?.CustomerId) ))</h3>
     <EditForm Model="customer"  OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>
@@ -60,9 +65,12 @@
 
 @code {
     [Parameter]
-    public string CustomerId { get; set; }
+    public int CustomerId { get; set; }
+    //public string CustomerId { get; set; }
 
     private Customer? customer { get; set; }
+    private string AlertClass { get; set; } = "alert alert-danger";
+    private string AlertMessage { get; set; } = $"Покупатель не найден.";
 
     protected override void OnInitialized()
     {
@@ -72,17 +80,23 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (int.TryParse(this.CustomerId, out int iCustomerid)) 
-        {
-            this.customer = dbContext.Customers.Find(iCustomerid);
-        }
+        this.customer = dbContext.Customers.Find(CustomerId);
+        //if (int.TryParse(this.CustomerId, out int iCustomerid)) 
+        //{
+        //    this.customer = dbContext.Customers.Find(iCustomerid);
+        //}
+
+        AlertMessage += $" (id: {CustomerId})";
     }
 
     private void OnValidSubmit()
     {
-        dbContext.Customers.Update(this.customer);
-        dbContext.SaveChanges();
-        NavigationManager.NavigateTo("/customers");
+        if (customer != null)
+        {
+            dbContext.Customers.Update(customer);
+            dbContext.SaveChanges();
+            StateHasChanged();
+        }
     }
 
     private void OnCansel()

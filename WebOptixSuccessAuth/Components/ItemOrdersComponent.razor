@@ -17,7 +17,7 @@
             <Tabs>
                 <RadzenTabsItem Text="Список товаров">
 
-                    <AlertMessageComponent AlertClass="@alertClass" WarningMessage="@warningMessage1"/>
+                    <AlertMessageComponent AlertClass="@alertClass" Message="@warningMessage1"/>
 
                     <RadzenDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" Data="@(ItemOrderCollection)" TItem="ItemOrder"
                         AllowPaging="true" PageSize="3" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
