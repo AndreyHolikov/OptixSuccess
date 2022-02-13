@@ -14,7 +14,7 @@ using WebOptixSuccessAuth.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionStringAuth = builder.Configuration.GetConnectionString("ConnectionAuth-laptop");
+var connectionStringAuth = builder.Configuration.GetConnectionString("ConnectionAuth-pc");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionStringAuth));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -39,7 +39,7 @@ builder.Services.AddHttpClient(); // для загрузки файлов на сервер
 //builder.Services.AddDbContext<AppDbContext>();
 ;
 
-var optixSuccessConnectionString = builder.Configuration.GetConnectionString("ConnectionOptixSuccess-laptop");
+var optixSuccessConnectionString = builder.Configuration.GetConnectionString("ConnectionOptixSuccess-pc");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(optixSuccessConnectionString));
 //options => (options.UseSQLServer(Configuration.GetConnectionString("Defaultconnection"));
