@@ -7,7 +7,9 @@
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 @inject NavigationManager NavigationManager
 
-<h3>Покупатели (@count)</h3>
+<PageTitle>Заказы покупателей (@count) - OptixSM</PageTitle>
+
+<h3>Заказы покупателей (@count)</h3>
 
 <RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
 
@@ -19,7 +21,9 @@
         <Columns>
             <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomerId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
             
-            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomer.Customer.Name" Title="Покупатель" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="OrderCustomer" Property="OrderCustomer.Customer.Name" Title="Покупатель" Width="70px" />
+
+            <RadzenDataGridColumn TItem="OrderCustomer" Property="Edited" Title="Дата редактирования"  Width="70px" TextAlign="TextAlign.Center" />
 
             <RadzenDataGridColumn TItem="OrderCustomer" Property="Description" Title="Description" Width="100px" />
 
