@@ -9,7 +9,7 @@
 @inject Plugins.DataStore.SQL.AppDbContext dbContext
 @inject NavigationManager NavigationManager
 
-<h3>Покупатели +</h3>
+<h3>Покупатели (@count)</h3>
 
 <RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
 <RadzenButton Text="Добавить" Click="@OnClickAdd" Style="margin-bottom: 20px;" />
@@ -60,7 +60,7 @@
 
 @code {
     RadzenDataGrid<Customer>? gridRef = null;
-    int count;
+    int count = 0;
     IEnumerable<Customer>? customers = null;
     bool isLoading = false;
 
