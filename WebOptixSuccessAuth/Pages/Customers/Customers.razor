@@ -14,24 +14,35 @@
 <RadzenButton Text="Обновить" Click="@Reset" Style="margin-bottom: 20px;" />
 <RadzenButton Text="Добавить" Click="@OnClickAdd" Style="margin-bottom: 20px;" />
 
-    <RadzenDataGrid @ref="gridRef" IsLoading=@isLoading Count="@count" Data="@customers" LoadData="@LoadData" TItem="Customer"
-        AllowSorting="false" AllowFiltering="false"  
+    <RadzenDataGrid  Count="@count" Data="@customers"  TItem="Customer"
+        AllowSorting="true" AllowFiltering="true"
         AllowPaging="true" PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center" PageSizeOptions="@pageSizeOptions"
         AllowColumnResize="true"
         ColumnWidth="200px"   >
         <Columns >
-            <RadzenDataGridColumn TItem="Customer" Property="CustomerId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
-            <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Company" Width="150px" Frozen="true" />
-            <RadzenDataGridColumn TItem="Customer" Property="Name" Title="Name" Width="100px" />
-            <RadzenDataGridColumn TItem="Customer" Property="Fullname" Title="Fullname" Width="100px" />
+            <RadzenDataGridColumn TItem="Customer" Property="CustomerId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" 
+                Sortable="true" Filterable="true" />
+            <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Company" Width="150px" Frozen="true" 
+                Sortable="true" Filterable="true" />
+            <RadzenDataGridColumn TItem="Customer" Property="Company" Title="Позиций" Width="150px" >
+                <Template Context="detail">
+                    @detail?.OrderCustomers?.Count()
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Customer" Property="Name" Title="Name" Width="100px" 
+                Sortable="false" Filterable="false"/>
+            <RadzenDataGridColumn TItem="Customer" Property="Fullname" Title="Fullname" Width="100px"
+                Sortable="false" Filterable="false"/>
 
-            <RadzenDataGridColumn TItem="Customer" Property="Email" Title="Email" Width="100px" >
+            <RadzenDataGridColumn TItem="Customer" Property="Email" Title="Email" Width="100px" 
+                Sortable="false" Filterable="false">
                 <Template Context="customer">
                     <a href="mailto: @customer.Email">@customer.Email</a>
                 </Template>
             </RadzenDataGridColumn>
 
-            <RadzenDataGridColumn TItem="Customer" Property="Phone" Title="Phone" Width="100px" >
+            <RadzenDataGridColumn TItem="Customer" Property="Phone" Title="Phone" Width="100px" 
+                Sortable="false" Filterable="false">
                <Template Context="customer">
                     <a href="tel: @customer.Phone">@customer.Phone</a>
                </Template>
@@ -66,6 +77,19 @@
 
     [Parameter]
     public IEnumerable<int> pageSizeOptions { get; set; } = new int[] { 10, 20, 30, 100, 1000 };
+
+        #region protected Methods
+    protected override void OnInitialized()
+    {
+        LoadCustomers();
+    }
+    #endregion    
+
+    private void LoadCustomers()
+    {
+        customers = dbContext.Customers
+        .Include("OrderCustomers");
+    }
 
     async Task Reset()
     {

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -6,10 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-WebOptixSuccessAuth-94FF25FF-6337-40D1-A80D-EBCD47DBAB3E</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="Pages\OrderCustomers\EditOrderCustomer.razor" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="Pages\OrderCustomers\EditOrderCustomer.razor" />

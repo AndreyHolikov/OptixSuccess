@@ -86,3 +86,7 @@ a, .btn-link {
 .rz-panel.order-vendor {
     border: #5dbf74 1px solid;
 }
+
+.rz-state-disabled.rz-paginator-element {
+    display: none;
+}

@@ -24,12 +24,6 @@ namespace Plugins.DataStore.SQL
 
         public AppDbContext() { }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer(@"Data Source=PC-631\SQLEXPRESS;Initial Catalog=WebOptixSuccess;Integrated Security=True;Pooling=False");
-        //    //optionsBuilder.UseSqlServer(@"Data Source=motiv-laptop\sqlexpress;Initial Catalog=WebOptixSuccess;Integrated Security=True;Pooling=False");
-        //}
-
         public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
         {
