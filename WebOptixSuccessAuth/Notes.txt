@@ -29,6 +29,8 @@ add-migration Init-1302.2 -Project WebOptixSuccessAuth -Context ApplicationDbCon
 update-database -Project Plugins.DataStore.SQL -Context AppDbContext
 update-database -Project WebOptixSuccessAuth -Context ApplicationDbContext
 
+Add-Migration CreateIdentitySchema -Context ApplicationDbContext
+
 Remarks
 
 To see the examples, type: get-help Add-Migration -examples.

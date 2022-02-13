@@ -2,3 +2,4 @@
 add-migration Init-1 -Project Plugins.DataStore.SQL -Context AppDbContext
 update-database
 Remove-Migration  -Project Plugins.DataStore.SQL -Context AppDbContext
+

@@ -34,7 +34,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<Radzen.NotificationService>();
 builder.Services.AddScoped<Radzen.TooltipService>();
 
-builder.Services.AddHttpClient(); // для загрузки файлов на сервер
+builder.Services.AddHttpClient(); // РґР»СЏ Р·Р°РіСЂСѓР·РєРё С„Р°Р№Р»РѕРІ РЅР° СЃРµСЂРІРµСЂ
 
 //builder.Services.AddDbContext<AppDbContext>();
 ;
